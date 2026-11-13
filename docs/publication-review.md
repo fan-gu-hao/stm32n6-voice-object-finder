@@ -1,44 +1,42 @@
-# 公開內容與本機證據盤點
+# 完整工程成果與公開材料盤點
 
-整理日期：2026-11-13。核對基準為視覺專案 259bd0b2a3f5cbe4260509b0786d39806ff80c50 與雙模型專案 49c3e7abce1c4bf4601bd62f4fe9122e1d844951，以及已保存的開發紀錄。這次更新補足文件、程式入口與跨階段證據關係，不變更定版韌體。
+整理日期：2026-11-13。本次以使用者提供的 67 項原始碼／證據報告，接續核對已公開的雙模型版本 988aeb31f35e358c7c75bc898e52a201da4b9298 與視覺版本 c044d7d4230eb2438340255e51df5c88162a3fda。原始專案與定版韌體保持原狀。
 
-## 已公開且可直接閱讀
+## 各階段的公開入口
 
-| 範圍 | 已保存內容 | 入口 |
+| 工程階段 | 保存的實作與證據 | 公開入口 |
 | --- | --- | --- |
-| 視覺模型匯出 | ONNX、onnx2tf、SavedModel／TFLite 的實際成功日誌與工具版本 | [原始日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) |
-| 視覺量化與適配 | ST 量化設定與結果、模型介面、三模型比較、模型庫與封裝修補 | [前期工程導覽](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/engineering-workflow.md) |
-| 視覺工程驗證 | A1 來源重建、A2 數值／框／遮罩、A3 效能、A4 記憶體、A5 可靠性 | [視覺專案](https://github.com/fan-gu-hao/stm32n6-instance-segmentation) |
-| 收音與主機工具 | RAM 啟動、串列交握與 CRC32、資料收集、切段 | [工具](../kws/recording_tools/README.md)、[資料整理](../kws/prepare_dataset.py) |
-| 模型與資料方法 | KWS 架構、MFCC、增強、分組與排重、現場重訓版本、定版快照 | [訓練程式](../kws/)、[定版快照](../kws/training_snapshot/README.md) |
-| 板端部署除錯 | INPUT／PCM 比對、即時 PCM／特徵／輸出擷取、快取與介面檢查 | [finder_kws.c](../firmware/Src/finder_kws.c) |
-| 系統整合 | MDF／DMA、FreeRTOS 三工作、雙模型、目標狀態、顯示、連結與建置 | [完整工程導覽](engineering-workflow.md)、[程式導讀](code-tour.md) |
-| 評估與來源 | 五折、保留測試、模型配置、來源與公開副本雜湊 | [評估報告](evidence/README.md)、[來源紀錄](source-provenance.json) |
+| 前期模型與工具環境 | 原始模型、ONNX、onnx2tf／SavedModel、ST INT8、工具版本與成功日誌 | [視覺完整工作索引](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/WORK_IMPLEMENTATION_INDEX.md) |
+| 模型庫後處理適配 | 偵測／遮罩輸出識別、量化介面與產生標頭修補；本機 Neural-ART 參數及映像對齊修補 | [視覺工程導覽](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/engineering-workflow.md) |
+| 視覺驗證與實驗 | A1 來源、A2 數值與框／遮罩、A3 效能、A4 記憶體、A5 可靠性 | [視覺專案](https://github.com/fan-gu-hao/stm32n6-instance-segmentation) |
+| 串列中斷歷史試驗 | 佇列、中斷回呼、HAL 相依、兩版安裝工具、部署與還原；保存實驗版本界線 | [試驗來源快照](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/tree/main/docs/publication_supplement_20261113/uart_it/source_snapshot) |
+| 獨立收音韌體 | 五秒錄音、DMA 回呼、暖機、逾時、錯誤與 CRC32；完整 FSBL 來源及 IDE 快照、上游差異 | [錄音韌體](../kws/recording_firmware/README.md) |
+| 主機載入與資料蒐集 | 向量表／RAM 啟動、串列交握、完整長度及 CRC32、WAV、分類與切段 | [主機工具](../kws/recording_tools/README.md)、[資料整理](../kws/prepare_dataset.py) |
+| 模型訓練演進 | 最初 MFCC／深度可分離卷積與 INT8 匯出、現場資料第二／第三版、分組定版 | [訓練歷程](../kws/training_history/README.md)、[定版快照](../kws/training_snapshot/README.md) |
+| 部署除錯 | 固定 INPUT／PCM 比對程式、即時原始視窗與特徵回傳、CPU／NPU 快取修正 | [板端程式](../firmware/Src/finder_kws.c)、[比較報告](evidence/development-history/README.md) |
+| 現場資料與評估 | 48 段收集清單、用途與 PCM 雜湊；五折及保留評估 | [資料清單](evidence/development-history/live_dataset_manifest_20261008.json)、[評估報告](evidence/README.md) |
+| 定版產碼與部署 | 命令、內部 ONNX／量化資訊、執行階段、記憶體、建置與成功寫入驗證 | [產碼與部署證據](evidence/development-history/README.md) |
+| 即時語音與視覺 | 定版六次命令接受、非命令結果；較早視覺 FOUND 紀錄，各自標示版本 | [結果說明](results.md) |
+| 多工作與記憶體整合 | MDF／DMA、快取、單一 NPU 推論工作、顯示與 ISP、目標世代、連結及建置 | [工程流程](engineering-workflow.md)、[程式導讀](code-tour.md) |
+| IDE 來源同步 | 原始同步工具、路徑檢查、預覽、備份、雜湊競態檢查與原子替換 | [同步工具](../tools/ide/README.md) |
 
-## 已做過、原始檔仍在本機的部分
+## 本次 67 項材料的處理
 
-下列項目在開發過程已存在或有執行紀錄，公開版目前以程式、摘要或來源位置呈現。沒有把尚未附原始檔解讀成未完成，也沒有把摘要當成新取得的原始日誌。
+[逐項清單](evidence/development-history/review_inventory.json)記錄每個原始路徑、雜湊、公開位置與處理狀態。[來源紀錄](evidence/development-history/source_provenance.json)另外保存這次補入檔案的原始與公開雜湊及轉換方式。
 
-| 材料 | 已知本機位置，均相對於對應原專案 | 目前公開狀態 |
-| --- | --- | --- |
-| course15 收音韌體 | STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/ | 主機啟動與接收工具已公開；修改後的獨立錄音韌體尚未隨本庫附上 |
-| 早期固定 KWS 比對 | kws/comparison/20261007_192902_246036/reference.json 及對應板端輸出 | 比對程式與參考標頭已公開；開發結果見結果說明 |
-| 即時 PCM／MFCC／推論比對 | kws/live_comparison/20261007_201024_942174/result.json、serial.log | 產生與傳送邏輯已公開；原始比較報告仍在本機 |
-| 現場資料收集紀錄 | kws/live_datasets/20261008_005213_207370/manifest.json、serial.log | 收集計畫、板端收集程式、訓練與保留測試報告已公開；原始錄音與完整收集紀錄未附 |
-| 定版即時語音日誌 | logs/voice_groupcv_20261008_025732_533540.log | [結果摘要](results.md)已列六次命令接受與非命令測試的範圍 |
-| 早期視覺找物日誌 | logs/finder_vision_20261004_200926.log | [結果摘要](results.md)已列較早 CUP／PHONE 找到的紀錄 |
-| 定版產碼與部署紀錄 | output/finder_groupcv_codegen_20261008_022527_741465/、output/finder_groupcv_deploy_20261008_025657_154175/ | 模型配置、建置來源與概要已公開；完整產碼、映像及部分原始報告在本機 |
-| 完整凍結包 | releases/finder_groupcv_20261008_frozen_20261009/ | 五映像的交付角色已在工程流程記錄；映像未加入本公開版 |
-| IDE 同步工具 | 原專案根目錄 sync_cubeide_sources.py | 整理後的 IDE 專案與建置入口已公開；原同步輔助工具未附 |
+- 視覺專案已先公開的 14 份 UART 修補、部署與還原材料，已用 Git 物件雜湊對照本次原文確認一致；再補入可直接閱讀的 C／H、主程式與兩版安裝工具。
+- 收音韌體、早期訓練、IDE 同步、比較及現場資料報告、定版產碼和部署紀錄已補入對應目錄。
+- 現有主機收音、收集與切段工具沿用已整理的公開路徑版本；其內容與原環境不同之處不重複算成漏傳。
+- SDK 的其他工具鏈啟動檔以固定上游版本索引；本庫補入 CubeIDE 的來源與設定快照，保留各檔著作權及授權索引。
 
-若需要再擴充程式展示，應從上述原始位置核對現有主機腳本、文字報告和修改差異，逐項補入公開目錄並記錄來源；不重新創作一份腳本冒充原始開發產物。原始 output 目錄下是否另有獨立保存的接收器、係數產生器或評估腳本，仍需依本機清單確認。
+先前內容雜湊盤點的 107 種差異，涵蓋備份、官方 SDK、自動產碼與建置檔，不能直接當成 107 份原創程式。這次逐項補的是實際保存的工程來源與證據。
 
-## 文件這次補足的重點
+## 已知資料範圍
 
-- 將原始模型、ONNX、量化、三模型比較、模型庫修補、N6 編譯與部署連成完整流程。
-- 將前期視覺與收音工作，連到本版 KWS、雙模型及記憶體整合。
-- 展開資料隔離、CPU／DMA／NPU 快取、分層比對、狀態機、工作與緩衝協調等實作。
-- 保留歷史試驗與定版的關係；各版本使用各自的模型雜湊與測試結果。
-- 原始記錄仍在本機的部分列出位置與公開狀態，方便後續補上來源。
+- 固定五類電腦參考報告已公開；INPUT／PCM 的原始板端 CMP 逐列日誌不在本次報告內。其程式與既有開發結果摘要保留，且標明來源層級。
+- course13 的指定自訂工具目錄沒有出現在本次收集結果；前期環境沿用的關係及 course14 成功模型轉換紀錄已有證據，沒有把未收集到獨立腳本寫成未做過該工作。
+- 臨時終端機中執行、未另存成檔的接收、係數產生或分析程式，不能由這份報告逐字還原。現有函式、設定、報告與開發步驟已有入口，不以新寫的程式冒充歷史原檔。
+- 原始錄音、模型權重、產生的模型程式與完整五映像凍結包沿用既定公開範圍；它們的角色、版本及可得雜湊分別記錄。
+- 展示影片待補；本次未追加訓練、建置、燒錄或硬體驗收。
 
-模型權重、個人錄音、資料集與整合燒錄映像沿用既定公開範圍；本頁的盤點不更改各元件的授權。展示影片仍待補。
+這份盤點的完整性範圍是本次提供的材料及兩個儲存庫可取得的證據，不宣稱已讀取使用者電腦上所有檔案或所有歷史對話。

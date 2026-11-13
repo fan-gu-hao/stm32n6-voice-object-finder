@@ -6,12 +6,15 @@
 
 | 程式／函式 | 閱讀重點 |
 | --- | --- |
+| [獨立錄音 main.c](../kws/recording_firmware/FSBL/Src/main.c)：MicRecord／MicCopy／MicCrc32 | 五秒 RAM 錄音、暖機、DMA 半滿／全滿回呼、12 秒逾時、錯誤狀態、長度與 CRC32；中斷只複製、主迴圈傳送 |
 | [n6_mic_start_and_record.sh](../kws/recording_tools/n6_mic_start_and_record.sh) | ELF/BIN 與向量表檢查；RAM 載入；MSP、PC、xPSR、遮罩暫存器設定；main／MicLine 檢查點；偵錯連線清理 |
 | [n6_receive_wav.py](../kws/recording_tools/n6_receive_wav.py)：capture／save | 串列埠獨占、交握重試、帶期限的讀取、音訊標頭、精確位元組數、結尾與 CRC32；WAV 格式、削波統計 |
 | [collect_n6.py](../kws/collect_n6.py) | 五類錄音計畫、已完成資料接續、格式與來源資訊 |
 | [prepare_dataset.py](../kws/prepare_dataset.py)：speech_regions／extract_word | 短時能量、發音間隔、鄰近單字界線與補零；按原始錄音分組後再切成一秒片段 |
 
 主機工具由 course15 收音階段延續而來；使用它們仍需對應的收音韌體，說明見[工具文件](../kws/recording_tools/README.md)。
+
+獨立收音的 [FSBL 來源、IDE 快照與上游差異](../kws/recording_firmware/README.md)已保存，供對照後續連續收音驅動的演進。
 
 ## 2. 特徵、訓練、量化與資料隔離
 
@@ -33,6 +36,8 @@
 | main／metrics | 匯總五折、選定最終訓練輪數、訓練最終模型並評估另保留的音訊 |
 
 [train_kws_live_v3.py](../kws/train_kws_live_v3.py)保存現場資料迭代版本；[快照說明](../kws/training_snapshot/README.md)標明定版程式來源。歷史腳本保留當時環境相依，不是任意目錄的即裝即用套件。
+
+[訓練歷程](../kws/training_history/README.md)補入最早的訓練原檔，列出從固定平移與背景增強，到發音邊界限制、現場樣本與分組驗證的程式差異。
 
 ## 3. 收音驅動、DMA 與環形緩衝
 
@@ -76,6 +81,8 @@ finder_voice_poll 包含峰值、分數、分差、連續命中、最短間隔�
 - [IDE 建置入口](../firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh)：專案相對路徑、GCC_PATH 及編譯器版本檢查。
 
 部分模型暫存由產碼以絕對位址配置，須對照記憶體池與產碼報告；單看連結器的 KWS_RAM 用量會漏掉這部分。
+
+[原始產碼與部署證據](evidence/development-history/README.md)保存 ST 工具內部 ONNX 階段、量化中繼資料、11 個硬體及 1 個軟體執行階段、記憶體配置與既有寫入驗證。[IDE 同步工具](../tools/ide/README.md)另呈現來源路徑核對、備份、設定變更競態檢查與原子更新。
 
 ## 來源與貢獻
 

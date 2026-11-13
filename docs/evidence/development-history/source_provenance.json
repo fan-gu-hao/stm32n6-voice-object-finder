@@ -1,0 +1,448 @@
+{
+  "review_date": "2026-11-13",
+  "input_report_sha256": "9f295a730d8e19abd33546d796a38ba154220153327a444c7989512f3be0c2dd",
+  "entries": [
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/main.h",
+      "source_bytes": 2441,
+      "source_sha256": "c960d7366c7709f717ce06ebd4b0443bdd876805f69fdcb627e440690c7d204d",
+      "received_content_sha256": "c960d7366c7709f717ce06ebd4b0443bdd876805f69fdcb627e440690c7d204d",
+      "public_path": "kws/recording_firmware/FSBL/Inc/main.h",
+      "public_bytes": 2441,
+      "public_sha256": "c960d7366c7709f717ce06ebd4b0443bdd876805f69fdcb627e440690c7d204d",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6570_discovery_conf.h",
+      "source_bytes": 2994,
+      "source_sha256": "37fbfafebe5e5df0fc2ba04a91ff581f0e98ed134d6f16251d23d1705caf97fd",
+      "received_content_sha256": "37fbfafebe5e5df0fc2ba04a91ff581f0e98ed134d6f16251d23d1705caf97fd",
+      "public_path": "kws/recording_firmware/FSBL/Inc/stm32n6570_discovery_conf.h",
+      "public_bytes": 2994,
+      "public_sha256": "37fbfafebe5e5df0fc2ba04a91ff581f0e98ed134d6f16251d23d1705caf97fd",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_hal_conf.h",
+      "source_bytes": 18643,
+      "source_sha256": "20a15eed507e5e56fbe37d04777b2a8800194eba4efc38376544444f97289ba8",
+      "received_content_sha256": "20a15eed507e5e56fbe37d04777b2a8800194eba4efc38376544444f97289ba8",
+      "public_path": "kws/recording_firmware/FSBL/Inc/stm32n6xx_hal_conf.h",
+      "public_bytes": 18643,
+      "public_sha256": "20a15eed507e5e56fbe37d04777b2a8800194eba4efc38376544444f97289ba8",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_it.h",
+      "source_bytes": 2032,
+      "source_sha256": "32212f25068331bd7d409eee75d5b52d732ac438ad9c65ba170c4301a18087d8",
+      "received_content_sha256": "32212f25068331bd7d409eee75d5b52d732ac438ad9c65ba170c4301a18087d8",
+      "public_path": "kws/recording_firmware/FSBL/Inc/stm32n6xx_it.h",
+      "public_bytes": 2032,
+      "public_sha256": "32212f25068331bd7d409eee75d5b52d732ac438ad9c65ba170c4301a18087d8",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/main.c",
+      "source_bytes": 20912,
+      "source_sha256": "ffaa5b0b499ae320ae1a1856e3fd43f427ea7ac91ebfd446627a641dc8c9743d",
+      "received_content_sha256": "ffaa5b0b499ae320ae1a1856e3fd43f427ea7ac91ebfd446627a641dc8c9743d",
+      "public_path": "kws/recording_firmware/FSBL/Src/main.c",
+      "public_bytes": 20912,
+      "public_sha256": "ffaa5b0b499ae320ae1a1856e3fd43f427ea7ac91ebfd446627a641dc8c9743d",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/stm32n6xx_hal_msp.c",
+      "source_bytes": 12651,
+      "source_sha256": "4124bc4ae208d8345c00747a30103a98fdf5cc73e35f7f3a665f8ed3be2d0176",
+      "received_content_sha256": "4124bc4ae208d8345c00747a30103a98fdf5cc73e35f7f3a665f8ed3be2d0176",
+      "public_path": "kws/recording_firmware/FSBL/Src/stm32n6xx_hal_msp.c",
+      "public_bytes": 12651,
+      "public_sha256": "4124bc4ae208d8345c00747a30103a98fdf5cc73e35f7f3a665f8ed3be2d0176",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/stm32n6xx_it.c",
+      "source_bytes": 7056,
+      "source_sha256": "cd108da3dd795e23e1eabd45741cf7a485452bb13f85645bd2de2934961cd3c8",
+      "received_content_sha256": "cd108da3dd795e23e1eabd45741cf7a485452bb13f85645bd2de2934961cd3c8",
+      "public_path": "kws/recording_firmware/FSBL/Src/stm32n6xx_it.c",
+      "public_bytes": 7056,
+      "public_sha256": "cd108da3dd795e23e1eabd45741cf7a485452bb13f85645bd2de2934961cd3c8",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/system_stm32n6xx_fsbl.c",
+      "source_bytes": 17726,
+      "source_sha256": "f4c8d4f53b534f7352dee0fa4642b5bc23e859263f9d38cdb58495c629492975",
+      "received_content_sha256": "f4c8d4f53b534f7352dee0fa4642b5bc23e859263f9d38cdb58495c629492975",
+      "public_path": "kws/recording_firmware/FSBL/Src/system_stm32n6xx_fsbl.c",
+      "public_bytes": 17726,
+      "public_sha256": "f4c8d4f53b534f7352dee0fa4642b5bc23e859263f9d38cdb58495c629492975",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/MDF_AudioRecorder.ioc",
+      "source_bytes": 42603,
+      "source_sha256": "570b2e5320f2d54aa4669bc2002e75dfad5c250f8375d8fbdd2575e4ac1e3967",
+      "received_content_sha256": "570b2e5320f2d54aa4669bc2002e75dfad5c250f8375d8fbdd2575e4ac1e3967",
+      "public_path": "kws/recording_firmware/MDF_AudioRecorder.ioc",
+      "public_bytes": 42603,
+      "public_sha256": "570b2e5320f2d54aa4669bc2002e75dfad5c250f8375d8fbdd2575e4ac1e3967",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/.project",
+      "source_bytes": 957,
+      "source_sha256": "b99ada1f28b6719b15222a1a7ca83c3c6e89a29b6fe91382ac1affa908c1dd7e",
+      "received_content_sha256": "b99ada1f28b6719b15222a1a7ca83c3c6e89a29b6fe91382ac1affa908c1dd7e",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/.project",
+      "public_bytes": 957,
+      "public_sha256": "b99ada1f28b6719b15222a1a7ca83c3c6e89a29b6fe91382ac1affa908c1dd7e",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.cproject",
+      "source_bytes": 26880,
+      "source_sha256": "835de9725563e6b8faf13321a7e0bdfee12392ed3a638c8556e88770b7cca4d9",
+      "received_content_sha256": "835de9725563e6b8faf13321a7e0bdfee12392ed3a638c8556e88770b7cca4d9",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/.cproject",
+      "public_bytes": 26880,
+      "public_sha256": "835de9725563e6b8faf13321a7e0bdfee12392ed3a638c8556e88770b7cca4d9",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.project",
+      "source_bytes": 6440,
+      "source_sha256": "7682f21acca736737713bc24431c643d8423eb00adf98cca601e53a8441d0c1d",
+      "received_content_sha256": "7682f21acca736737713bc24431c643d8423eb00adf98cca601e53a8441d0c1d",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/.project",
+      "public_bytes": 6440,
+      "public_sha256": "7682f21acca736737713bc24431c643d8423eb00adf98cca601e53a8441d0c1d",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Application/Startup/startup_stm32n657x0hxq_fsbl.s",
+      "source_bytes": 39859,
+      "source_sha256": "01ea33a933ebe4a47d8693eb767833ff1235c87d5f2d90b6c1ef120327fc750f",
+      "received_content_sha256": "01ea33a933ebe4a47d8693eb767833ff1235c87d5f2d90b6c1ef120327fc750f",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/Startup/startup_stm32n657x0hxq_fsbl.s",
+      "public_bytes": 39859,
+      "public_sha256": "01ea33a933ebe4a47d8693eb767833ff1235c87d5f2d90b6c1ef120327fc750f",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Application/User/syscalls.c",
+      "source_bytes": 2847,
+      "source_sha256": "f772e8cdb32eb5216a3be61596216fcfee47e93202e644bea879f745c4db77b1",
+      "received_content_sha256": "f772e8cdb32eb5216a3be61596216fcfee47e93202e644bea879f745c4db77b1",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/User/syscalls.c",
+      "public_bytes": 2847,
+      "public_sha256": "f772e8cdb32eb5216a3be61596216fcfee47e93202e644bea879f745c4db77b1",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Application/User/sysmem.c",
+      "source_bytes": 2726,
+      "source_sha256": "ca25d4ef17f7fb7b281008f3373bd280b662e60b5f0738e484ebe0192c3d1e8d",
+      "received_content_sha256": "ca25d4ef17f7fb7b281008f3373bd280b662e60b5f0738e484ebe0192c3d1e8d",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/User/sysmem.c",
+      "public_bytes": 2726,
+      "public_sha256": "ca25d4ef17f7fb7b281008f3373bd280b662e60b5f0738e484ebe0192c3d1e8d",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/STM32N657X0HXQ_AXISRAM2_fsbl.ld",
+      "source_bytes": 5622,
+      "source_sha256": "4cd8c52485d5b1c84ac0306d2421123ed8b767d2df5b138bb128e31484c6524b",
+      "received_content_sha256": "4cd8c52485d5b1c84ac0306d2421123ed8b767d2df5b138bb128e31484c6524b",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/STM32N657X0HXQ_AXISRAM2_fsbl.ld",
+      "public_bytes": 5622,
+      "public_sha256": "4cd8c52485d5b1c84ac0306d2421123ed8b767d2df5b138bb128e31484c6524b",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/LICENSE.md",
+      "source_bytes": 10690,
+      "source_sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
+      "received_content_sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
+      "public_path": "kws/recording_firmware/LICENSE.md",
+      "public_bytes": 10690,
+      "public_sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
+      "transformations": []
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/README.md",
+      "source_bytes": 4243,
+      "source_sha256": "6536a99cc7e307cb54a13e78f2a51e8b4460d883b23070be714490fc4a00c07b",
+      "received_content_sha256": "6536a99cc7e307cb54a13e78f2a51e8b4460d883b23070be714490fc4a00c07b",
+      "public_path": "kws/recording_firmware/UPSTREAM_README.md",
+      "public_bytes": 4243,
+      "public_sha256": "6536a99cc7e307cb54a13e78f2a51e8b4460d883b23070be714490fc4a00c07b",
+      "transformations": []
+    },
+    {
+      "source": "course15 STM32CubeN6: git diff HEAD -- Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder",
+      "base_commit": "1fc803683e03b0ce78e64523441d31acd0db2829",
+      "public_path": "kws/recording_firmware/upstream_changes.patch",
+      "public_sha256": "6547e2a3fe92af94691267cdcf8d66fd94f3061c3a594a8ad30ba54aafbbf509",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/kws/runs/kws_20261005_203338_212380/train_kws.py",
+      "source_bytes": 13096,
+      "source_sha256": "8d68ffccd2566085664e33c23228b74018848e62d1c1576e8f1d761240f8c980",
+      "received_content_sha256": "8d68ffccd2566085664e33c23228b74018848e62d1c1576e8f1d761240f8c980",
+      "public_path": "kws/training_history/20261005_baseline/train_kws.py",
+      "public_bytes": 13096,
+      "public_sha256": "8d68ffccd2566085664e33c23228b74018848e62d1c1576e8f1d761240f8c980",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/sync_cubeide_sources.py",
+      "source_bytes": 5994,
+      "source_sha256": "fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c",
+      "received_content_sha256": "fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c",
+      "public_path": "tools/ide/sync_cubeide_sources.py",
+      "public_bytes": 5994,
+      "public_sha256": "fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/kws/comparison/20261007_192902_246036/reference.json",
+      "source_bytes": 1940,
+      "source_sha256": "8fb9ecf864dd828cc0f0adb631da8aa59641eb258ac1c6bd0f5bb140be1023e6",
+      "received_content_sha256": "8fb9ecf864dd828cc0f0adb631da8aa59641eb258ac1c6bd0f5bb140be1023e6",
+      "public_path": "docs/evidence/development-history/fixed_reference_20261007.json",
+      "public_bytes": 1770,
+      "public_sha256": "ee6abcf9914f85eafc47bc0d8d76893c731bc92e6b75e6d9694eb831a73124cc",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/kws/live_comparison/20261007_201024_942174/result.json",
+      "source_bytes": 2670,
+      "source_sha256": "e8b92b6d25bf367c7e373f8eee13df7da905a9e7d1a18a31f57d274700c721ba",
+      "received_content_sha256": "e8b92b6d25bf367c7e373f8eee13df7da905a9e7d1a18a31f57d274700c721ba",
+      "public_path": "docs/evidence/development-history/live_comparison_20261007.json",
+      "public_bytes": 2534,
+      "public_sha256": "abf0ca0a634076f3517f08492c0b9ad2fbda7c42795ba1835b548c293390a6e1",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/kws/live_comparison/20261007_201024_942174/serial.log",
+      "source_bytes": 325406,
+      "source_sha256": "3bcb910db313e423a2f0b4fe0fb3e215938683215f8eee0816faa675216051ee",
+      "received_content_sha256": "d25eb65f28828ebd01dd039b6c8d6fe11bd63e91b564d506cad8a6afdddf3579",
+      "public_path": "docs/evidence/development-history/live_serial_events_20261007.log",
+      "public_bytes": 7998,
+      "public_sha256": "f194b4beaeab19eda89f5cb55c9e96e1127c667e80cc188802dfefe9576fde64",
+      "transformations": [
+        "本機匯出報告已省略 1181 列 LIVE,D 資料封包",
+        "另省略 1 列殘留十六進位封包片段"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/kws/live_datasets/20261008_005213_207370/manifest.json",
+      "source_bytes": 18255,
+      "source_sha256": "fd1480f15d60cb34013cec82e3389c89bb48c7f2c026d76ddc195ae27f4cafb2",
+      "received_content_sha256": "fd1480f15d60cb34013cec82e3389c89bb48c7f2c026d76ddc195ae27f4cafb2",
+      "public_path": "docs/evidence/development-history/live_dataset_manifest_20261008.json",
+      "public_bytes": 18221,
+      "public_sha256": "fb07bcacfb27ebabcd5dc9a34a305908565f8935c48b550770ceeb174f7c5cda",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/logs/finder_vision_20261004_200926.log",
+      "source_bytes": 12544,
+      "source_sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+      "received_content_sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+      "public_path": "docs/evidence/development-history/finder_vision_20261004.log",
+      "public_bytes": 12544,
+      "public_sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/logs/voice_groupcv_20261008_025732_533540.log",
+      "source_bytes": 6731,
+      "source_sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+      "received_content_sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+      "public_path": "docs/evidence/development-history/voice_groupcv_20261008.log",
+      "public_bytes": 6731,
+      "public_sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/config.json",
+      "source_bytes": 1502,
+      "source_sha256": "5ea97e4dbc93e0c628da81ac95301f3387eb48fa1db6c28f4221e7531a6087d9",
+      "received_content_sha256": "5ea97e4dbc93e0c628da81ac95301f3387eb48fa1db6c28f4221e7531a6087d9",
+      "public_path": "docs/evidence/development-history/codegen_20261008/config.json",
+      "public_bytes": 1400,
+      "public_sha256": "97d4c39beaf934366e2d51687b55a2ed891ca9d47d364d4b275377ee8414448a",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/LICENSE.txt",
+      "source_bytes": 10648,
+      "source_sha256": "9942019b4bb0d3eaceceb7110148015bc5ea051259d57b48b2c71f9f8e06182b",
+      "received_content_sha256": "9942019b4bb0d3eaceceb7110148015bc5ea051259d57b48b2c71f9f8e06182b",
+      "public_path": "docs/evidence/development-history/codegen_20261008/STEdgeAI_LICENSE.txt",
+      "public_bytes": 10648,
+      "public_sha256": "9942019b4bb0d3eaceceb7110148015bc5ea051259d57b48b2c71f9f8e06182b",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1_Q.json",
+      "source_bytes": 76225,
+      "source_sha256": "243d2a7fe992bdab97f773aa46c71490670cb9b8abed9f15b507ce161285ddff",
+      "received_content_sha256": "243d2a7fe992bdab97f773aa46c71490670cb9b8abed9f15b507ce161285ddff",
+      "public_path": "docs/evidence/development-history/codegen_20261008/kws_int8_OE_3_3_1_Q.json",
+      "public_bytes": 76225,
+      "public_sha256": "243d2a7fe992bdab97f773aa46c71490670cb9b8abed9f15b507ce161285ddff",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_c_info.json",
+      "source_bytes": 144767,
+      "source_sha256": "3c6bf27826f3e781ad838ca1843dc5b9ed8eaf48d2697abc516f5af25b8a1226",
+      "received_content_sha256": "3c6bf27826f3e781ad838ca1843dc5b9ed8eaf48d2697abc516f5af25b8a1226",
+      "public_path": "docs/evidence/development-history/codegen_20261008/kws_network_c_info.json",
+      "public_bytes": 144581,
+      "public_sha256": "9454fc7c8c8ede36a4bc121f27181726d577079ebf284c593da49552a51cd60d",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別",
+        "替換 <ST_EDGE_AI_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_generate_report.txt",
+      "source_bytes": 10041,
+      "source_sha256": "2aea121c0691f23214f1386a1730658031e3fdc23831f22e8784905b100bcefe",
+      "received_content_sha256": "2aea121c0691f23214f1386a1730658031e3fdc23831f22e8784905b100bcefe",
+      "public_path": "docs/evidence/development-history/codegen_20261008/kws_network_generate_report.txt",
+      "public_bytes": 9855,
+      "public_sha256": "5bd8255196ff6501e8fd16111f206dad2192b613498e53cfdc23f4bb08476425",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別",
+        "替換 <ST_EDGE_AI_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen.log",
+      "source_bytes": 23645,
+      "source_sha256": "5f16ceeeaa18a65a047c9c8e238ae4d71e40f7e4b1f76301d206915d1f1417bd",
+      "received_content_sha256": "5f16ceeeaa18a65a047c9c8e238ae4d71e40f7e4b1f76301d206915d1f1417bd",
+      "public_path": "docs/evidence/development-history/codegen_20261008/codegen.log",
+      "public_bytes": 22857,
+      "public_sha256": "6cde4cd34050b9998f264384a2c58daaf38567410b6bfc632076af5195b52f1b",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別",
+        "替換 <ST_EDGE_AI_ROOT> 所代表的本機前綴或裝置識別",
+        "將終端進度更新的 CR 轉為換行"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/command.json",
+      "source_bytes": 279,
+      "source_sha256": "a78ebd0228f93f1429039b27010685ad2698191dea3f9c6886017e9f97aaf8f9",
+      "received_content_sha256": "a78ebd0228f93f1429039b27010685ad2698191dea3f9c6886017e9f97aaf8f9",
+      "public_path": "docs/evidence/development-history/codegen_20261008/command.json",
+      "public_bytes": 271,
+      "public_sha256": "d017f6c5358e71e6d3325bdc40ca0f1650e10763c75f86c5c32fc7e880bd7486",
+      "transformations": [
+        "替換 <ST_EDGE_AI_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/model_sha256.txt",
+      "source_bytes": 65,
+      "source_sha256": "f9c4494fd460beafaf383f421135b3b0a96a3d830f4136df91de3580499d6a93",
+      "received_content_sha256": "f9c4494fd460beafaf383f421135b3b0a96a3d830f4136df91de3580499d6a93",
+      "public_path": "docs/evidence/development-history/codegen_20261008/model_sha256.txt",
+      "public_bytes": 65,
+      "public_sha256": "f9c4494fd460beafaf383f421135b3b0a96a3d830f4136df91de3580499d6a93",
+      "transformations": []
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/source_model.txt",
+      "source_bytes": 99,
+      "source_sha256": "3fac1792a76877ead04fc98c7ffc35e74a1c0a8f3e644d8cd6d81c80a02ecb4a",
+      "received_content_sha256": "3fac1792a76877ead04fc98c7ffc35e74a1c0a8f3e644d8cd6d81c80a02ecb4a",
+      "public_path": "docs/evidence/development-history/codegen_20261008/source_model.txt",
+      "public_bytes": 65,
+      "public_sha256": "89e36656da81bffbc3488431b04dbb7c1aa53a999cd54dfc50bbebc0dfa20a68",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/build.log",
+      "source_bytes": 14072,
+      "source_sha256": "a27e6336cb17968807639b48dfd7ab5c670776761e5748e9140314b73a0b7348",
+      "received_content_sha256": "a27e6336cb17968807639b48dfd7ab5c670776761e5748e9140314b73a0b7348",
+      "public_path": "docs/evidence/development-history/deployment_20261008/build.log",
+      "public_bytes": 14004,
+      "public_sha256": "f2fd264a60a8dc13ce0f9cabec04aeb5ca915f4d995bd57d638c1b983d96ac30",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_finder_signed.bin.log",
+      "source_bytes": 5043,
+      "source_sha256": "06f74c060fa52717e8a714469facd3f8a109ddc2c556a4d0951220ddbc53862c",
+      "received_content_sha256": "06f74c060fa52717e8a714469facd3f8a109ddc2c556a4d0951220ddbc53862c",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_finder_signed.bin.log",
+      "public_bytes": 1274,
+      "public_sha256": "e2db1d3b7f4101b0e2a77515beb471be4a514adb4fef50ce61bc7a4170b47843",
+      "transformations": [
+        "替換 <STLINK_SERIAL> 所代表的本機前綴或裝置識別",
+        "移除終端色彩與游標控制碼"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_kws_weights.bin.log",
+      "source_bytes": 4347,
+      "source_sha256": "9ab51b19e9f6458c67c33c6a4c5ced0dcd4536b491f2824843e43949f8f2c1a9",
+      "received_content_sha256": "9ab51b19e9f6458c67c33c6a4c5ced0dcd4536b491f2824843e43949f8f2c1a9",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_kws_weights.bin.log",
+      "public_bytes": 1190,
+      "public_sha256": "e3fcc7b0fb6c807ceebd2c76046261786fa597792dc50974da36ce6c348a4af1",
+      "transformations": [
+        "替換 <STLINK_SERIAL> 所代表的本機前綴或裝置識別",
+        "移除終端色彩與游標控制碼"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_manifest.json",
+      "source_bytes": 1162,
+      "source_sha256": "ae56a5913c0c472d14cb5f6fc642b23f3c95fafc9807d6580e0e3807a92f1dc4",
+      "received_content_sha256": "ae56a5913c0c472d14cb5f6fc642b23f3c95fafc9807d6580e0e3807a92f1dc4",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_manifest.json",
+      "public_bytes": 1026,
+      "public_sha256": "37f1c178b94294060afb320732dcee62511a6b4bfaf0e426e6c47fc278734452",
+      "transformations": [
+        "替換 <PROJECT_ROOT> 所代表的本機前綴或裝置識別"
+      ]
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_verified.json",
+      "source_bytes": 396,
+      "source_sha256": "8f215db1dc43e5051f1507d3b1dd6f49fd7442d80a599d9bbe7c0e3e6c2e97fb",
+      "received_content_sha256": "8f215db1dc43e5051f1507d3b1dd6f49fd7442d80a599d9bbe7c0e3e6c2e97fb",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_verified.json",
+      "public_bytes": 396,
+      "public_sha256": "8f215db1dc43e5051f1507d3b1dd6f49fd7442d80a599d9bbe7c0e3e6c2e97fb",
+      "transformations": []
+    }
+  ]
+}

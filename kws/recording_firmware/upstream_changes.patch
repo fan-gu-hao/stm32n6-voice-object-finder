@@ -1,0 +1,325 @@
+diff --git a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6570_discovery_conf.h b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6570_discovery_conf.h
+index 48ef513d..cfce8ebf 100644
+--- a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6570_discovery_conf.h
++++ b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6570_discovery_conf.h
+@@ -31,7 +31,7 @@ extern "C" {
+ 
+ /* COM defines */
+ #define USE_COM_LOG                         0U
+-#define USE_BSP_COM_FEATURE                 0U
++#define USE_BSP_COM_FEATURE                 1U
+ 
+ /* Touch Sensing controller defines */
+ #define USE_FT5336_TS_CTRL                  1U
+diff --git a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_hal_conf.h b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_hal_conf.h
+index f8fb483b..630d0908 100644
+--- a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_hal_conf.h
++++ b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_hal_conf.h
+@@ -80,7 +80,7 @@ extern "C" {
+ /*#define HAL_SPI_MODULE_ENABLED   */
+ /*#define HAL_SRAM_MODULE_ENABLED   */
+ /*#define HAL_TIM_MODULE_ENABLED   */
+-/*#define HAL_UART_MODULE_ENABLED   */
++#define HAL_UART_MODULE_ENABLED
+ /*#define HAL_USART_MODULE_ENABLED   */
+ /*#define HAL_WWDG_MODULE_ENABLED   */
+ /*#define HAL_XSPI_MODULE_ENABLED   */
+diff --git a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/main.c b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/main.c
+index e274a763..fe2e6005 100644
+--- a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/main.c
++++ b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/main.c
+@@ -18,6 +18,8 @@
+ /* USER CODE END Header */
+ /* Includes ------------------------------------------------------------------*/
+ #include "main.h"
++#include <stdio.h>
++#include <string.h>
+ 
+ /* Private includes ----------------------------------------------------------*/
+ /* USER CODE BEGIN Includes */
+@@ -53,8 +55,8 @@ DMA_HandleTypeDef handle_GPDMA1_Channel6;
+ /* USER CODE BEGIN PV */
+ static int16_t PcmBuffer[2048U] __NON_CACHEABLE;
+ 
+-static __IO uint32_t PcmHalfBufferCplt;
+-static __IO uint32_t PcmBufferCplt;
++
++
+ 
+ SAI_HandleTypeDef hsai_BlockA1;
+ DMA_NodeTypeDef pNode_GPDMACH0 __NON_CACHEABLE;
+@@ -87,92 +89,164 @@ static void Playback_Init(void);
+   * @brief  The application entry point.
+   * @retval int
+   */
+-int main(void)
+-{
+ 
+-  /* USER CODE BEGIN 1 */
+-  MDF_DmaConfigTypeDef dma_config;
+-  uint32_t PlaybackStarted = 0;
++/* N6_MIC_WAV_V1: 先錄音到 RAM，再由主迴圈傳回電腦。 */
++#define MIC_SAMPLES 80000U
++static int16_t MicAudio[MIC_SAMPLES];
++static volatile uint32_t MicCount, MicSkip, MicActive, MicFailed;
+ 
+-  MPU_Config();
+-  /* USER CODE END 1 */
+-
+-  /* Enable the CPU Cache */
++static void MicTx(const void *data, uint32_t size)
++{
++  const uint8_t *p = (const uint8_t *)data;
++  while (size != 0U)
++  {
++    uint16_t n = (size > 4096U) ? 4096U : (uint16_t)size;
++    if (HAL_UART_Transmit(&hcom_uart[COM1], (uint8_t *)p, n, 2000U) != HAL_OK)
++      Error_Handler();
++    p += n;
++    size -= n;
++  }
++}
+ 
+-  /* Enable I-Cache---------------------------------------------------------*/
+-  SCB_EnableICache();
++static void MicLine(const char *text)
++{
++  MicTx(text, (uint32_t)strlen(text));
++}
+ 
+-  /* Enable D-Cache---------------------------------------------------------*/
+-  SCB_EnableDCache();
++/* 中斷只複製樣本，不在這裡傳送串列資料。 */
++static void MicCopy(const int16_t *samples)
++{
++  if (MicActive == 0U || MicFailed != 0U) return;
++  if (MicSkip != 0U)
++  {
++    --MicSkip;
++    return;
++  }
++  uint32_t offset = MicCount;
++  uint32_t n = MIC_SAMPLES - offset;
++  if (n > 1024U) n = 1024U;
++  memcpy(&MicAudio[offset], samples, n * sizeof(int16_t));
++  __DMB();
++  MicCount = offset + n;
++  if (MicCount == MIC_SAMPLES) MicActive = 0U;
++}
+ 
+-  /* MCU Configuration--------------------------------------------------------*/
+-  HAL_Init();
++static uint32_t MicCrc32(const uint8_t *data, uint32_t size)
++{
++  uint32_t crc = 0xFFFFFFFFU;
++  for (uint32_t i = 0U; i < size; ++i)
++  {
++    crc ^= data[i];
++    for (uint32_t bit = 0U; bit < 8U; ++bit)
++      crc = (crc >> 1) ^ ((0U - (crc & 1U)) & 0xEDB88320U);
++  }
++  return ~crc;
++}
+ 
+-  /* USER CODE BEGIN Init */
++static void MicRecord(void)
++{
++  MDF_DmaConfigTypeDef dma = {0};
++  char header[96];
++  MicCount = 0U;
++  MicSkip = 2U;  /* 略過啟動後前兩個區塊，約 128 毫秒。 */
++  MicFailed = 0U;
++  BSP_LED_Off(LED_RED);
++  MicLine("N6MIC_RECORDING,80000\n");
++  BSP_LED_On(LED_GREEN);
++  dma.Address = (uint32_t)(uintptr_t)PcmBuffer;
++  dma.DataLength = sizeof(PcmBuffer);
++  dma.MsbOnly = ENABLE;
++  MdfHandle0.ErrorCode = MDF_ERROR_NONE;
++  MicActive = 1U;
++  uint32_t started = HAL_GetTick();
++
++  if (HAL_MDF_AcqStart_DMA(&MdfHandle0, &MdfFilterConfig0, &dma) != HAL_OK)
++  {
++    MicActive = 0U;
++    BSP_LED_Off(LED_GREEN);
++    MicLine("N6MIC_ERROR,START\n");
++    Error_Handler();
++  }
+ 
+-  /* USER CODE END Init */
++  while (MicActive != 0U)
++  {
++    if ((uint32_t)(HAL_GetTick() - started) > 12000U)
++    {
++      MicFailed = 1U;
++      MicActive = 0U;
++      break;
++    }
++    HAL_Delay(1U);
++  }
+ 
+-  /* Configure the system clock */
+-  SystemClock_Config();
++  /* 收完或失敗後，在主迴圈停止 DMA。 */
++  if (HAL_MDF_AcqStop_DMA(&MdfHandle0) != HAL_OK)
++  {
++    BSP_LED_Off(LED_GREEN);
++    MicLine("N6MIC_ERROR,STOP\n");
++    Error_Handler();
++  }
++  __DMB();
++  BSP_LED_Off(LED_GREEN);
+ 
+-  /* USER CODE BEGIN SysInit */
++  if (MicFailed != 0U || MicCount != MIC_SAMPLES)
++  {
++    BSP_LED_On(LED_RED);
++    MicLine("N6MIC_ERROR,CAPTURE\n");
++    return;
++  }
+ 
+-  /* USER CODE END SysInit */
++  uint32_t crc = MicCrc32((const uint8_t *)MicAudio, sizeof(MicAudio));
++  int n = snprintf(header, sizeof(header),
++                   "N6MIC_DATA,16000,1,16,%lu,%08lX\n",
++                   (unsigned long)sizeof(MicAudio), (unsigned long)crc);
++  if (n <= 0 || (unsigned int)n >= sizeof(header)) Error_Handler();
++  MicTx(header, (uint32_t)n);
++  MicTx(MicAudio, sizeof(MicAudio));
++  MicLine("\nN6MIC_DONE\n");
++}
+ 
+-  /* Initialize all configured peripherals */
++int main(void)
++{
++  COM_InitTypeDef com = {0};
++  MPU_Config();
++  SCB_EnableICache();
++  SCB_EnableDCache();
++  HAL_Init();
++  SystemClock_Config();
+   MX_GPIO_Init();
+   MX_GPDMA1_Init();
+   MX_MDF1_Init();
+   SystemIsolation_Config();
+-  /* USER CODE BEGIN 2 */
+-  if (BSP_ERROR_NONE != BSP_LED_Init(LED_RED))
+-  {
+-    Error_Handler();
+-  }
+ 
+-  /* Initialize playback of recorded data */
+-  Playback_Init();
++  if (BSP_LED_Init(LED_RED) != BSP_ERROR_NONE ||
++      BSP_LED_Init(LED_GREEN) != BSP_ERROR_NONE) Error_Handler();
+ 
+-  /* Start record */
+-  PcmHalfBufferCplt = 0;
+-  PcmBufferCplt = 0;
++  BSP_LED_Off(LED_RED);
++  BSP_LED_Off(LED_GREEN);
++  com.BaudRate = 115200U;
++  com.WordLength = COM_WORDLENGTH_8B;
++  com.StopBits = COM_STOPBITS_1;
++  com.Parity = COM_PARITY_NONE;
++  com.HwFlowCtl = COM_HWCONTROL_NONE;
++  if (BSP_COM_Init(COM1, &com) != BSP_ERROR_NONE) Error_Handler();
+ 
+-  dma_config.Address    = (uint32_t)&PcmBuffer[0];
+-  dma_config.DataLength = 4096U;
+-  dma_config.MsbOnly    = ENABLE;
+-  if (HAL_MDF_AcqStart_DMA(&MdfHandle0, &MdfFilterConfig0, &dma_config) != HAL_OK)
+-  {
+-    Error_Handler();
+-  }
+-  /* USER CODE END 2 */
++  MicLine("N6MIC_READY,1,16000,1,16,80000\n");
+ 
+-  /* Infinite loop */
+-  /* USER CODE BEGIN WHILE */
+   while (1)
+   {
+-    if (PcmHalfBufferCplt == 1)
++    uint8_t command;
++    HAL_StatusTypeDef status = HAL_UART_Receive(&hcom_uart[COM1], &command, 1U, 100U);
++    if (status == HAL_OK)
+     {
+-
+-      if(PlaybackStarted == 0)
+-      {
+-        if (HAL_OK != HAL_SAI_Transmit_DMA(&hsai_BlockA1, (uint8_t *) &PcmBuffer[0], 2048U))
+-        {
+-          Error_Handler();
+-        }
+-        PlaybackStarted = 1;
+-      }
+-      PcmHalfBufferCplt  = 0;
++      if (command == '?') MicLine("N6MIC_READY,1,16000,1,16,80000\n");
++      else if (command == 'R') MicRecord();
+     }
+-    if(PcmBufferCplt == 1)
+-    {
+-      PcmBufferCplt = 0;
+-    }
+-    /* USER CODE END WHILE */
+-
+-    /* USER CODE BEGIN 3 */
++    else if (status != HAL_TIMEOUT)
++      __HAL_UART_CLEAR_OREFLAG(&hcom_uart[COM1]);
+   }
+-  /* USER CODE END 3 */
+ }
++
+ /* USER CODE BEGIN CLK 1 */
+ /* USER CODE END CLK 1 */
+ 
+@@ -589,7 +663,7 @@ static void Playback_Init(void)
+   */
+ void HAL_MDF_AcqCpltCallback(MDF_HandleTypeDef *hmdf)
+ {
+-  PcmBufferCplt = 1;
++  if (hmdf == &MdfHandle0) MicCopy(&PcmBuffer[1024]);
+ }
+ 
+ /**
+@@ -599,7 +673,17 @@ void HAL_MDF_AcqCpltCallback(MDF_HandleTypeDef *hmdf)
+   */
+ void HAL_MDF_AcqHalfCpltCallback(MDF_HandleTypeDef *hmdf)
+ {
+-  PcmHalfBufferCplt = 1;
++  if (hmdf == &MdfHandle0) MicCopy(&PcmBuffer[0]);
++}
++void HAL_MDF_ErrorCallback(MDF_HandleTypeDef *hmdf)
++{
++  /* 飽和交由電腦統計；其他 MDF/DMA 錯誤才中止錄音。 */
++  if (hmdf == &MdfHandle0 &&
++      (hmdf->ErrorCode & ~MDF_ERROR_SATURATION) != MDF_ERROR_NONE)
++  {
++    MicFailed = 1U;
++    MicActive = 0U;
++  }
+ }
+ /* USER CODE END 4 */
+ 
+diff --git a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.project b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.project
+index 967ec8c9..32ff7134 100644
+--- a/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.project
++++ b/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.project
+@@ -131,6 +131,16 @@
+ 			<type>1</type>
+ 			<locationURI>PARENT-7-PROJECT_LOC/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_sai_ex.c</locationURI>
+ 		</link>
++		<link>
++			<name>Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_uart.c</name>
++			<type>1</type>
++			<location>/home/fan/STM32N6ai/course15_n6_mic_test/STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart.c</location>
++		</link>
++		<link>
++			<name>Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_uart_ex.c</name>
++			<type>1</type>
++			<location>/home/fan/STM32N6ai/course15_n6_mic_test/STM32CubeN6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart_ex.c</location>
++		</link>
+ 		<link>
+ 			<name>Drivers/BSP/Components/wm8904.c</name>
+ 			<type>1</type>

@@ -1,0 +1,81 @@
+{
+  "labels": [
+    "cup",
+    "bottle",
+    "phone",
+    "unknown",
+    "silence"
+  ],
+  "records": [
+    {
+      "label": "cup",
+      "file": "<PROJECT_ROOT>/kws/datasets/20261005_200549_294432/validation/cup/take_02_01.wav",
+      "prediction": "cup",
+      "scores": [
+        0.98828125,
+        0.0,
+        0.0,
+        0.0078125,
+        0.0
+      ]
+    },
+    {
+      "label": "bottle",
+      "file": "<PROJECT_ROOT>/kws/datasets/20261005_200549_294432/validation/bottle/take_02_01.wav",
+      "prediction": "bottle",
+      "scores": [
+        0.0,
+        0.99609375,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "label": "phone",
+      "file": "<PROJECT_ROOT>/kws/datasets/20261005_200549_294432/validation/phone/take_01_01.wav",
+      "prediction": "phone",
+      "scores": [
+        0.0,
+        0.0,
+        0.99609375,
+        0.00390625,
+        0.0
+      ]
+    },
+    {
+      "label": "unknown",
+      "file": "<PROJECT_ROOT>/kws/datasets/20261005_200549_294432/validation/unknown/take_05_01.wav",
+      "prediction": "unknown",
+      "scores": [
+        0.0,
+        0.0,
+        0.00390625,
+        0.99609375,
+        0.0
+      ]
+    },
+    {
+      "label": "silence",
+      "file": "<PROJECT_ROOT>/kws/datasets/20261005_200549_294432/validation/silence/take_02_01.wav",
+      "prediction": "silence",
+      "scores": [
+        0.02734375,
+        0.0078125,
+        0.0078125,
+        0.00390625,
+        0.94921875
+      ]
+    }
+  ],
+  "model_sha256": "ffdec67ca044a3b8b94e8e670ee0a1f13225d00569827fdc6e20d9a1fa1bbd40",
+  "tables_sha256": "72fe3e5f73fa012d763d53df4c8cf7ec99a4c8a75534c8d2c4b7d8068861475d",
+  "input_quantization": [
+    0.04510725289583206,
+    5
+  ],
+  "output_quantization": [
+    0.00390625,
+    -128
+  ]
+}

@@ -21,17 +21,21 @@
 
 | 入口 | 工程重點 |
 | --- | --- |
-| [收音與 RAM 載入工具](kws/recording_tools/README.md) | 向量表與啟動狀態檢查、串列交握、逾時、CRC32、WAV 保存 |
+| [獨立錄音韌體](kws/recording_firmware/README.md)／[主機工具](kws/recording_tools/README.md) | DMA 回呼、錄音狀態、逾時、CRC32；RAM 載入、串列交握與 WAV 保存 |
 | [資料整理](kws/prepare_dataset.py) | 短時能量切段、相鄰發音邊界、按原始錄音分組 |
 | [定版 KWS 訓練](kws/training_snapshot/train_kws.py) | MFCC、資料增強與深度可分離卷積網路 |
 | [定版分組交叉驗證](kws/training_snapshot/train_kws_groupcv.py) | PCM 雜湊排重、分組切分、每折標準化、INT8 匯出與評估 |
+| [訓練版本演進](kws/training_history/README.md) | 初版訓練原檔、現場資料改進與分組定版的實作差異 |
 | [收音模組](firmware/Src/finder_mic.c) | MDF1、GPDMA 循環鏈結、環形緩衝、滑動視窗、DMA 快取一致性 |
 | [板端 KWS 與對照工具](firmware/Src/finder_kws.c) | C MFCC、量化介面檢查、CPU／NPU 快取、固定輸入與即時資料比對 |
 | [整合應用](firmware/Src/app.c) | 三個工作、緩衝與號誌、命令狀態機、目標世代與連續幀判定 |
 | [記憶體配置](firmware/Gcc/STM32N657xx.ld)／[KWS 記憶體池](kws/deployment/kws.mpool) | 應用、模型指令、顯示與模型暫存區的配置 |
 | [建置入口](firmware/Makefile)／[KWS 建置清單](firmware/mks/kws.mk) | 雙模型與執行環境整合、CMSIS-DSP 設定、映像分段輸出 |
+| [IDE 來源同步工具](tools/ide/README.md) | 來源連結檢查、預覽、備份、雜湊競態檢查與原子替換 |
 
 函式層級的閱讀順序見 [程式導讀](docs/code-tour.md)。
+
+[開發歷程原始證據](docs/evidence/development-history/README.md)另附早期板端比對、現場資料清單、定版產碼與寫入紀錄及實際語音／視覺日誌。KWS 的 ST 編譯階段也保存了工具內部 ONNX 與量化資訊的轉換紀錄；與前期 YOLO 主動匯出 ONNX 的流程分別說明。
 
 ## 系統行為
 

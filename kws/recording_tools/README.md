@@ -9,7 +9,7 @@
 
 ## 外部依賴
 
-仍需既有收音專案的兩份對應韌體；此儲存庫沒有附上該收音韌體或其完整建置專案：
+對應的 [FSBL 原始碼、IDE 設定與上游差異](../recording_firmware/README.md)已公開。主機工具仍需既有收音專案的兩份對應預建韌體；完整 STM32CubeN6 SDK 與下列 ELF／BIN 未隨附：
 
 - `STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Debug/MDF_AudioRecorder_FSBL.elf`
 - 同目錄的 `MDF_AudioRecorder_FSBL.bin`

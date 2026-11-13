@@ -1,0 +1,58 @@
+      -------------------------------------------------------------------
+                        STM32CubeProgrammer v2.23.0                  
+      -------------------------------------------------------------------
+
+ST-LINK SN  : <STLINK_SERIAL>
+ST-LINK FW  : V3J17M10
+Board       : STM32N6570-DK
+Voltage     : 3.30V
+SWD freq    : 1000 KHz
+Connect mode: Hot Plug
+Reset mode  : Software reset
+Device ID   : 0x486
+Revision ID : Rev B
+Revision ID : Rev B
+Device name : ST32N657
+Device type : MCU
+Device CPU  : Cortex-M55
+BL Version  : --
+
+
+Hard reset is performed
+
+
+Opening and parsing file: finder_signed.bin
+
+
+Memory Programming ...
+  File          : finder_signed.bin
+  Size          : 373.53 KB 
+  Address       : 0x70100000
+
+
+Erasing memory corresponding to segment 0:
+Erasing external memory sectors [16 21]
+Download in Progress:
+[==============================                    ]  60% 
+[==================================================] 100% 
+
+
+File download complete
+Time elapsed during download operation: 00:00:05.100
+
+
+
+Verifying...
+
+
+Read progress:
+[==============================                    ]  60% 
+[==================================================] 100% 
+
+
+Time elapsed during verifying operation: 00:00:03.657
+
+
+Download verified successfully
+
+

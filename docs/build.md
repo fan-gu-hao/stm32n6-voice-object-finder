@@ -12,4 +12,6 @@
 
 建置腳本支援 `GCC_PATH` 指定編譯器目錄，或尋找本機 STM32CubeIDE 內的 GCC 14.3.1。IDE 建置路徑以專案所在位置解析。
 
-這是流程文件；公開整理不會自動執行建置、產碼或燒錄。收音主機工具已放入 `kws/recording_tools/`；仍需外部收音專案的對應韌體，詳見 [收音工具說明](../kws/recording_tools/README.md)。
+這是流程文件；公開整理不會自動執行建置、產碼或燒錄。收音主機工具已放入 `kws/recording_tools/`，對應的 [FSBL 原始碼與 IDE 快照](../kws/recording_firmware/README.md)亦已公開；重建仍需固定版本 STM32CubeN6 SDK，並處理快照中的原開發路徑。主機工具需要對應的 ELF／BIN，沒有隨本庫附上預建映像。
+
+[定版產碼與部署紀錄](evidence/development-history/README.md)保存命令、工具內部 ONNX、記憶體與執行階段報告、建置及成功寫入驗證，供追溯既有流程。

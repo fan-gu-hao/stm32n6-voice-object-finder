@@ -1,0 +1,75 @@
+{
+  "labels": [
+    "cup",
+    "bottle",
+    "phone",
+    "unknown",
+    "silence"
+  ],
+  "sample_rate": 16000,
+  "samples": 16000,
+  "frame_length": 480,
+  "frame_step": 320,
+  "fft_length": 512,
+  "mel_bins": 40,
+  "mfcc_count": 13,
+  "mel_scale": "HTK",
+  "fmin": 20,
+  "fmax": 7600,
+  "window": "periodic_hann",
+  "center": false,
+  "power": 2,
+  "log": "natural",
+  "floor": 1e-10,
+  "remove_clip_mean": true,
+  "dct_norm": "ortho",
+  "normalization_clip": [
+    -6,
+    6
+  ],
+  "input_shape": [
+    1,
+    49,
+    13,
+    1
+  ],
+  "dataset": "<PROJECT_ROOT>/kws/datasets/20261005_200549_294432",
+  "augmentation_version": "GROUP_CV_V1",
+  "augmentation_extra": [
+    24,
+    72,
+    24,
+    24,
+    120
+  ],
+  "loss_priority": [
+    1.0,
+    1.5,
+    1.0,
+    1.0,
+    1.5
+  ],
+  "max_epochs": 300,
+  "warmup_epochs": 80,
+  "patience": 50,
+  "split_manifest": "<PROJECT_ROOT>/kws/runs/kws_groupcv_20261008_015013_527709/splits.json",
+  "scikit_learn": "1.8.0",
+  "learning_rate_schedule": {
+    "0": 0.001,
+    "50": 0.0003,
+    "100": 0.0001,
+    "180": 3e-05
+  },
+  "final_epochs": 66,
+  "cv_report": "<PROJECT_ROOT>/kws/runs/kws_groupcv_20261008_015013_527709/cv_report.json",
+  "input_quantization": {
+    "scale": 0.044505488127470016,
+    "zero_point": 7
+  },
+  "output_quantization": {
+    "scale": 0.00390625,
+    "zero_point": -128
+  },
+  "tensorflow": "2.18.0",
+  "seed": 20261108
+}

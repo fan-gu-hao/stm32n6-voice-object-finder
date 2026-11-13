@@ -1,0 +1,129 @@
+ST Edge AI Core v4.0.1-20581 7ed50de05
+Created date          : 2026-10-08 02:25:29
+Parameters            : generate --model kws_int8.tflite --target stm32n6 --name kws_network --st-neural-art kws@kws_neuralart.json --input-data-type int8 --output-data-type int8
+
+Model name - kws_int8
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+m_id   layer (original)               oshape                param/size         macc             connected to 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+0      serving_default_value0 ()      [b:1,h:49,w:13,c:1]                                                    
+       conv2d_0 (CONV_2D)             [b:1,h:25,w:7,c:32]   512/608          84,032   serving_default_value0 
+       nl_0_nl (CONV_2D)              [b:1,h:25,w:7,c:32]                     5,600                 conv2d_0 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+1      conv2d_1 (DEPTHWISE_CONV_2D)   [b:1,h:25,w:7,c:32]   320/416          50,432                  nl_0_nl 
+       nl_1_nl (DEPTHWISE_CONV_2D)    [b:1,h:25,w:7,c:32]                     5,600                 conv2d_1 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+2      conv2d_2 (CONV_2D)             [b:1,h:25,w:7,c:32]   1,056/1,152     179,232                  nl_1_nl 
+       nl_2_nl (CONV_2D)              [b:1,h:25,w:7,c:32]                     5,600                 conv2d_2 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+3      conv2d_3 (DEPTHWISE_CONV_2D)   [b:1,h:25,w:7,c:32]   320/416          50,432                  nl_2_nl 
+       nl_3_nl (DEPTHWISE_CONV_2D)    [b:1,h:25,w:7,c:32]                     5,600                 conv2d_3 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+4      conv2d_4 (CONV_2D)             [b:1,h:25,w:7,c:32]   1,056/1,152     179,232                  nl_3_nl 
+       nl_4_nl (CONV_2D)              [b:1,h:25,w:7,c:32]                     5,600                 conv2d_4 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+5      conv2d_5 (DEPTHWISE_CONV_2D)   [b:1,h:25,w:7,c:32]   320/416          50,432                  nl_4_nl 
+       nl_5_nl (DEPTHWISE_CONV_2D)    [b:1,h:25,w:7,c:32]                     5,600                 conv2d_5 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+6      conv2d_6 (CONV_2D)             [b:1,h:25,w:7,c:32]   1,056/1,152     179,232                  nl_5_nl 
+       nl_6_nl (CONV_2D)              [b:1,h:25,w:7,c:32]                     5,600                 conv2d_6 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+7      conv2d_7 (DEPTHWISE_CONV_2D)   [b:1,h:25,w:7,c:32]   320/416          50,432                  nl_6_nl 
+       nl_7_nl (DEPTHWISE_CONV_2D)    [b:1,h:25,w:7,c:32]                     5,600                 conv2d_7 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+8      conv2d_8 (CONV_2D)             [b:1,h:25,w:7,c:32]   1,056/1,152     179,232                  nl_7_nl 
+       nl_8_nl (CONV_2D)              [b:1,h:25,w:7,c:32]                     5,600                 conv2d_8 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+9      pool_9 (MEAN)                  [b:1,h:1,w:1,c:32]                      5,600                  nl_8_nl 
+       reshape_9_reshape (MEAN)       [b:1,c:32]                                                      pool_9 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+10     tfl_pseudo_qconst1 ()          [b:5,c:32]            160/160                                          
+       tfl_pseudo_qconst ()           [b:5]                 5/20                                             
+       gemm_10 (FULLY_CONNECTED)      [b:1,c:5]                                 165        reshape_9_reshape 
+                                                                                          tfl_pseudo_qconst1 
+                                                                                           tfl_pseudo_qconst 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+11     nl_11 (SOFTMAX)                [b:1,c:5]                                  75                  gemm_10 
+------ ------------------------------ --------------------- ------------- --------- ------------------------ 
+model: macc=1,058,928 weights=7,060 activations=-- io=--
+
+
+
+
+
+Compilation details
+------------------------------------------------------------------------------------
+Compiler version: 1.1.3-275
+Compiler arguments:  -i <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1.onnx --json-quant-file <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1_Q.json -g kws_network.c --load-mdesc <ST_EDGE_AI_ROOT>/Utilities/configs/stm32n6.mdesc --load-mpool <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws.mpool --load-cdesc <ST_EDGE_AI_ROOT>/Utilities/configs/cortex-m55.cdesc --save-mpool-file <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws/neural_art__kws_network/kws.mpool --out-dir-prefix <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws/neural_art__kws_network/ --network-name kws_network --native-float --cache-maintenance --Ocache-opt -O3 --Os --output-info-file c_info.json --generate-stai
+====================================================================================
+
+Memory usage information  (input/output buffers are included in activations)
+------------------------------------------------------------------------------------
+	kwsFlash   [0x70700000 - 0x70710000]:     11.142 kB /     64.000 kB  ( 17.41 % used) -- weights:     11.142 kB ( 17.41 % used)  activations:          0  B (  0.00 % used)
+	kwsRAM     [0x91FC0000 - 0x92000000]:     17.031 kB /    256.000 kB  (  6.65 % used) -- weights:          0  B (  0.00 % used)  activations:     17.031 kB (  6.65 % used)
+---
+Total:                                            28.173 kB                                  -- weights:     11.142 kB                  activations:     17.031 kB                   
+====================================================================================
+
+
+Used memory ranges
+------------------------------------------------------------------------------------
+	kwsFlash   [0x70700000 - 0x70710000]: 0x70700000-0x70702CA0
+	kwsRAM     [0x91FC0000 - 0x92000000]: 0x91FC0000-0x91FC4420
+====================================================================================
+
+Epochs details
+------------------------------------------------------------------------------------
+Total number of epochs                               12
+>> pure software (SW) epochs                          1
+>> hybrid epochs (using both software and hardware)   0
+>> pure hardware (HW or EC) epochs                   11  (implemented in 0 epoch controller blobs/meta epochs)
+---
++----------+------+---------+
+| epoch ID | Type | Details |
++----------+------+---------+
+| epoch_2  |  HW  |         |
+| epoch_3  |  HW  |         |
+| epoch_4  |  HW  |         |
+| epoch_5  |  HW  |         |
+| epoch_6  |  HW  |         |
+| epoch_7  |  HW  |         |
+| epoch_8  |  HW  |         |
+| epoch_9  |  HW  |         |
+| epoch_10 |  HW  |         |
+| epoch_11 |  HW  |         |
+| epoch_12 |  HW  |         |
+| epoch_13 |  SW  | Softmax |
++----------+------+---------+
+==================================================================================== 
+ Requested memory size by section - "stm32n6npu" target
+ ------------------------------- -------- -------- ------ -------- 
+ module                              text   rodata   data      bss 
+ ------------------------------- -------- -------- ------ -------- 
+ kws_network.o                      1,820   13,481      0        0 
+ NetworkRuntime1201_CM55_GCC.a     10,952        0      0        0 
+ stai_kws_network.o                     0        0      0        0 
+ lib (toolchain)*                       0        0      0        0 
+ ll atonn runtime                   7,106    7,511      0       29 
+ ------------------------------- -------- -------- ------ -------- 
+ RT total**                        19,878   20,992      0       29 
+ ------------------------------- -------- -------- ------ -------- 
+ weights                                0   11,409      0        0 
+ activations                            0        0      0   17,440 
+ io                                     0        0      0        0 
+ ------------------------------- -------- -------- ------ -------- 
+ TOTAL                             19,878   32,401      0   17,469 
+ ------------------------------- -------- -------- ------ -------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32n6npu" target
+  --------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)      % 
+  --------------------------------------------------
+  RT total         40,870   78.2%         29   0.2% 
+  --------------------------------------------------
+  TOTAL            52,279             17,469        
+  --------------------------------------------------
+  *  rt/total
+

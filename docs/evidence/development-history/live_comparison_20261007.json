@@ -1,0 +1,138 @@
+{
+  "model_sha256": "ffdec67ca044a3b8b94e8e670ee0a1f13225d00569827fdc6e20d9a1fa1bbd40",
+  "tables_sha256": "72fe3e5f73fa012d763d53df4c8cf7ec99a4c8a75534c8d2c4b7d8068861475d",
+  "records": [
+    {
+      "label": "silence",
+      "time_ms": 2772,
+      "peak": 1748,
+      "n6": "phone",
+      "pc_input": "phone",
+      "pc_pcm": "phone",
+      "input_diff": 0,
+      "input_max": 0,
+      "output_max": 0,
+      "n6_q": [
+        -125,
+        -126,
+        95,
+        -113,
+        -115
+      ],
+      "pc_q": [
+        -125,
+        -126,
+        95,
+        -113,
+        -115
+      ],
+      "pc_pcm_q": [
+        -125,
+        -126,
+        95,
+        -113,
+        -115
+      ],
+      "wav": "<PROJECT_ROOT>/kws/live_comparison/20261007_201024_942174/silence.wav"
+    },
+    {
+      "label": "cup",
+      "time_ms": 1914,
+      "peak": 10508,
+      "n6": "cup",
+      "pc_input": "cup",
+      "pc_pcm": "cup",
+      "input_diff": 0,
+      "input_max": 0,
+      "output_max": 0,
+      "n6_q": [
+        126,
+        -128,
+        -127,
+        -127,
+        -128
+      ],
+      "pc_q": [
+        126,
+        -128,
+        -127,
+        -127,
+        -128
+      ],
+      "pc_pcm_q": [
+        126,
+        -128,
+        -127,
+        -127,
+        -128
+      ],
+      "wav": "<PROJECT_ROOT>/kws/live_comparison/20261007_201024_942174/cup.wav"
+    },
+    {
+      "label": "bottle",
+      "time_ms": 1913,
+      "peak": 9118,
+      "n6": "bottle",
+      "pc_input": "bottle",
+      "pc_pcm": "bottle",
+      "input_diff": 0,
+      "input_max": 0,
+      "output_max": 3,
+      "n6_q": [
+        -49,
+        -23,
+        -126,
+        -61,
+        -125
+      ],
+      "pc_q": [
+        -52,
+        -21,
+        -126,
+        -60,
+        -125
+      ],
+      "pc_pcm_q": [
+        -52,
+        -21,
+        -126,
+        -60,
+        -125
+      ],
+      "wav": "<PROJECT_ROOT>/kws/live_comparison/20261007_201024_942174/bottle.wav"
+    },
+    {
+      "label": "phone",
+      "time_ms": 1912,
+      "peak": 8854,
+      "n6": "phone",
+      "pc_input": "phone",
+      "pc_pcm": "phone",
+      "input_diff": 0,
+      "input_max": 0,
+      "output_max": 1,
+      "n6_q": [
+        -127,
+        -128,
+        123,
+        -124,
+        -127
+      ],
+      "pc_q": [
+        -127,
+        -128,
+        123,
+        -125,
+        -127
+      ],
+      "pc_pcm_q": [
+        -127,
+        -128,
+        123,
+        -125,
+        -127
+      ],
+      "wav": "<PROJECT_ROOT>/kws/live_comparison/20261007_201024_942174/phone.wav"
+    }
+  ]
+}

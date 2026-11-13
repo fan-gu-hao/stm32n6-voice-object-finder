@@ -1,0 +1,16 @@
+[
+  "<ST_EDGE_AI_ROOT>/Utilities/linux/stedgeai",
+  "generate",
+  "--model",
+  "kws_int8.tflite",
+  "--target",
+  "stm32n6",
+  "--name",
+  "kws_network",
+  "--st-neural-art",
+  "kws@kws_neuralart.json",
+  "--input-data-type",
+  "int8",
+  "--output-data-type",
+  "int8"
+]

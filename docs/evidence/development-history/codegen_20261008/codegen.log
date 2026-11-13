@@ -1,0 +1,390 @@
+ST Edge AI Core v4.0.1-20581 7ed50de05
+
+PASS:   0%|          | 0/104 [00:00<?, ?it/s]
+PASS:  31%|███       | 32/104 [00:00<00:00, 315.13it/s]
+PASS:  64%|██████▍   | 67/104 [00:00<00:00, 329.18it/s]
+                                                       
+ >>>> EXECUTING NEURAL ART COMPILER
+
+PASS:  64%|██████▍   | 67/104 [00:00<00:00, 329.18it/s]
+                                                       
+   <ST_EDGE_AI_ROOT>/Utilities/linux/atonn -i "<PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1.onnx" --json-quant-file "<PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1_Q.json" -g "kws_network.c" --load-mdesc "<ST_EDGE_AI_ROOT>/Utilities/configs/stm32n6.mdesc" --load-mpool "<PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws.mpool" --load-cdesc <ST_EDGE_AI_ROOT>/Utilities/configs/cortex-m55.cdesc --save-mpool-file "<PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws/neural_art__kws_network/kws.mpool" --out-dir-prefix "<PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws/neural_art__kws_network/" --network-name "kws_network" --native-float --cache-maintenance --Ocache-opt -O3 --Os --output-info-file "c_info.json" --generate-stai
+
+PASS:  64%|██████▍   | 67/104 [00:00<00:00, 329.18it/s]
+                                                       
+ <<<< DONE EXECUTING NEURAL ART COMPILER
+
+PASS:  64%|██████▍   | 67/104 [00:00<00:00, 329.18it/s]
+                                                       
+ 
+ Exec/report summary (generate)
+ -------------------------------------------------------------------------------------------------------------------------------------------------------
+ model file         :   <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws_int8.tflite   
+ type               :   tflite                                                                                                                          
+ c_name             :   kws_network                                                                                                                     
+ compression        :   lossless                                                                                                                        
+ options            :   allocate-inputs, allocate-outputs, use-lite-runtime, use-st-ai                                                                  
+ optimization       :   balanced                                                                                                                        
+ target/series      :   stm32n6npu                                                                                                                      
+ workspace dir      :   <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws          
+ output dir         :   <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output      
+ model_fmt          :   ss/sa per channel                                                                                                               
+ model_name         :   kws_int8                                                                                                                        
+ model_hash         :   0x437e1027528df7df7d4f1e47f75d04bc                                                                                              
+ params #           :   6,181 items (6.89 KiB)                                                                                                          
+ -------------------------------------------------------------------------------------------------------------------------------------------------------
+ input 1/1          :   'Input_0_out_0', int8(1x49x13x1), 637 Bytes, QLinear(0.044505488,7,int8), activations                                           
+ output 1/1         :   'Quantize_49_out_0', int8(1x5), 5 Bytes, QLinear(0.003906250,-128,int8), activations                                            
+ macc               :   1,657,778                                                                                                                       
+ weights (ro)       :   11,409 B (11.14 KiB) (1 segment) / -13,315(-53.9%) vs float model                                                               
+ activations (rw)   :   17,440 B (17.03 KiB) (1 segment) *                                                                                              
+ ram (total)        :   17,440 B (17.03 KiB) = 17,440 + 0 + 0                                                                                           
+ -------------------------------------------------------------------------------------------------------------------------------------------------------
+ (*) 'input'/'output' buffers are allocated in the activations buffer
+
+PASS:  64%|██████▍   | 67/104 [00:00<00:00, 329.18it/s]
+PASS:  96%|█████████▌| 100/104 [00:00<00:00, 192.79it/s]
+                                                        
+
+Computing AI RT data/code size (target=stm32n6npu)..
+
+PASS:  96%|█████████▌| 100/104 [00:00<00:00, 192.79it/s]
+                                                        
+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Compilation details
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+   ---------------------------------------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Compiler version: 1.1.3-275
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Compiler arguments:  -i <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1.onnx --json-quant-file <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1_Q.json -g kws_network.c --load-mdesc <ST_EDGE_AI_ROOT>/Utilities/configs/stm32n6.mdesc --load-mpool <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws.mpool --load-cdesc <ST_EDGE_AI_ROOT>/Utilities/configs/cortex-m55.cdesc --save-mpool-file <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws/neural_art__kws_network/kws.mpool --out-dir-prefix <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_ws/neural_art__kws_network/ --network-name kws_network --native-float --cache-maintenance --Ocache-opt -O3 --Os --output-info-file c_info.json --generate-stai
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+====================================================================================
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Memory usage information  (input/output buffers are included in activations)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+   ---------------------------------------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+	kwsFlash   [0x70700000 - 0x70710000]:     11.142 kB /     64.000 kB  ( 17.41 % used) -- weights:     11.142 kB ( 17.41 % used)  activations:          0  B (  0.00 % used)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+	kwsRAM     [0x91FC0000 - 0x92000000]:     17.031 kB /    256.000 kB  (  6.65 % used) -- weights:          0  B (  0.00 % used)  activations:     17.031 kB (  6.65 % used)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Total:                                            28.173 kB                                  -- weights:     11.142 kB                  activations:     17.031 kB
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+====================================================================================
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Used memory ranges
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+   ---------------------------------------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+	kwsFlash   [0x70700000 - 0x70710000]: 0x70700000-0x70702CA0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+	kwsRAM     [0x91FC0000 - 0x92000000]: 0x91FC0000-0x91FC4420
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+====================================================================================
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Epochs details
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+   ---------------------------------------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+Total number of epochs                               12
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+>> pure software (SW) epochs                          1
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+>> hybrid epochs (using both software and hardware)   0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+>> pure hardware (HW or EC) epochs                   11  (implemented in 0 epoch controller blobs/meta epochs)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
++----------+------+---------+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch ID | Type | Details |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
++----------+------+---------+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_2  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_3  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_4  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_5  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_6  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_7  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_8  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_9  |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_10 |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_11 |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_12 |  HW  |         |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+| epoch_13 |  SW  | Softmax |
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
++----------+------+---------+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+====================================================================================
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ Requested memory size by section - "stm32n6npu" target
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ------------------------------- -------- -------- ------ --------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ module                              text   rodata   data      bss
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ------------------------------- -------- -------- ------ --------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ kws_network.o                      1,820   13,481      0        0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ NetworkRuntime1201_CM55_GCC.a     10,952        0      0        0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ stai_kws_network.o                     0        0      0        0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ lib (toolchain)*                       0        0      0        0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ll atonn runtime                   7,106    7,511      0       29
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ------------------------------- -------- -------- ------ --------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ RT total**                        19,878   20,992      0       29
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ------------------------------- -------- -------- ------ --------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ weights                                0   11,409      0        0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ activations                            0        0      0   17,440
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ io                                     0        0      0        0
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ------------------------------- -------- -------- ------ --------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ TOTAL                             19,878   32,401      0   17,469
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ------------------------------- -------- -------- ------ --------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ *  toolchain objects (libm/libgcc*)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ** RT AI runtime objects (kernels+infrastructure)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  Summary - "stm32n6npu" target
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  --------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+               FLASH (ro)      %*   RAM (rw)      %
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  --------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  RT total         40,870   78.2%         29   0.2%
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  --------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  TOTAL            52,279             17,469
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  --------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+  *  rt/total
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ Generated files (8)
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1.onnx
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1_Q.json
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network.c
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/stai_kws_network.h
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_atonbuf.xSPI2.raw
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/stai_kws_network.c
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_c_info.json
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+ <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network.h
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+
+Creating txt report file <PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_generate_report.txt
+
+PASS:  96%|█████████▌| 100/104 [00:01<00:00, 192.79it/s]
+                                                        
+elapsed time (GENERATE): 10.773s

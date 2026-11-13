@@ -1,0 +1,15 @@
+{
+  "verified_at": "2026-10-08T02:57:22.516265+08:00",
+  "images": [
+    {
+      "file": "kws_weights.bin",
+      "address": "0x70700000",
+      "sha256": "3b3f906fbe3a4ff9cc7ae6ce7a0f4ae8d9d4ec7b606c30bae7d8d32d44995033"
+    },
+    {
+      "file": "finder_signed.bin",
+      "address": "0x70100000",
+      "sha256": "16fb2319715cd148d31f0cb47a84b5a7f9949162d3585bcb3caee8671ff1a2f1"
+    }
+  ]
+}

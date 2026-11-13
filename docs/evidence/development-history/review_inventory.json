@@ -1,0 +1,489 @@
+{
+  "review_date": "2026-11-13",
+  "report_sha256": "9f295a730d8e19abd33546d796a38ba154220153327a444c7989512f3be0c2dd",
+  "scope": "本次上傳報告的 67 個檔案項目；不是使用者整台電腦或全部歷史對話的完整清單",
+  "upstream_microphone_commit": "1fc803683e03b0ce78e64523441d31acd0db2829",
+  "discovery_notes": [
+    "未找到目錄：course13_yolov8_coco80_n6/scripts",
+    "未找到目錄：course13_yolov8_coco80_n6/tools",
+    "未找到目錄：course13_yolov8_coco80_n6/configs",
+    "未找到目錄：course13_yolov8_coco80_n6/patches",
+    "未找到目錄：course13_yolov8_coco80_n6/docs",
+    "未找到目錄：course15_n6_mic_test/scripts",
+    "未找到目錄：course15_n6_mic_test/tools",
+    "未找到目錄：course15_n6_mic_test/configs",
+    "未找到目錄：course15_n6_mic_test/patches",
+    "未找到目錄：course15_n6_mic_test/docs"
+  ],
+  "files": [
+    {
+      "source": "course14_yolov8n_seg_n6/patches/uart_it_v1_20260914_054405_207092.patch",
+      "source_sha256": "353a52fab1bf5a341860b318e085ffd328017b62fdffae1b579659f348c24bf1",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/patches/uart_it_v1_20260914_054405_207092.patch"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/patches/uart_it_v1_20260914_055728_067784.patch",
+      "source_sha256": "7b012f2ce672526d67ae9231dc4ca28b64d2fcb6b432aa89dfdc54ec6f45099d",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/patches/uart_it_v1_20260914_055728_067784.patch"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/build_20260914_055733_234190.json",
+      "source_sha256": "8480b13ab34d6e42307ac8444be6a577f5c8f8b1020fbc7f08603a5f2021db6c",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/build_20260914_055733_234190.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/deploy.log",
+      "source_sha256": "062e6eb3f371cfad32440d223bf750604a09872f9e0345157cdec019b4c96ae2",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/deploy.log"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/deploy_uart_it_v1.py",
+      "source_sha256": "430ec4c4dfe84553515bba1a418aa85795aa828b14f4e9e3c4c389af704380bd",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/deploy_uart_it_v1.py"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/manifest.json",
+      "source_sha256": "94141b53b49b46032b8a497c8646bbfa932ace6adef5944ad2d0c7ea99c18565",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/manifest.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/sections.txt",
+      "source_sha256": "d1270deed1794a22c8fae472eb99da893c9d88cfe44d9978b5b072ecc9ea2e2d",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/sections.txt"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/install_20260914_054405_207092/manifest.json",
+      "source_sha256": "aafbbc6c45855bac8b69967fbd31afa63f5da8791ba4a31d3130a72396de8e83",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/install_20260914_054405_207092/manifest.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/install_20260914_055728_067784/before/scripts/install_uart_it_v1.py",
+      "source_sha256": "00d5731c56ae11678facc41c5203c24b039996d697d8899d7f24ac9388924e46",
+      "status": "本次補入",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/install_uart_it_v1_initial.py"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/install_20260914_055728_067784/manifest.json",
+      "source_sha256": "7285d144efb857ae9cb64a371175a72fb5f89e0ee1846fcce6132c70332296cf",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/install_20260914_055728_067784/manifest.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/scripts/install_uart_it_v1.py",
+      "source_sha256": "b956e48e165b58406ff301ebd6099c2ec1095ad4441770b53d4123c4f9ae8b97",
+      "status": "本次補入",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/install_uart_it_v1_hal_fix1.py"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/stm32ai-modelzoo-services/application_code/instance_segmentation/STM32N6/Application/STM32N6570-DK/Inc/project_uart_it.h",
+      "source_sha256": "b93d1386b841bb4f36b2b94f3913db125d633cf1071224465644e1564f49ce5d",
+      "status": "本次補入",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/Inc/project_uart_it.h"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/stm32ai-modelzoo-services/application_code/instance_segmentation/STM32N6/Application/STM32N6570-DK/Src/main.c",
+      "source_sha256": "e579c62d8c64f1582c7b131b19ed5fcb613c7deb6bf9b208e7753b68adf87164",
+      "status": "本次補入",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/Src/main.c"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/stm32ai-modelzoo-services/application_code/instance_segmentation/STM32N6/Application/STM32N6570-DK/Src/project_uart_it.c",
+      "source_sha256": "9078af44a22b7b490c88f6867e9839ed71e9442f64b1e387f82e5faa0573ab1c",
+      "status": "本次補入",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/Src/project_uart_it.c"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/flash.log",
+      "source_sha256": "1106355d2d7f13cd8b62b540e83b2feeaa63156c61ed7f0bd11c8dd9e86f9efe",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/flash.log"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/install_manifest_0.json",
+      "source_sha256": "aafbbc6c45855bac8b69967fbd31afa63f5da8791ba4a31d3130a72396de8e83",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/install_manifest_0.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/install_manifest_1.json",
+      "source_sha256": "7285d144efb857ae9cb64a371175a72fb5f89e0ee1846fcce6132c70332296cf",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/install_manifest_1.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/manifest.json",
+      "source_sha256": "261044f59df4ca4c521a3aeaac5526c2e35b52d4d7e7b932dd523950c3c5ea91",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/manifest.json"
+    },
+    {
+      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/restore_before_uart_it.py",
+      "source_sha256": "e70a5daf20ce28f0d1a11cfd05df51055159fbe1d13776334953d7813d874c0f",
+      "status": "已公開，與本次原檔逐位元組一致",
+      "repository": "stm32n6-instance-segmentation",
+      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/restore_before_uart_it.py"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/LICENSE.md",
+      "source_sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/LICENSE.md"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/EWARM/startup_stm32n657xx_fsbl.s",
+      "source_sha256": "cf8b377078b1e278ced9f08929decebd2e2870db2af49a5b19b3fe848a9b6abb",
+      "status": "SDK 原檔以固定上游版本索引；本庫保存 CubeIDE 所需來源",
+      "repository": "STMicroelectronics/STM32CubeN6",
+      "public_path": "Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/EWARM/startup_stm32n657xx_fsbl.s"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/main.h",
+      "source_sha256": "c960d7366c7709f717ce06ebd4b0443bdd876805f69fdcb627e440690c7d204d",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Inc/main.h"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6570_discovery_conf.h",
+      "source_sha256": "37fbfafebe5e5df0fc2ba04a91ff581f0e98ed134d6f16251d23d1705caf97fd",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Inc/stm32n6570_discovery_conf.h"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_hal_conf.h",
+      "source_sha256": "20a15eed507e5e56fbe37d04777b2a8800194eba4efc38376544444f97289ba8",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Inc/stm32n6xx_hal_conf.h"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Inc/stm32n6xx_it.h",
+      "source_sha256": "32212f25068331bd7d409eee75d5b52d732ac438ad9c65ba170c4301a18087d8",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Inc/stm32n6xx_it.h"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/main.c",
+      "source_sha256": "ffaa5b0b499ae320ae1a1856e3fd43f427ea7ac91ebfd446627a641dc8c9743d",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Src/main.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/stm32n6xx_hal_msp.c",
+      "source_sha256": "4124bc4ae208d8345c00747a30103a98fdf5cc73e35f7f3a665f8ed3be2d0176",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Src/stm32n6xx_hal_msp.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/stm32n6xx_it.c",
+      "source_sha256": "cd108da3dd795e23e1eabd45741cf7a485452bb13f85645bd2de2934961cd3c8",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Src/stm32n6xx_it.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/FSBL/Src/system_stm32n6xx_fsbl.c",
+      "source_sha256": "f4c8d4f53b534f7352dee0fa4642b5bc23e859263f9d38cdb58495c629492975",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/FSBL/Src/system_stm32n6xx_fsbl.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/MDF_AudioRecorder.ioc",
+      "source_sha256": "570b2e5320f2d54aa4669bc2002e75dfad5c250f8375d8fbdd2575e4ac1e3967",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/MDF_AudioRecorder.ioc"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/MDK-ARM/startup_stm32n657xx_fsbl.c",
+      "source_sha256": "822619ba119b420613e8e37a364e6ee515b8833a14fb63b36c5a51dc35c24960",
+      "status": "SDK 原檔以固定上游版本索引；本庫保存 CubeIDE 所需來源",
+      "repository": "STMicroelectronics/STM32CubeN6",
+      "public_path": "Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/MDK-ARM/startup_stm32n657xx_fsbl.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/README.md",
+      "source_sha256": "6536a99cc7e307cb54a13e78f2a51e8b4460d883b23070be714490fc4a00c07b",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/UPSTREAM_README.md"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/.project",
+      "source_sha256": "b99ada1f28b6719b15222a1a7ca83c3c6e89a29b6fe91382ac1affa908c1dd7e",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/.project"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.cproject",
+      "source_sha256": "835de9725563e6b8faf13321a7e0bdfee12392ed3a638c8556e88770b7cca4d9",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/.cproject"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/.project",
+      "source_sha256": "7682f21acca736737713bc24431c643d8423eb00adf98cca601e53a8441d0c1d",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/.project"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Application/Startup/startup_stm32n657x0hxq_fsbl.s",
+      "source_sha256": "01ea33a933ebe4a47d8693eb767833ff1235c87d5f2d90b6c1ef120327fc750f",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/Startup/startup_stm32n657x0hxq_fsbl.s"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Application/User/syscalls.c",
+      "source_sha256": "f772e8cdb32eb5216a3be61596216fcfee47e93202e644bea879f745c4db77b1",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/User/syscalls.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/Application/User/sysmem.c",
+      "source_sha256": "ca25d4ef17f7fb7b281008f3373bd280b662e60b5f0738e484ebe0192c3d1e8d",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/User/sysmem.c"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/STM32CubeIDE/FSBL/STM32N657X0HXQ_AXISRAM2_fsbl.ld",
+      "source_sha256": "4cd8c52485d5b1c84ac0306d2421123ed8b767d2df5b138bb128e31484c6524b",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_firmware/STM32CubeIDE/FSBL/STM32N657X0HXQ_AXISRAM2_fsbl.ld"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/tools/n6_mic_start_and_record.sh",
+      "source_sha256": "554b3270a2023241d8260a90de2753ceaa1235a13a8edaf396cf84df7fa75a3a",
+      "status": "已公開；主機腳本的路徑與裝置設定沿用公開整理版",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_tools/n6_mic_start_and_record.sh"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/tools/n6_receive_wav.py",
+      "source_sha256": "f5f3bfff95a66c00924083ccd6e2f18011a21012f91f6b49a8f39e635b26b5b4",
+      "status": "已公開；主機腳本的路徑與裝置設定沿用公開整理版",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/recording_tools/n6_receive_wav.py"
+    },
+    {
+      "source": "course15_n6_mic_test/STM32CubeN6/README.md",
+      "source_sha256": "9abcc1600716cf66c435401fa75e0375067ef22e46f02a028c3f35d3b2f4cbbb",
+      "status": "SDK 原檔以固定上游版本索引；本庫保存 CubeIDE 所需來源",
+      "repository": "STMicroelectronics/STM32CubeN6",
+      "public_path": "README.md"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/collect_n6.py",
+      "source_sha256": "e641c58fad6595cf1fe838a72e8c63fba694441195dc2eba8ec86f5a6f86e9dd",
+      "status": "已公開；主機腳本的路徑與裝置設定沿用公開整理版",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/collect_n6.py"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/comparison/20261007_192902_246036/reference.json",
+      "source_sha256": "8fb9ecf864dd828cc0f0adb631da8aa59641eb258ac1c6bd0f5bb140be1023e6",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/fixed_reference_20261007.json"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/live_comparison/20261007_201024_942174/result.json",
+      "source_sha256": "e8b92b6d25bf367c7e373f8eee13df7da905a9e7d1a18a31f57d274700c721ba",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/live_comparison_20261007.json"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/live_comparison/20261007_201024_942174/serial.log",
+      "source_sha256": "3bcb910db313e423a2f0b4fe0fb3e215938683215f8eee0816faa675216051ee",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/live_serial_events_20261007.log"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/live_datasets/20261008_005213_207370/manifest.json",
+      "source_sha256": "fd1480f15d60cb34013cec82e3389c89bb48c7f2c026d76ddc195ae27f4cafb2",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/live_dataset_manifest_20261008.json"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/prepare_dataset.py",
+      "source_sha256": "26d281b99fb5485beed48013e919c375abf9aa20ddcf30a25bde74c4df983785",
+      "status": "已公開；主機腳本的路徑與裝置設定沿用公開整理版",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/prepare_dataset.py"
+    },
+    {
+      "source": "course17_voice_object_finder/kws/runs/kws_20261005_203338_212380/train_kws.py",
+      "source_sha256": "8d68ffccd2566085664e33c23228b74018848e62d1c1576e8f1d761240f8c980",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/training_history/20261005_baseline/train_kws.py"
+    },
+    {
+      "source": "course17_voice_object_finder/logs/finder_vision_20261004_200926.log",
+      "source_sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/finder_vision_20261004.log"
+    },
+    {
+      "source": "course17_voice_object_finder/logs/voice_groupcv_20261008_025732_533540.log",
+      "source_sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/voice_groupcv_20261008.log"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/config.json",
+      "source_sha256": "5ea97e4dbc93e0c628da81ac95301f3387eb48fa1db6c28f4221e7531a6087d9",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/config.json"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws_neuralart.json",
+      "source_sha256": "c1079e05e26904fae2f3c3c507d8d578013b45a69808c0d9015908fbb699aae3",
+      "status": "已公開，Neural-ART 配置與原檔逐位元組一致",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "kws/deployment/kws_neuralart.json"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/LICENSE.txt",
+      "source_sha256": "9942019b4bb0d3eaceceb7110148015bc5ea051259d57b48b2c71f9f8e06182b",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/STEdgeAI_LICENSE.txt"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_int8_OE_3_3_1_Q.json",
+      "source_sha256": "243d2a7fe992bdab97f773aa46c71490670cb9b8abed9f15b507ce161285ddff",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/kws_int8_OE_3_3_1_Q.json"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_c_info.json",
+      "source_sha256": "3c6bf27826f3e781ad838ca1843dc5b9ed8eaf48d2697abc516f5af25b8a1226",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/kws_network_c_info.json"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen/st_ai_output/kws_network_generate_report.txt",
+      "source_sha256": "2aea121c0691f23214f1386a1730658031e3fdc23831f22e8784905b100bcefe",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/kws_network_generate_report.txt"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/codegen.log",
+      "source_sha256": "5f16ceeeaa18a65a047c9c8e238ae4d71e40f7e4b1f76301d206915d1f1417bd",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/codegen.log"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/command.json",
+      "source_sha256": "a78ebd0228f93f1429039b27010685ad2698191dea3f9c6886017e9f97aaf8f9",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/command.json"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/model_sha256.txt",
+      "source_sha256": "f9c4494fd460beafaf383f421135b3b0a96a3d830f4136df91de3580499d6a93",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/model_sha256.txt"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_codegen_20261008_022527_741465/source_model.txt",
+      "source_sha256": "3fac1792a76877ead04fc98c7ffc35e74a1c0a8f3e644d8cd6d81c80a02ecb4a",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/codegen_20261008/source_model.txt"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/build.log",
+      "source_sha256": "a27e6336cb17968807639b48dfd7ab5c670776761e5748e9140314b73a0b7348",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/deployment_20261008/build.log"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_finder_signed.bin.log",
+      "source_sha256": "06f74c060fa52717e8a714469facd3f8a109ddc2c556a4d0951220ddbc53862c",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_finder_signed.bin.log"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_kws_weights.bin.log",
+      "source_sha256": "9ab51b19e9f6458c67c33c6a4c5ced0dcd4536b491f2824843e43949f8f2c1a9",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_kws_weights.bin.log"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_manifest.json",
+      "source_sha256": "ae56a5913c0c472d14cb5f6fc642b23f3c95fafc9807d6580e0e3807a92f1dc4",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_manifest.json"
+    },
+    {
+      "source": "course17_voice_object_finder/output/finder_groupcv_deploy_20261008_025657_154175/flash_verified.json",
+      "source_sha256": "8f215db1dc43e5051f1507d3b1dd6f49fd7442d80a599d9bbe7c0e3e6c2e97fb",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "docs/evidence/development-history/deployment_20261008/flash_verified.json"
+    },
+    {
+      "source": "course17_voice_object_finder/sync_cubeide_sources.py",
+      "source_sha256": "fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c",
+      "status": "本次補入",
+      "repository": "stm32n6-voice-object-finder",
+      "public_path": "tools/ide/sync_cubeide_sources.py"
+    }
+  ]
+}

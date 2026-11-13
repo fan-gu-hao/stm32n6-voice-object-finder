@@ -1,0 +1,20 @@
+{
+  "candidate": "<PROJECT_ROOT>/kws/runs/kws_groupcv_20261008_015013_527709/final",
+  "codegen": "<PROJECT_ROOT>/output/finder_groupcv_codegen_20261008_022527_741465",
+  "backup": "<PROJECT_ROOT>/backups/groupcv_install_20261008_025657_154175",
+  "previous": "<PROJECT_ROOT>/output/finder_voice_trace_20261008_003003_662314",
+  "programmer": "/opt/st/stm32cubeide_2.2.0/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.linux64_2.2.500.202603051304/tools/bin/STM32_Programmer_CLI",
+  "loader": "/opt/st/stm32cubeide_2.2.0/plugins/com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.linux64_2.2.500.202603051304/tools/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
+  "images": [
+    {
+      "file": "kws_weights.bin",
+      "address": "0x70700000",
+      "sha256": "3b3f906fbe3a4ff9cc7ae6ce7a0f4ae8d9d4ec7b606c30bae7d8d32d44995033"
+    },
+    {
+      "file": "finder_signed.bin",
+      "address": "0x70100000",
+      "sha256": "16fb2319715cd148d31f0cb47a84b5a7f9949162d3585bcb3caee8671ff1a2f1"
+    }
+  ]
+}

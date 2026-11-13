@@ -1,0 +1,776 @@
+{
+  "complete": true,
+  "build": "<PROJECT_ROOT>/output/finder_collect_20261008_005134_825056",
+  "plan": [
+    {
+      "index": 0,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 1,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 2,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 3,
+      "split": "train",
+      "label": "silence",
+      "say": "silence"
+    },
+    {
+      "index": 4,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 5,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 6,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 7,
+      "split": "train",
+      "label": "unknown",
+      "say": "hello"
+    },
+    {
+      "index": 8,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 9,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 10,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 11,
+      "split": "train",
+      "label": "silence",
+      "say": "silence"
+    },
+    {
+      "index": 12,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 13,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 14,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 15,
+      "split": "train",
+      "label": "unknown",
+      "say": "music"
+    },
+    {
+      "index": 16,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 17,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 18,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 19,
+      "split": "train",
+      "label": "silence",
+      "say": "silence"
+    },
+    {
+      "index": 20,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 21,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 22,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 23,
+      "split": "train",
+      "label": "unknown",
+      "say": "window"
+    },
+    {
+      "index": 24,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 25,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 26,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 27,
+      "split": "train",
+      "label": "silence",
+      "say": "silence"
+    },
+    {
+      "index": 28,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 29,
+      "split": "train",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 30,
+      "split": "train",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 31,
+      "split": "train",
+      "label": "unknown",
+      "say": "seven"
+    },
+    {
+      "index": 32,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 33,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 34,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 35,
+      "split": "holdout",
+      "label": "silence",
+      "say": "silence"
+    },
+    {
+      "index": 36,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 37,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 38,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 39,
+      "split": "holdout",
+      "label": "unknown",
+      "say": "hello"
+    },
+    {
+      "index": 40,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 41,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 42,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 43,
+      "split": "holdout",
+      "label": "silence",
+      "say": "silence"
+    },
+    {
+      "index": 44,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup"
+    },
+    {
+      "index": 45,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle"
+    },
+    {
+      "index": 46,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone"
+    },
+    {
+      "index": 47,
+      "split": "holdout",
+      "label": "unknown",
+      "say": "window"
+    }
+  ],
+  "clips": [
+    {
+      "index": 0,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_01.wav",
+      "peak": 17004,
+      "time_ms": 2547,
+      "pcm_sha256": "81d0f5f8e26f8869ebba8fd7b7f2fbdc23d585607b2dacd6a39d8db06e609192"
+    },
+    {
+      "index": 1,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_02.wav",
+      "peak": 20090,
+      "time_ms": 2541,
+      "pcm_sha256": "dbff6aaa0f0584311b7e1cc38a7227e837c0be9120c951c4dcfca42671bd1101"
+    },
+    {
+      "index": 2,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_03.wav",
+      "peak": 13934,
+      "time_ms": 4407,
+      "pcm_sha256": "a790ebd3a3bcbb67ac706a731ffa4e59dce51d3e24f117d750aef6bb0b3c63b4"
+    },
+    {
+      "index": 3,
+      "split": "train",
+      "label": "silence",
+      "say": "silence",
+      "file": "train/silence/take_04.wav",
+      "peak": 646,
+      "time_ms": 1254,
+      "pcm_sha256": "134f679623dac2d7375ef62ce329611223cd86083b2e85e51f5a3ace5993c92e"
+    },
+    {
+      "index": 4,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_05.wav",
+      "peak": 15882,
+      "time_ms": 2512,
+      "pcm_sha256": "0c513d806398acd8e242af9ea4d9a2cb3ebd23c07664b6ec758583d3587c9e4c"
+    },
+    {
+      "index": 5,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_06.wav",
+      "peak": 9169,
+      "time_ms": 2098,
+      "pcm_sha256": "eae55f5a89018005b4e78369f5fd9f7fa639e77301601f0c0ef0bba04ae3e1a6"
+    },
+    {
+      "index": 6,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_07.wav",
+      "peak": 11786,
+      "time_ms": 1919,
+      "pcm_sha256": "428fce2fb99ccdffa6f544779ea11140b1cafa71b89400603c2919a52a57129b"
+    },
+    {
+      "index": 7,
+      "split": "train",
+      "label": "unknown",
+      "say": "hello",
+      "file": "train/unknown/take_08.wav",
+      "peak": 16999,
+      "time_ms": 2098,
+      "pcm_sha256": "b0acc5d7b0a73370be2f2f19ad91e0af6d4f8b50bd01b4ab8b3cc9796fc97ec7"
+    },
+    {
+      "index": 8,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_09.wav",
+      "peak": 21650,
+      "time_ms": 2536,
+      "pcm_sha256": "c76e8fb65906ad3b5c0f02a8022d3271d1563825435e1b3438adaab7640e2c10"
+    },
+    {
+      "index": 9,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_10.wav",
+      "peak": 20690,
+      "time_ms": 2102,
+      "pcm_sha256": "ea7a6aa5153e7b392f889a13a005236bff092095119d1165f2608423f1a765ad"
+    },
+    {
+      "index": 10,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_11.wav",
+      "peak": 13394,
+      "time_ms": 1682,
+      "pcm_sha256": "679185f84d69a7b6214dacc1a6e4a253e46b0292d0122d28fd88cfd07e23fc24"
+    },
+    {
+      "index": 11,
+      "split": "train",
+      "label": "silence",
+      "say": "silence",
+      "file": "train/silence/take_12.wav",
+      "peak": 1028,
+      "time_ms": 2720,
+      "pcm_sha256": "0d3113994d0d542386f39687db0f4f56c108a578fc1304c5209c66cec32aa44a"
+    },
+    {
+      "index": 12,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_13.wav",
+      "peak": 26662,
+      "time_ms": 2097,
+      "pcm_sha256": "7277fe0e6f56ab359b464e1fde522c6802db5613addd428917aeb94be924d882"
+    },
+    {
+      "index": 13,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_14.wav",
+      "peak": 7684,
+      "time_ms": 2096,
+      "pcm_sha256": "a49875f1791b76d68ade0fe0e5514e92df2f2346ea7a15f08aac9083f067450e"
+    },
+    {
+      "index": 14,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_15.wav",
+      "peak": 17414,
+      "time_ms": 2312,
+      "pcm_sha256": "5a079897191fea3062ff4d091ba3e9c90580ed6fdd95e9469a001c7427d8d46d"
+    },
+    {
+      "index": 15,
+      "split": "train",
+      "label": "unknown",
+      "say": "music",
+      "file": "train/unknown/take_16.wav",
+      "peak": 9872,
+      "time_ms": 2520,
+      "pcm_sha256": "1540cf23ec12f27bad5630ad3c7be17d4e605e5692c5e99c66b4963ad7f4985e"
+    },
+    {
+      "index": 16,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_17.wav",
+      "peak": 10312,
+      "time_ms": 1890,
+      "pcm_sha256": "0ba4898fd829c477385570355629418467af792b2a298bdb15dfaa10ba6e7418"
+    },
+    {
+      "index": 17,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_18.wav",
+      "peak": 13592,
+      "time_ms": 2339,
+      "pcm_sha256": "2c98c1391e6077d49a3a9d89a5701cc0bc1f4a15b1887e4b411aeae41c57f520"
+    },
+    {
+      "index": 18,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_19.wav",
+      "peak": 11023,
+      "time_ms": 2095,
+      "pcm_sha256": "f561233fd9bc7a932cd8937335157f5238e48d2957716f9bd51d8dea7eb90e12"
+    },
+    {
+      "index": 19,
+      "split": "train",
+      "label": "silence",
+      "say": "silence",
+      "file": "train/silence/take_20.wav",
+      "peak": 1821,
+      "time_ms": 2712,
+      "pcm_sha256": "0d03b3556c3251afe89a4c4a0e16810d1bdd15a39328ecc2310c6bc8e5ad2f2e"
+    },
+    {
+      "index": 20,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_21.wav",
+      "peak": 18144,
+      "time_ms": 2518,
+      "pcm_sha256": "13b9d904371ee17d4148c8fde0c1e0e5e6b9762775f89eebb76b74a5ba4b9d05"
+    },
+    {
+      "index": 21,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_22.wav",
+      "peak": 9935,
+      "time_ms": 2310,
+      "pcm_sha256": "2aade190df3b2a7903847e7b63932922ab86a8fc04e5c32f6e67c7cecc66bb7a"
+    },
+    {
+      "index": 22,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_23.wav",
+      "peak": 8944,
+      "time_ms": 1481,
+      "pcm_sha256": "5b1d963291b1d0b07eab6cd35847ce6f17b8898bcac379fb3e824d83d0484289"
+    },
+    {
+      "index": 23,
+      "split": "train",
+      "label": "unknown",
+      "say": "window",
+      "file": "train/unknown/take_24.wav",
+      "peak": 8100,
+      "time_ms": 2114,
+      "pcm_sha256": "11ac477243e831a73ac2713610c017ac9b468b2772d5da2d109d4097d77ddd2e"
+    },
+    {
+      "index": 24,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_25.wav",
+      "peak": 9801,
+      "time_ms": 1473,
+      "pcm_sha256": "9b601bdcc458d6a42973aa18022d05dbde2789c53958559d2fdda5bd833b2a56"
+    },
+    {
+      "index": 25,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_26.wav",
+      "peak": 10783,
+      "time_ms": 1887,
+      "pcm_sha256": "967793eb1e6bdba3dc237e12a1922373b118de0546acc1ccf91c00bee810bcf3"
+    },
+    {
+      "index": 26,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_27.wav",
+      "peak": 17704,
+      "time_ms": 3138,
+      "pcm_sha256": "6c8f3c21a6c9c6ae5f9333faf617e6e676b9dc83e9962cdb7fc56ae02f4ebbb3"
+    },
+    {
+      "index": 27,
+      "split": "train",
+      "label": "silence",
+      "say": "silence",
+      "file": "train/silence/take_28.wav",
+      "peak": 750,
+      "time_ms": 4418,
+      "pcm_sha256": "47e0ce779c0830548598dbea9a92a2cbf187876996fbd3fe8d2a5ada599e60f6"
+    },
+    {
+      "index": 28,
+      "split": "train",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "train/bottle/take_29.wav",
+      "peak": 9065,
+      "time_ms": 1456,
+      "pcm_sha256": "a3dafa3de1c84cb211aa83f432be2ec9a80c4b1df47ffff6062d978c3dc82dcf"
+    },
+    {
+      "index": 29,
+      "split": "train",
+      "label": "phone",
+      "say": "phone",
+      "file": "train/phone/take_30.wav",
+      "peak": 12391,
+      "time_ms": 1673,
+      "pcm_sha256": "5d612cd5ce626ac4d230ea24d4a1adb329baa22f6b8a60303d63b974c3a62765"
+    },
+    {
+      "index": 30,
+      "split": "train",
+      "label": "cup",
+      "say": "cup",
+      "file": "train/cup/take_31.wav",
+      "peak": 10757,
+      "time_ms": 2098,
+      "pcm_sha256": "9e34b36a05243b33ad94c74be51e1b8a6f005183b73b0eca1e303f7a024dfea2"
+    },
+    {
+      "index": 31,
+      "split": "train",
+      "label": "unknown",
+      "say": "seven",
+      "file": "train/unknown/take_32.wav",
+      "peak": 7904,
+      "time_ms": 2938,
+      "pcm_sha256": "a9c96b534c15235482c545f50deea2b6cb45670816cc97df10acf689207d156a"
+    },
+    {
+      "index": 32,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup",
+      "file": "holdout/cup/take_33.wav",
+      "peak": 6223,
+      "time_ms": 1465,
+      "pcm_sha256": "f521775ab04e1f8c9aed474df835ecd6b102c07b1e89b62dbba648723d74d738"
+    },
+    {
+      "index": 33,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "holdout/bottle/take_34.wav",
+      "peak": 12525,
+      "time_ms": 1681,
+      "pcm_sha256": "e538e44faac7e8da755c73521aeeaa326416b6c2b6af18cb8f5473738a7ce18f"
+    },
+    {
+      "index": 34,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone",
+      "file": "holdout/phone/take_35.wav",
+      "peak": 10906,
+      "time_ms": 1475,
+      "pcm_sha256": "c77c7ad85f6eb09d4013be84da74db48ea9a8f3877bbf4708a35717817caa618"
+    },
+    {
+      "index": 35,
+      "split": "holdout",
+      "label": "silence",
+      "say": "silence",
+      "file": "holdout/silence/take_36.wav",
+      "peak": 2092,
+      "time_ms": 1262,
+      "pcm_sha256": "fc5d65fee64732238d7f27340d8fd7f0ebef8a0d8d705e0344512f9ebac1b3b9"
+    },
+    {
+      "index": 36,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "holdout/bottle/take_37.wav",
+      "peak": 7031,
+      "time_ms": 2103,
+      "pcm_sha256": "a0e6f125e55c220a6545fc23d6810138d66ef5489e08b0f4a341c53c0f296f5d"
+    },
+    {
+      "index": 37,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone",
+      "file": "holdout/phone/take_38.wav",
+      "peak": 15670,
+      "time_ms": 2308,
+      "pcm_sha256": "e639600f2209dba9c8d91246b0a2c2ad5494ef767412fac521ee89de5bbebdf2"
+    },
+    {
+      "index": 38,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup",
+      "file": "holdout/cup/take_39.wav",
+      "peak": 10020,
+      "time_ms": 1261,
+      "pcm_sha256": "1fb13293529abaab9fbb9a23f739656d09bc9404edd635310dcb868f9b403304"
+    },
+    {
+      "index": 39,
+      "split": "holdout",
+      "label": "unknown",
+      "say": "hello",
+      "file": "holdout/unknown/take_40.wav",
+      "peak": 11212,
+      "time_ms": 1885,
+      "pcm_sha256": "ada4ca853cf7dca8b05fc37848ae866fa4087a3208482fc35783b2f257627119"
+    },
+    {
+      "index": 40,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone",
+      "file": "holdout/phone/take_41.wav",
+      "peak": 12591,
+      "time_ms": 2123,
+      "pcm_sha256": "0b01558a7f81cdec4c7c472fc84a781bec55e32796ff9a8ad223adaf0fef28c1"
+    },
+    {
+      "index": 41,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup",
+      "file": "holdout/cup/take_42.wav",
+      "peak": 8076,
+      "time_ms": 1896,
+      "pcm_sha256": "162dc9485abe141b10ab7a52ae430f4627ba3f0a1bd69aff23895935a15da8c4"
+    },
+    {
+      "index": 42,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "holdout/bottle/take_43.wav",
+      "peak": 7414,
+      "time_ms": 1676,
+      "pcm_sha256": "25959e0740efe5216b83b987f6e0e5158eb8bfbe1638fdf6d6c4cc989349bc5e"
+    },
+    {
+      "index": 43,
+      "split": "holdout",
+      "label": "silence",
+      "say": "silence",
+      "file": "holdout/silence/take_44.wav",
+      "peak": 534,
+      "time_ms": 2131,
+      "pcm_sha256": "973484d4515a1f4cddc316df3965b7a3e7d7e97925fe02d922c5b29b86fa70ef"
+    },
+    {
+      "index": 44,
+      "split": "holdout",
+      "label": "cup",
+      "say": "cup",
+      "file": "holdout/cup/take_45.wav",
+      "peak": 8875,
+      "time_ms": 1267,
+      "pcm_sha256": "3113cfb4edeacae37b7b7b9d9e6e3b19c11d9bbaabdf049f5e5e5b2f604c1a7d"
+    },
+    {
+      "index": 45,
+      "split": "holdout",
+      "label": "bottle",
+      "say": "bottle",
+      "file": "holdout/bottle/take_46.wav",
+      "peak": 8541,
+      "time_ms": 1680,
+      "pcm_sha256": "2ab934dc309c7bc37cc9132864475c1cf8dc69fa5d13b423b987566aa53f5303"
+    },
+    {
+      "index": 46,
+      "split": "holdout",
+      "label": "phone",
+      "say": "phone",
+      "file": "holdout/phone/take_47.wav",
+      "peak": 16690,
+      "time_ms": 2529,
+      "pcm_sha256": "6b3948686945838f231558740a3c0341c73ace9a3676d8c9d4d3ab227c9acf2b"
+    },
+    {
+      "index": 47,
+      "split": "holdout",
+      "label": "unknown",
+      "say": "window",
+      "file": "holdout/unknown/take_48.wav",
+      "peak": 7879,
+      "time_ms": 3617,
+      "pcm_sha256": "1ef5ab9e52229c684ca9c59ce63c7a6305fcf26ee5053a0d201cfe0e0b46f427"
+    }
+  ]
+}

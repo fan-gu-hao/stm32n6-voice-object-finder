@@ -1,0 +1,85 @@
+{
+  "basis": "既有日誌的文字解析",
+  "new_hardware_test": false,
+  "vision_20261004": {
+    "source": "course17_voice_object_finder/logs/finder_vision_20261004_200926.log",
+    "source_sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+    "finder_records": [
+      {
+        "target": "PHONE",
+        "found": 0,
+        "count": 14
+      },
+      {
+        "target": "PHONE",
+        "found": 1,
+        "count": 5
+      },
+      {
+        "target": "CUP",
+        "found": 0,
+        "count": 218
+      },
+      {
+        "target": "CUP",
+        "found": 1,
+        "count": 8
+      }
+    ],
+    "accepted_commands": []
+  },
+  "voice_20261008": {
+    "source": "course17_voice_object_finder/logs/voice_groupcv_20261008_025732_533540.log",
+    "source_sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+    "finder_records": [
+      {
+        "target": "CUP",
+        "found": 0,
+        "count": 20
+      },
+      {
+        "target": "BOTTLE",
+        "found": 0,
+        "count": 10
+      },
+      {
+        "target": "PHONE",
+        "found": 0,
+        "count": 23
+      }
+    ],
+    "accepted_commands": [
+      {
+        "line": 21,
+        "stage": "STAGE,2,expected=cup,word=cup",
+        "record": "KWS,class=CUP,score=100,accept=1,peak=13410,clip=0,hits=2,cup=100,bottle=0,phone=0,unknown=0,silence=0,gap=100,t=11887"
+      },
+      {
+        "line": 36,
+        "stage": "STAGE,3,expected=bottle,word=bottle",
+        "record": "KWS,class=BOTTLE,score=100,accept=1,peak=12030,clip=0,hits=2,cup=0,bottle=100,phone=0,unknown=0,silence=0,gap=100,t=17914"
+      },
+      {
+        "line": 49,
+        "stage": "STAGE,4,expected=phone,word=phone",
+        "record": "KWS,class=PHONE,score=100,accept=1,peak=19215,clip=0,hits=2,cup=0,bottle=0,phone=100,unknown=0,silence=0,gap=100,t=23575"
+      },
+      {
+        "line": 67,
+        "stage": "STAGE,5,expected=bottle,word=bottle",
+        "record": "KWS,class=BOTTLE,score=100,accept=1,peak=20078,clip=0,hits=2,cup=0,bottle=100,phone=0,unknown=0,silence=0,gap=100,t=30160"
+      },
+      {
+        "line": 80,
+        "stage": "STAGE,6,expected=cup,word=cup",
+        "record": "KWS,class=CUP,score=100,accept=1,peak=19761,clip=0,hits=2,cup=100,bottle=0,phone=0,unknown=0,silence=0,gap=100,t=35985"
+      },
+      {
+        "line": 94,
+        "stage": "STAGE,7,expected=phone,word=phone",
+        "record": "KWS,class=PHONE,score=100,accept=1,peak=8746,clip=0,hits=2,cup=0,bottle=0,phone=100,unknown=0,silence=0,gap=100,t=41532"
+      }
+    ]
+  },
+  "interpretation": "逐列計數不是場景準確率；視覺日誌保留原本一列末尾截斷的紀錄。"
+}
