@@ -1,0 +1,290 @@
+[
+  {
+    "index": 0,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 1,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 2,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 3,
+    "split": "train",
+    "label": "silence",
+    "say": "silence"
+  },
+  {
+    "index": 4,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 5,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 6,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 7,
+    "split": "train",
+    "label": "unknown",
+    "say": "hello"
+  },
+  {
+    "index": 8,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 9,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 10,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 11,
+    "split": "train",
+    "label": "silence",
+    "say": "silence"
+  },
+  {
+    "index": 12,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 13,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 14,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 15,
+    "split": "train",
+    "label": "unknown",
+    "say": "music"
+  },
+  {
+    "index": 16,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 17,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 18,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 19,
+    "split": "train",
+    "label": "silence",
+    "say": "silence"
+  },
+  {
+    "index": 20,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 21,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 22,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 23,
+    "split": "train",
+    "label": "unknown",
+    "say": "window"
+  },
+  {
+    "index": 24,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 25,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 26,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 27,
+    "split": "train",
+    "label": "silence",
+    "say": "silence"
+  },
+  {
+    "index": 28,
+    "split": "train",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 29,
+    "split": "train",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 30,
+    "split": "train",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 31,
+    "split": "train",
+    "label": "unknown",
+    "say": "seven"
+  },
+  {
+    "index": 32,
+    "split": "holdout",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 33,
+    "split": "holdout",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 34,
+    "split": "holdout",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 35,
+    "split": "holdout",
+    "label": "silence",
+    "say": "silence"
+  },
+  {
+    "index": 36,
+    "split": "holdout",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 37,
+    "split": "holdout",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 38,
+    "split": "holdout",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 39,
+    "split": "holdout",
+    "label": "unknown",
+    "say": "hello"
+  },
+  {
+    "index": 40,
+    "split": "holdout",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 41,
+    "split": "holdout",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 42,
+    "split": "holdout",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 43,
+    "split": "holdout",
+    "label": "silence",
+    "say": "silence"
+  },
+  {
+    "index": 44,
+    "split": "holdout",
+    "label": "cup",
+    "say": "cup"
+  },
+  {
+    "index": 45,
+    "split": "holdout",
+    "label": "bottle",
+    "say": "bottle"
+  },
+  {
+    "index": 46,
+    "split": "holdout",
+    "label": "phone",
+    "say": "phone"
+  },
+  {
+    "index": 47,
+    "split": "holdout",
+    "label": "unknown",
+    "say": "window"
+  }
+]

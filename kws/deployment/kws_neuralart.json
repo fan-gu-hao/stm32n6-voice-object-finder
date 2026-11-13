@@ -1,0 +1,9 @@
+{
+  "Globals": {},
+  "Profiles": {
+    "kws": {
+      "memory_pool": "./kws.mpool",
+      "options": "--native-float --cache-maintenance --Ocache-opt -O3 --Os"
+    }
+  }
+}

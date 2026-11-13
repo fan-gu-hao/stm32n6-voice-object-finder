@@ -1,0 +1,432 @@
+{
+  "float32": {
+    "accuracy": 0.9375,
+    "confusion_matrix": [
+      [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        2
+      ]
+    ],
+    "macro_f1": 0.9492063492063492,
+    "recall": {
+      "cup": 0.75,
+      "bottle": 1.0,
+      "phone": 1.0,
+      "unknown": 1.0,
+      "silence": 1.0
+    },
+    "command_pass": 11,
+    "commands": 12,
+    "false_pass": 0,
+    "noncommands": 4
+  },
+  "int8": {
+    "accuracy": 0.9375,
+    "confusion_matrix": [
+      [
+        3,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        2
+      ]
+    ],
+    "macro_f1": 0.9492063492063492,
+    "recall": {
+      "cup": 0.75,
+      "bottle": 1.0,
+      "phone": 1.0,
+      "unknown": 1.0,
+      "silence": 1.0
+    },
+    "command_pass": 11,
+    "commands": 12,
+    "false_pass": 0,
+    "noncommands": 4
+  },
+  "files": [
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_33.wav",
+      "label": "cup",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_33.wav",
+      "pcm_sha256": "f521775ab04e1f8c9aed474df835ecd6b102c07b1e89b62dbba648723d74d738"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_34.wav",
+      "label": "bottle",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_34.wav",
+      "pcm_sha256": "e538e44faac7e8da755c73521aeeaa326416b6c2b6af18cb8f5473738a7ce18f"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_35.wav",
+      "label": "phone",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_35.wav",
+      "pcm_sha256": "c77c7ad85f6eb09d4013be84da74db48ea9a8f3877bbf4708a35717817caa618"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/silence/take_36.wav",
+      "label": "silence",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/silence/take_36.wav",
+      "pcm_sha256": "fc5d65fee64732238d7f27340d8fd7f0ebef8a0d8d705e0344512f9ebac1b3b9"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_37.wav",
+      "label": "bottle",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_37.wav",
+      "pcm_sha256": "a0e6f125e55c220a6545fc23d6810138d66ef5489e08b0f4a341c53c0f296f5d"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_38.wav",
+      "label": "phone",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_38.wav",
+      "pcm_sha256": "e639600f2209dba9c8d91246b0a2c2ad5494ef767412fac521ee89de5bbebdf2"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_39.wav",
+      "label": "cup",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_39.wav",
+      "pcm_sha256": "1fb13293529abaab9fbb9a23f739656d09bc9404edd635310dcb868f9b403304"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/unknown/take_40.wav",
+      "label": "unknown",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/unknown/take_40.wav",
+      "pcm_sha256": "ada4ca853cf7dca8b05fc37848ae866fa4087a3208482fc35783b2f257627119"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_41.wav",
+      "label": "phone",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_41.wav",
+      "pcm_sha256": "0b01558a7f81cdec4c7c472fc84a781bec55e32796ff9a8ad223adaf0fef28c1"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_42.wav",
+      "label": "cup",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_42.wav",
+      "pcm_sha256": "162dc9485abe141b10ab7a52ae430f4627ba3f0a1bd69aff23895935a15da8c4"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_43.wav",
+      "label": "bottle",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_43.wav",
+      "pcm_sha256": "25959e0740efe5216b83b987f6e0e5158eb8bfbe1638fdf6d6c4cc989349bc5e"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/silence/take_44.wav",
+      "label": "silence",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/silence/take_44.wav",
+      "pcm_sha256": "973484d4515a1f4cddc316df3965b7a3e7d7e97925fe02d922c5b29b86fa70ef"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_45.wav",
+      "label": "cup",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/cup/take_45.wav",
+      "pcm_sha256": "3113cfb4edeacae37b7b7b9d9e6e3b19c11d9bbaabdf049f5e5e5b2f604c1a7d"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_46.wav",
+      "label": "bottle",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/bottle/take_46.wav",
+      "pcm_sha256": "2ab934dc309c7bc37cc9132864475c1cf8dc69fa5d13b423b987566aa53f5303"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_47.wav",
+      "label": "phone",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/phone/take_47.wav",
+      "pcm_sha256": "6b3948686945838f231558740a3c0341c73ace9a3676d8c9d4d3ab227c9acf2b"
+    },
+    {
+      "file": "kws/live_datasets/20261008_005213_207370/holdout/unknown/take_48.wav",
+      "label": "unknown",
+      "group": "kws/live_datasets/20261008_005213_207370/holdout/unknown/take_48.wav",
+      "pcm_sha256": "1ef5ab9e52229c684ca9c59ce63c7a6305fcf26ee5053a0d201cfe0e0b46f427"
+    }
+  ],
+  "scores": [
+    [
+      0.97265625,
+      0.0,
+      0.01171875,
+      0.015625,
+      0.0
+    ],
+    [
+      0.0,
+      0.99609375,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.99609375,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.99609375
+    ],
+    [
+      0.0,
+      0.99609375,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.99609375,
+      0.0,
+      0.0
+    ],
+    [
+      0.96875,
+      0.01953125,
+      0.00390625,
+      0.01171875,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.99609375,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.99609375,
+      0.0,
+      0.0
+    ],
+    [
+      0.99609375,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.99609375,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.99609375
+    ],
+    [
+      0.3203125,
+      0.0,
+      0.609375,
+      0.0703125,
+      0.0
+    ],
+    [
+      0.0,
+      0.96875,
+      0.03125,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.99609375,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.99609375,
+      0.0
+    ]
+  ],
+  "float32_scores": [
+    [
+      0.9673271775245667,
+      9.911791858030483e-05,
+      0.014853029511868954,
+      0.017720229923725128,
+      5.02389980283624e-07
+    ],
+    [
+      6.650309192224313e-10,
+      0.999963641166687,
+      1.2770411785822944e-06,
+      3.4994656743947417e-05,
+      1.8023157410951285e-09
+    ],
+    [
+      1.0533480337970857e-10,
+      6.650530792740028e-08,
+      0.9999997615814209,
+      1.6587486584285216e-07,
+      3.3955470330748207e-16
+    ],
+    [
+      2.419656993879471e-05,
+      6.327288247121032e-06,
+      5.378938658395782e-05,
+      7.454127626260743e-05,
+      0.9998412132263184
+    ],
+    [
+      1.224981645009393e-07,
+      0.9999998807907104,
+      2.6142321640776345e-10,
+      2.8073728230992856e-08,
+      1.7673976171472816e-10
+    ],
+    [
+      5.410479619882835e-09,
+      5.520696504390799e-07,
+      0.9999991655349731,
+      2.407909391877183e-07,
+      6.887865278137895e-11
+    ],
+    [
+      0.9549694061279297,
+      0.02878854237496853,
+      0.0036771695595234632,
+      0.012530521489679813,
+      3.438456406001933e-05
+    ],
+    [
+      6.153892933430383e-12,
+      1.127886228857733e-09,
+      2.2757164208631053e-10,
+      1.0,
+      8.004147949362654e-15
+    ],
+    [
+      5.2847615172879614e-11,
+      4.345044146703003e-08,
+      1.0,
+      5.077272824394186e-09,
+      1.3571030421394986e-13
+    ],
+    [
+      0.9999980926513672,
+      4.581477526244271e-07,
+      8.874614820797433e-08,
+      1.2748923836625181e-06,
+      1.6239903519177368e-11
+    ],
+    [
+      2.7189955176254443e-08,
+      0.9999880790710449,
+      1.2280218015803257e-06,
+      6.434103397623403e-06,
+      4.2148267311858945e-06
+    ],
+    [
+      2.093953980875085e-06,
+      4.501066257489583e-07,
+      8.507682650815696e-06,
+      8.35857917991234e-06,
+      0.9999805688858032
+    ],
+    [
+      0.32066014409065247,
+      0.0001309662329731509,
+      0.6072551608085632,
+      0.07172442972660065,
+      0.00022922617790754884
+    ],
+    [
+      2.3711678295512684e-05,
+      0.9740934371948242,
+      0.02539614588022232,
+      0.00048650632379576564,
+      2.1555308649112703e-07
+    ],
+    [
+      7.5238648644671e-11,
+      5.0082739733170456e-08,
+      1.0,
+      3.459336150868353e-09,
+      1.5422882155419204e-12
+    ],
+    [
+      1.7968018184433276e-08,
+      5.087055978947319e-05,
+      9.520113053440582e-08,
+      0.9999489784240723,
+      2.4539289003588927e-11
+    ]
+  ]
+}

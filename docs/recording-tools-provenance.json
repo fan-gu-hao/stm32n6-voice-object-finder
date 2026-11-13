@@ -1,0 +1,30 @@
+[
+  {
+    "file": "kws/collect_n6.py",
+    "source": "course17_voice_object_finder/kws/collect_n6.py",
+    "source_sha256": "e641c58fad6595cf1fe838a72e8c63fba694441195dc2eba8ec86f5a6f86e9dd",
+    "public_sha256": "49e643720923d39e139753c51b7b867eed1f990794f9a7641307302b75f5d3b9",
+    "changes": "Host path and device selection settings; recording protocol and GDB program preserved."
+  },
+  {
+    "file": "kws/prepare_dataset.py",
+    "source": "course17_voice_object_finder/kws/prepare_dataset.py",
+    "source_sha256": "26d281b99fb5485beed48013e919c375abf9aa20ddcf30a25bde74c4df983785",
+    "public_sha256": "5be107b6b6c945a2ee8e175d76829dd4c569a2b98c172b380cc3539026642fd7",
+    "changes": "Host path and device selection settings; recording protocol and GDB program preserved."
+  },
+  {
+    "file": "kws/recording_tools/n6_receive_wav.py",
+    "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/tools/n6_receive_wav.py",
+    "source_sha256": "f5f3bfff95a66c00924083ccd6e2f18011a21012f91f6b49a8f39e635b26b5b4",
+    "public_sha256": "8ca36207ded5ab4247731dddd2fb8a8563cdb1b30dfd89af02ea04e236009eb1",
+    "changes": "Host path and device selection settings; recording protocol and GDB program preserved."
+  },
+  {
+    "file": "kws/recording_tools/n6_mic_start_and_record.sh",
+    "source": "course15_n6_mic_test/STM32CubeN6/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/tools/n6_mic_start_and_record.sh",
+    "source_sha256": "554b3270a2023241d8260a90de2753ceaa1235a13a8edaf396cf84df7fa75a3a",
+    "public_sha256": "5b988eac15aa1169f9ed33a0478a168040a400428e474c91a713734530c90cff",
+    "changes": "Host path and device selection settings; recording protocol and GDB program preserved."
+  }
+]

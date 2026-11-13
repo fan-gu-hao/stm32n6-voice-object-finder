@@ -1,0 +1,58 @@
+# 建置輸出
+/firmware/build/
+/firmware/build_*/
+/vision/build/
+/vision/build_*/
+/firmware/STM32CubeIDE/**/Debug/
+/firmware/STM32CubeIDE/**/Release/
+/vision/STM32CubeIDE/**/Debug/
+/vision/STM32CubeIDE/**/Release/
+
+# 本機環境與暫存
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.metadata/
+.cache/
+*.backup_*
+*.bak
+*~
+
+# 原始錄音與本機備份
+/kws/**/*.wav
+/kws/**/*.flac
+/kws/**/*.mp3
+/kws/**/*.ogg
+/kws/**/*.m4a
+/backups/
+
+# Publication scope: sources and documentation
+
+/firmware/Model/
+/vision/Model/
+/firmware/Binary/
+/vision/Binary/
+/firmware/FSBL/
+/vision/FSBL/
+/kws/runs/
+/kws/data*/
+/kws/dataset*/
+/kws/model_current.txt
+/kws/**/*.npz
+/kws/**/*.npy
+/kws/**/*.tflite
+/kws/**/*.keras
+/kws/**/*.h5
+/output/
+/logs/
+/releases/
+/sync_cubeide_sources.py
+
+# Local recordings, comparisons and path pointers
+/kws/comparison/
+/kws/live_comparison/
+/kws/live_datasets/
+/kws/logs/
+/kws/*_current.txt

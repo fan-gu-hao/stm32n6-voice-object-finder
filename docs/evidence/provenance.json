@@ -1,0 +1,44 @@
+[
+  {
+    "file": "kws/deployment/kws_neuralart.json",
+    "source": "output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws_neuralart.json",
+    "source_sha256": "c1079e05e26904fae2f3c3c507d8d578013b45a69808c0d9015908fbb699aae3",
+    "published_sha256": "c1079e05e26904fae2f3c3c507d8d578013b45a69808c0d9015908fbb699aae3",
+    "treatment": "Exact byte copy."
+  },
+  {
+    "file": "kws/deployment/kws.mpool",
+    "source": "output/finder_groupcv_codegen_20261008_022527_741465/codegen/kws.mpool",
+    "source_sha256": "42687159258474866a76fcddb6fe73c2570517f2abbc0bab1f1a544261abb52e",
+    "published_sha256": "42687159258474866a76fcddb6fe73c2570517f2abbc0bab1f1a544261abb52e",
+    "treatment": "Exact byte copy."
+  },
+  {
+    "file": "docs/evidence/kws-groupcv.json",
+    "source": "kws/runs/kws_groupcv_20261008_015013_527709/cv_report.json",
+    "source_sha256": "568fc37800f0fe55c86e14b06f07f21a8607ef79f3cee02f74124524ec41a37f",
+    "published_sha256": "568fc37800f0fe55c86e14b06f07f21a8607ef79f3cee02f74124524ec41a37f",
+    "treatment": "Reformatted JSON; local home/project path prefixes normalized; numeric values unchanged."
+  },
+  {
+    "file": "docs/evidence/kws-int8-holdout.json",
+    "source": "kws/runs/kws_groupcv_20261008_015013_527709/final/report.json",
+    "source_sha256": "6f0eb152a7121ced2a4492a678250585c803f3bac6d069c8e209ec3e21383c7c",
+    "published_sha256": "d6254c617c6397c7660b6731793cf7d19cc03dc61ab915c80e848b3f4abe9d59",
+    "treatment": "Reformatted JSON; local home/project path prefixes normalized; numeric values unchanged."
+  },
+  {
+    "file": "kws/training_snapshot/train_kws.py",
+    "source": "kws/runs/kws_groupcv_20261008_015013_527709/train_kws.py",
+    "source_sha256": "8b46470eb445de3e84580e09385086623d3273dcbbb767918921f012be067ba8",
+    "published_sha256": "8b46470eb445de3e84580e09385086623d3273dcbbb767918921f012be067ba8",
+    "treatment": "Exact byte copy of the archived training script."
+  },
+  {
+    "file": "kws/training_snapshot/train_kws_groupcv.py",
+    "source": "kws/runs/kws_groupcv_20261008_015013_527709/train_kws_groupcv.py",
+    "source_sha256": "e0bea4a72ed827ae9d48be7a600fb29ad3bd3c4a3e8991922db592d4b8658483",
+    "published_sha256": "e0bea4a72ed827ae9d48be7a600fb29ad3bd3c4a3e8991922db592d4b8658483",
+    "treatment": "Exact byte copy of the archived training script."
+  }
+]

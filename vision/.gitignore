@@ -1,0 +1,4 @@
+# 保留模型產碼與設定，排除應用程式的建置中間目錄。
+/Application/*/build/
+/Application/*/build_*/
+/Model/st_ai_ws/build_rt_*/

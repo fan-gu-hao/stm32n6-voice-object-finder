@@ -1,0 +1,4 @@
+# 僅排除建置中間目錄；Model、Binary、FSBL 與官方靜態庫照常保存。
+/build/
+/build_*/
+/Model/kws/st_ai_ws/build_rt_*/

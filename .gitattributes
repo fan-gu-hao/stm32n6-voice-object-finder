@@ -1,0 +1,6 @@
+
+firmware/STM32Cube_FW_N6/** linguist-vendored
+firmware/Lib/** linguist-vendored
+vision/** linguist-vendored
+firmware/Inc/finder_kws_tables.h linguist-generated
+firmware/Inc/finder_kws_compare_data.h linguist-generated
