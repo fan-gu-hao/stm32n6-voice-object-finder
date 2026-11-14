@@ -1,5 +1,7 @@
 # 系統架構
 
+[繁體中文](architecture.md) | [English](architecture.en.md)
+
 以下依本機定版紀錄整理；表中的模型、輸出與紀錄路徑描述完整本機專案，不代表全部包含於公開儲存庫。
 
 

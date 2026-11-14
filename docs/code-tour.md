@@ -1,5 +1,7 @@
 # 程式導讀與實作重點
 
+[繁體中文](code-tour.md) | [English](code-tour.en.md)
+
 先讀[完整工程流程](engineering-workflow.md)了解跨階段開發，再依下列入口追程式。這份導讀同時涵蓋主機工具、資料、模型與板端系統。
 
 ## 1. 從錄音到可訓練資料

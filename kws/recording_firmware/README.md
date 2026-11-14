@@ -1,5 +1,7 @@
 # 獨立錄音韌體：資料蒐集階段的原始實作
 
+[繁體中文](README.md) | [English](README.en.md)
+
 這是 `course15_n6_mic_test` 已使用的五秒錄音版本，後續供關鍵字辨識資料蒐集使用。保存的 C／H、啟動碼與專案設定均直接來自本機原檔，內容雜湊見[補充來源紀錄](../../docs/evidence/development-history/source_provenance.json)。
 
 ## 基底與修改

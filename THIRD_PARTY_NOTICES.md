@@ -1,5 +1,7 @@
 # 第三方來源與公開範圍
 
+[繁體中文](THIRD_PARTY_NOTICES.md) | [English](THIRD_PARTY_NOTICES.en.md)
+
 本專案包含多種授權，不以單一 MIT 或 Apache 授權覆蓋所有內容。各檔案原有版權、授權與第三方聲明仍然適用。
 
 | 來源 | 用途 | 版本或紀錄 |

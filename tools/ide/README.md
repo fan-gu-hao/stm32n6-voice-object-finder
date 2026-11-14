@@ -1,5 +1,7 @@
 # CubeIDE 來源目錄同步工具
 
+[繁體中文](README.md) | [English](README.en.md)
+
 [sync_cubeide_sources.py](sync_cubeide_sources.py)為原專案已使用的工具，原樣保存，SHA-256 為 `fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c`。
 
 它把分散的來源連結整合為 `Src`／`Inc` 資料夾連結，讓新增來源和標頭可隨 IDE 重新整理顯示。這項操作處理 Eclipse 的來源瀏覽設定；實際編譯清單仍由 [Makefile](../../firmware/Makefile)及其建置片段決定。

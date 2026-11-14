@@ -1,5 +1,7 @@
 # STM32N6 雙模型語音找物系統
 
+[繁體中文](README.md) | [English](README.en.md)
+
 **嵌入式 AI、音訊周邊整合、模型量化與部署、FreeRTOS 多工作協作。**
 
 在 STM32N6570-DK 上，以自行建立資料並訓練的關鍵字辨識（Keyword Spotting，KWS）選擇搜尋目標，再由 YOLOv8 實例分割持續辨識攝影機畫面。說出 `cup`、`bottle` 或 `phone`，液晶螢幕（LCD）顯示目標、搜尋狀態、物件框與分割遮罩；USER1 按鍵提供手動切換。

@@ -1,5 +1,7 @@
 # 既有評估報告
 
+[繁體中文](README.md) | [English](README.en.md)
+
 - [五折開發驗證](kws-groupcv.json)：用於開發與選輪。
 - [保留音訊 INT8 評估](kws-int8-holdout.json)：16 段音訊的單窗離線評估。
 - [來源與 SHA-256](provenance.json)：記錄原始檔案及公開副本的雜湊。

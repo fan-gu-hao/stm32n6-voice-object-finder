@@ -1,5 +1,7 @@
 # 建置與外部依賴
 
+[繁體中文](build.md) | [English](build.en.md)
+
 已使用的環境為 GCC 14.3.1、ST Edge AI 4.0.1、ATON 1.1.3-275、`NetworkRuntime1201_CM55_GCC.a`、HAL 1.3.0 與 FreeRTOS 10.6.2。IDE 為 STM32CubeIDE 2.2.0。
 
 公開儲存庫保存應用程式、建置設定及訓練腳本。模型與預建映像未納入公開範圍，完整建置仍須具備對應版本的模型產碼與執行環境。不得將單獨下載公開儲存庫描述為可立即完成建置。
