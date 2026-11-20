@@ -2,13 +2,15 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-這是 `course15_n6_mic_test` 已使用的五秒錄音版本，後續供關鍵字辨識資料蒐集使用。保存的 C／H、啟動碼與專案設定均直接來自本機原檔，內容雜湊見[補充來源紀錄](../../docs/evidence/development-history/source_provenance.json)。
+本目錄保存關鍵字辨識資料蒐集使用的五秒獨立錄音韌體：將板上音訊收進 RAM，再由主迴圈傳至電腦，提供錄音控制、長度與 CRC32 完整性檢查。中斷負責收樣，串列傳輸由主迴圈處理。
 
 ## 基底與修改
 
+此版本先於 `course15_n6_mic_test` 使用，後續供本專案的關鍵字辨識資料蒐集使用。保存的 C／H、啟動碼與專案設定均直接來自本機原檔，內容雜湊見[補充來源紀錄](../../docs/evidence/development-history/source_provenance.json)。
+
 基底為 [STM32CubeN6](https://github.com/STMicroelectronics/STM32CubeN6/tree/1fc803683e03b0ce78e64523441d31acd0db2829) 的 `Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder`，本機 Git 基準提交為 `1fc803683e03b0ce78e64523441d31acd0db2829`。
 
-官方範例原本將 MDF 錄音經 SAI／WM8904 播放。本版本保留 MDF 與 DMA 初始化，改為先把樣本收進 RAM，再由主迴圈傳至電腦；目前 `main()` 沒有呼叫仍保留在檔內的 `Playback_Init()`。本版實際收音路徑是板上數位麥克風經 MDF，不能僅因專案仍帶有 WM8904 程式就把它當成錄音輸入路徑。
+本版的收音輸入為板上數位麥克風經 MDF，保留 MDF 與 DMA 初始化，將樣本收進 RAM 後由主迴圈傳至電腦。官方範例原本經 SAI／WM8904 播放錄音；該播放程式仍保留在檔內，目前 `main()` 未呼叫 `Playback_Init()`，WM8904 屬於這條播放路徑。
 
 [原始修改差異](upstream_changes.patch)記錄以下變更：啟用 BSP COM、啟用 HAL UART、替換主迴圈與 MDF 回呼，以及將 UART 驅動加入 IDE 專案。
 

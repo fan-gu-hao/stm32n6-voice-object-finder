@@ -29,11 +29,11 @@ A model pool describes a compiler allocation range, not the entire firmware layo
 
 Application and display figures come from the [final build log](evidence/development-history/deployment_20261008/build.log); KWS figures come from the [final generation report](evidence/development-history/codegen_20261008/kws_network_generate_report.txt). They are not a measured whole-system runtime memory peak.
 
-The linker reports **0 B** for `KWS_RAM` because generated model code uses absolute addresses in that reservation rather than placing ordinary linked sections there. The model report records the 17,440 B activation allocation. **A zero in the linker report does not mean that KWS uses no RAM.**
+The linker reports **0 B** for `KWS_RAM` because generated model code uses absolute addresses in that reservation rather than placing ordinary linked sections there. The model report records the 17,440 B activation allocation. **0 B means ordinary linked sections do not occupy the reservation; generated KWS code still uses RAM within it.**
 
 ### Available pools in the upstream vision configuration
 
-The [pinned upstream pool file](https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/my_mpools/stm32n6-app2_STM32N6570-DK.mpool) corresponding to this project's pinned vision source defines the following regions. This table describes compiler configuration; it does not substitute measurements from another vision project.
+The [pinned upstream pool file](https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/my_mpools/stm32n6-app2_STM32N6570-DK.mpool) corresponding to this project's pinned vision source defines the following regions. This table describes capacity available to the compiler; actual per-pool usage requires this revision's vision generation report.
 
 | Pool | Start | Configured capacity |
 | --- | --- | ---: |
@@ -58,11 +58,11 @@ The same configuration gives `flexMEM` and `cpuRAM1` zero capacity. The applicat
 
 These five images form a two-model deployment. This KWS version has no separate EC blob: the official tool's generated C control code is linked into the application. The CPU runs that control flow, the NPU executes 11 hardware epochs, and the final Softmax epoch executes on the CPU.
 
-`finder_signed.bin` is the historical filename. Packaging uses the no-key option (`-nk`) to add a boot header; this is not presented as a cryptographic signature. FSBL Flash placement comes from HEX records, not from the linker's `_fsbl_start_address = 0x34180000`, which is a RAM address.
+`finder_signed.bin` is the historical filename. Packaging uses the no-key option (`-nk`) to add a boot header without a cryptographic signature. FSBL Flash placement comes from HEX records, while the linker's `_fsbl_start_address = 0x34180000` is a RAM address; the two describe storage and memory placement respectively.
 
 ### Boundary between vision and KWS weights
 
-The upstream vision `octoFlash` pool offers 16 MiB at `0x70380000–0x71380000`. **That available allocation range includes the later KWS weight address, `0x70700000`.** Different pool names alone therefore do not establish disjoint address ranges.
+The upstream vision `octoFlash` pool offers 16 MiB at `0x70380000–0x71380000`. **That available allocation range includes the later KWS weight address, `0x70700000`.** Weight placement therefore requires checking actual content boundaries and occupied address ranges alongside pool names.
 
 The original development output records a 3,474,865 B vision weight image, giving these content boundaries:
 
@@ -71,7 +71,7 @@ The original development output records a 3,474,865 B vision weight image, givin
 | Vision weights | `0x70380000` | `0x706D05B1` | **195,151 B** remain before the KWS start |
 | Reserved KWS weight region | `0x70700000` | `0x70710000` | Separate 64 KiB reservation |
 
-The vision size comes from the [user's terminal-output excerpt](evidence/development-history/vision_image_layout_20261004.txt) for the formal vision application on 2026-10-04, which records weight and command lengths and addresses. Its application size belongs to the vision stage before KWS integration. See the [original development review](original-history-review.en.md) for the workflow and version context. These boundaries are calculated from the recorded size; this review does not claim to have reread the unpublished weight binary.
+The vision size comes from the [user's terminal-output excerpt](evidence/development-history/vision_image_layout_20261004.txt) for the formal vision application on 2026-10-04, which records weight and command lengths and addresses. Its application size belongs to the vision stage before KWS integration. See the [original development review](original-history-review.en.md) for the workflow and version context. Boundary calculations use that recorded size; rereading the unpublished weight binary was outside this review's scope.
 
 The recorded content ends before KWS. **Replacing or regenerating the vision model requires another boundary check:** compare the weight start plus file length, the compiler's used ranges, and the programming regions. The upstream 16 MiB pool is not a safe weight-size limit for the integrated two-model layout. If the new content crosses `0x70700000`, update pool configuration, weight placement, and deployment manifests consistently, then regenerate and rebuild.
 

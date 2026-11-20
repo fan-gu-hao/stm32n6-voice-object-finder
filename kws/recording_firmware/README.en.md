@@ -2,13 +2,15 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-This is the five-second recording version used in `course15_n6_mic_test` and later for keyword-spotting dataset collection. The retained C/H files, startup code, and project settings come directly from the local originals. Content hashes are in the [supplementary provenance record](../../docs/evidence/development-history/source_provenance.json).
+This directory preserves the standalone five-second recorder used for keyword-spotting dataset collection. It captures board audio into RAM before transmitting it to the PC from the main loop, providing recording control, length checks, and CRC32 integrity checks. Interrupts collect samples; the main loop handles serial transmission.
 
 ## Base and modifications
 
+This version was first used in `course15_n6_mic_test` and later for this project's keyword-spotting dataset collection. The retained C/H files, startup code, and project settings come directly from the local originals. Content hashes are in the [supplementary provenance record](../../docs/evidence/development-history/source_provenance.json).
+
 The base is `Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder` from [STM32CubeN6](https://github.com/STMicroelectronics/STM32CubeN6/tree/1fc803683e03b0ce78e64523441d31acd0db2829), with local Git base commit `1fc803683e03b0ce78e64523441d31acd0db2829`.
 
-The official example plays MDF-captured audio through SAI/WM8904. This version retains MDF and DMA initialization but captures samples into RAM before sending them to the PC from the main loop. The current `main()` does not call the retained `Playback_Init()` function. The recording input is the board's digital microphone through MDF; the presence of WM8904 code does not make WM8904 part of the capture input path.
+The recording input is the board's digital microphone through MDF. This version retains MDF and DMA initialization, captures samples into RAM, and transmits them to the PC from the main loop. The official example originally played recorded audio through SAI/WM8904. That playback code remains in the file, but the current `main()` does not call `Playback_Init()`; WM8904 belongs to this playback path.
 
 The [original diff](upstream_changes.patch) records enabling BSP COM and HAL UART, replacing the main loop and MDF callbacks, and adding UART drivers to the IDE project.
 

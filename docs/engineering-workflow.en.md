@@ -2,11 +2,11 @@
 
 [繁體中文](engineering-workflow.md) | [English](engineering-workflow.en.md)
 
-See [dual-model memory and deployment](memory-deployment.en.md) for the full runtime/storage address map, and [toolchain compatibility](toolchain-compatibility.en.md) for pinned upstream versions, actual build commands, and packaging changes.
-
 This project builds a Keyword Spotting (KWS) and YOLOv8 instance-segmentation system on STM32N6570-DK. Its workflow covers data collection, MFCC preprocessing, custom-model training and INT8 quantization, N6 code generation, PC/board numerical comparisons, and audio, vision, and display integration under FreeRTOS.
 
 Vision continuously processes the camera image; the voice commands cup, bottle, and phone change the search target. Both models use the NPU sequentially in one inference task, with separate display and ISP tasks. The [implementation and evidence index](development-coverage.en.md) maps each step to code, configuration, and results.
+
+See [dual-model memory and deployment](memory-deployment.en.md) for the full runtime/storage address map, and [toolchain compatibility](toolchain-compatibility.en.md) for pinned upstream versions, actual build commands, and packaging changes.
 
 ## Development sequence and stage-specific results
 
@@ -30,11 +30,11 @@ The project first established the vision application, then added a KWS model tra
 | Platform and application framework | Pin GCC, ST Edge AI, Neural-ART, and runtime versions; adapt ST's dual-model FreeRTOS framework to speech and vision models | [Build environment](build.en.md), [provenance](source-provenance.json), [app.c](../firmware/Src/app.c) |
 | Speech-data collection subsystem | Five-second MDF/DMA recording, RAM startup, UART handshake and CRC32, WAV storage, labeled collection, and segmentation | [Recording firmware](../kws/recording_firmware/README.en.md), [host tools](../kws/recording_tools/README.en.md), [collect_n6.py](../kws/collect_n6.py) |
 | KWS model development | Collect five-class data, implement MFCC and depthwise-separable convolutions, apply augmentation and grouped cross-validation, and export INT8 | [Training snapshot](../kws/training_snapshot/README.en.md), [training evolution](../kws/training_history/README.en.md) |
-| Dual-model deployment/integration | KWS generation, an existing quantized YOLO interface, ST postprocessing, memory separation, shared NPU access, and search state | [KWS deployment](../kws/deployment/README.en.md), [app.c](../firmware/Src/app.c), [linker script](../firmware/Gcc/STM32N657xx.ld) |
+| Dual-model deployment/integration | Generate N6 code for YOLOv8 and KWS, pair the shared runtime, and port model/postprocessing interfaces; allocate model memory and implement shared-NPU scheduling and search state | [Vision deployment](../vision/deployment/README.en.md), [KWS deployment](../kws/deployment/README.en.md), [app.c](../firmware/Src/app.c), [linker script](../firmware/Gcc/STM32N657xx.ld) |
 
 ## Vision-model interface and postprocessing in this system
 
-Vision uses the ST quantized model `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`, whose source and hash are pinned in [sources.txt](../sources.txt). Its SHA-256 is `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`. On 2026-10-04 this project ran the official model-generation script in its newly created `vision/` tree, then integrated the generated artifacts and runtime into `firmware/`.
+On 2026-10-04, this project ran N6 code generation in its newly created `vision/` tree, built and packaged the reference application, and then integrated the generated model artifacts, runtime, and postprocessing into `firmware/`. The generation input is ST's prequantized `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`, with source and hash pinned in [sources.txt](../sources.txt). Its SHA-256 is `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`.
 
 | Porting step | Changes and evidence |
 | --- | --- |
@@ -86,7 +86,7 @@ Initial collection used the [standalone recorder main.c](../kws/recording_firmwa
 | 17. Live raw-data return | Return PCM, 637 INT8 features, and five outputs from the same window as hexadecimal chunks with CRC32 for PC comparison | [finder_kws_live_capture / live_send](../firmware/Src/finder_kws.c) |
 | 18. Voice acceptance state machine | Amplitude, top score, margin, consecutive windows, command interval, and re-arming after quiet; accept a sustained utterance only once | [finder_voice_poll](../firmware/Src/app.c) |
 
-The complete KWS route is Keras/SavedModel → INT8 TFLite → ST Edge AI internal ONNX and quantization metadata → Neural-ART → N6. The [original generation log](evidence/development-history/codegen_20261008/codegen.log) preserves the internal ONNX filename and actual compiler invocation; this ONNX is an internal intermediate representation produced by the ST toolchain. Grouping here is by original recording and PCM content, not an unperformed cross-speaker validation.
+The complete KWS route is Keras/SavedModel → INT8 TFLite → ST Edge AI internal ONNX and quantization metadata → Neural-ART → N6. The [original generation log](evidence/development-history/codegen_20261008/codegen.log) preserves the internal ONNX filename and actual compiler invocation; this ONNX is an internal intermediate representation produced by the ST toolchain. Validation groups samples by original recording and PCM content, and its scope is those source groups; cross-speaker testing has not been performed.
 
 The [training history](../kws/training_history/README.en.md) additionally includes the original 2026-10-05 script, showing the progression from early augmentation through live samples and utterance-boundary constraints to the final grouped version. The [48-clip live manifest](evidence/development-history/live_dataset_manifest_20261008.json) retains the 32 training/16 held-out split and per-clip PCM hashes.
 
@@ -107,7 +107,7 @@ KWS generation does not enable the epoch controller. The CPU executes model cont
 
 The [final compiler report](evidence/development-history/codegen_20261008/kws_network_generate_report.txt) records 11 hardware and 1 software Softmax stages, with 11,409 bytes of weights and 17,440 bytes of activations. These KWS compiler statistics are distinct from the complete integrated system's peak memory use.
 
-The local five-image package contains FSBL, application, vision weights, KWS weights, and vision execution commands; it is not five AI models. Image packaging uses no-key mode (-nk), so the header is not described as a cryptographic signature.
+The local delivery package divides the dual-model system into five images: FSBL, application, vision weights, KWS weights, and vision execution commands. Image packaging uses no-key mode (-nk), producing the header required for startup without a cryptographic signature.
 
 ## Validation and version mapping
 

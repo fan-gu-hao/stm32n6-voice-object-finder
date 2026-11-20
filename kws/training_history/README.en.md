@@ -2,7 +2,7 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-This directory adds the early script that had previously existed only in a training-output directory and links it to the published later versions. Each version is an original file that was actually retained, rather than a newly written substitute for presentation. Retained code, completed training, offline evaluation, and board operation are identified separately; see the [original development-history review](../../docs/original-history-review.en.md) for conversation and attachment evidence.
+This directory preserves the original training code for the initial KWS model, live-data retraining, and grouped cross-validation, showing the evolution of features, augmentation, data isolation, and quantization. The early original script comes from its training-output directory and is linked to the published later versions. Retained code, completed training, offline evaluation, and board operation are identified separately for each version; see the [original development-history review](../../docs/original-history-review.en.md) for conversation and attachment evidence.
 
 | Stage | Program and main content |
 | --- | --- |

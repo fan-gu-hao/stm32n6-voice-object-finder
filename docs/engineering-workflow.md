@@ -2,11 +2,11 @@
 
 [繁體中文](engineering-workflow.md) | [English](engineering-workflow.en.md)
 
-記憶體配置與燒錄位置的完整對照見[雙模型記憶體與部署](memory-deployment.md)；官方範例版本、實際建置指令及封裝修正見[工具鏈相容性](toolchain-compatibility.md)。
-
 本專案在 STM32N6570-DK 上建立關鍵字辨識（Keyword Spotting，KWS）與 YOLOv8 實例分割的雙模型系統。工程流程涵蓋資料蒐集、梅爾頻率倒譜係數（MFCC）前處理、客製模型訓練與 INT8 量化、N6 模型產碼、電腦／板端數值對照，以及 FreeRTOS 下的音訊、視覺與顯示整合。
 
 視覺持續辨識攝影機畫面；語音命令 cup、bottle、phone 改變搜尋目標。兩個模型在同一推論工作中依序使用神經網路處理器（NPU），顯示與影像訊號處理（ISP）由另外兩個工作協作。[實作與證據索引](development-coverage.md)列出各步驟對應的程式、設定與結果。
+
+記憶體配置與燒錄位置的完整對照見[雙模型記憶體與部署](memory-deployment.md)；官方範例版本、實際建置指令及封裝修正見[工具鏈相容性](toolchain-compatibility.md)。
 
 ## 開發順序與各階段成果
 
@@ -30,11 +30,11 @@
 | 平台與應用框架 | 固定 GCC、ST Edge AI、Neural-ART 與執行期版本，將 ST 雙模型 FreeRTOS 框架改接語音與視覺模型 | [建置環境](build.md)、[來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
 | 語音資料蒐集子系統 | MDF／DMA 五秒錄音、RAM 啟動、UART 交握及 CRC32、WAV 保存、分類收集與切段 | [錄音韌體](../kws/recording_firmware/README.md)、[主機工具](../kws/recording_tools/README.md)、[collect_n6.py](../kws/collect_n6.py) |
 | KWS 模型建立 | 自行蒐集五分類資料、MFCC、深度可分離卷積、資料增強與分組交叉驗證，匯出 INT8 模型 | [訓練快照](../kws/training_snapshot/README.md)、[訓練演進](../kws/training_history/README.md) |
-| 兩模型部署與整合 | KWS 產碼、既有量化 YOLO 模型介面、ST 後處理、記憶體區隔、共享 NPU 與搜尋狀態 | [KWS 部署](../kws/deployment/README.md)、[app.c](../firmware/Src/app.c)、[連結腳本](../firmware/Gcc/STM32N657xx.ld) |
+| 兩模型部署與整合 | 執行 YOLOv8 與 KWS 的 N6 產碼，配對共用執行期、移植模型與後處理介面；配置兩模型記憶體、共享 NPU 排程及搜尋狀態 | [視覺部署](../vision/deployment/README.md)、[KWS 部署](../kws/deployment/README.md)、[app.c](../firmware/Src/app.c)、[連結腳本](../firmware/Gcc/STM32N657xx.ld) |
 
 ## 本系統的視覺模型介面與後處理整合
 
-視覺使用 [sources.txt](../sources.txt) 固定來源與雜湊的 ST 量化模型 `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`，SHA-256 為 `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`。2026-10-04 已在新建的 `vision/` 工程執行官方模型產碼腳本，再把產物與執行期整合到 `firmware/`。
+2026-10-04 在本案新建的 `vision/` 工程執行 N6 模型產碼，完成參考工程建置與封裝，再將模型產物、執行期及後處理整合到 `firmware/`。產碼輸入採用 ST 已量化模型 `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`，來源與雜湊固定於 [sources.txt](../sources.txt)，SHA-256 為 `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`。
 
 | 移植步驟 | 實際修改與證據 |
 | --- | --- |
@@ -86,7 +86,7 @@
 | 17. 即時原始資料回傳 | 保存同一視窗的 PCM、637 個 INT8 特徵與五個輸出，以分段十六進位及 CRC32 回傳供電腦比對 | [finder_kws_live_capture／live_send](../firmware/Src/finder_kws.c) |
 | 18. 語音接受狀態機 | 音量、最高分、與次高分差距、連續視窗、命令間隔、安靜後重新啟用；同一持續發音只接受一次 | [finder_voice_poll](../firmware/Src/app.c) |
 
-KWS 的完整路線是 Keras／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX 與量化中繼資料 → Neural-ART → N6。[原始產碼日誌](evidence/development-history/codegen_20261008/codegen.log)保留內部 ONNX 檔名與實際編譯器呼叫；此 ONNX 是 ST 工具鏈的內部中介表示。這裡的「分組」以原始錄音和 PCM 內容為單位，沒有把它描述成未執行的跨說話者驗證。
+KWS 的完整路線是 Keras／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX 與量化中繼資料 → Neural-ART → N6。[原始產碼日誌](evidence/development-history/codegen_20261008/codegen.log)保留內部 ONNX 檔名與實際編譯器呼叫；此 ONNX 是 ST 工具鏈的內部中介表示。資料驗證以原始錄音和 PCM 內容分組，評估範圍為這些來源組別；跨說話者測試尚未執行。
 
 [訓練歷程](../kws/training_history/README.md)另外補入 2026-10-05 初版原檔，呈現早期資料增強、現場補樣本、發音邊界限制，到分組定版的實作演進。[48 段現場收集清單](evidence/development-history/live_dataset_manifest_20261008.json)保存 32 段訓練、16 段保留及逐段 PCM 雜湊。
 
@@ -107,7 +107,7 @@ KWS 產碼沒有啟用 epoch controller（執行階段控制器）；CPU 執行�
 
 [定版編譯報告](evidence/development-history/codegen_20261008/kws_network_generate_report.txt)記錄 11 個硬體及 1 個軟體 Softmax 執行階段，權重配置 11,409 位元組、活化值 17,440 位元組。這些是 KWS 編譯統計，與兩個模型整合後的全系統記憶體峰值分開解讀。
 
-本機五映像包分別包含 FSBL、應用、視覺權重、KWS 權重、視覺執行指令；不是五個 AI 模型。映像封裝工具使用無金鑰模式（-nk），因此不把封裝標頭描述成密碼學簽章。
+本機交付包將雙模型系統分為五份映像：FSBL、應用、視覺權重、KWS 權重及視覺執行指令。映像封裝採無金鑰模式（-nk），產生啟動所需的封裝標頭，未使用密碼學簽章。
 
 ## 驗證與版本對應
 

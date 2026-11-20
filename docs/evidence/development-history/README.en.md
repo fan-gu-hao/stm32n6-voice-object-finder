@@ -23,9 +23,9 @@ The earlier comparison used model `ffdec67ca044a3b8b94e8e670ee0a1f13225d00569827
 
 The four live cases are ordered silence, cup, bottle, phone. All four record `input_diff=0` and `input_max=0`, meaning the board C frontend and PC produced identical INT8 features for those same PCM windows. Maximum output differences are differences between quantized integers, not percentage errors.
 
-The silence case was classified as phone by all three paths: the board, PC inference from features, and the complete PC PCM frontend. This failure preserves the model problem observed at the time and connects to later [training evolution](../../../kws/training_history/README.en.md) and live-data collection. The earlier error is not erased, and deployment consistency on four windows is not treated as generalization accuracy.
+The silence case was classified as phone by all three paths: the board, PC inference from features, and the complete PC PCM frontend. This matching misclassification localized the issue to the model and data, prompting later [training evolution](../../../kws/training_history/README.en.md) and live-data collection. These four windows check deployment consistency; model generalization is evaluated separately on validation and held-out data.
 
-The fixed five-class `reference.json` contains PC reference data, not line-by-line board INPUT/PCM output. On 2026-11-20, actual CMP output was recovered from the original development conversation. The [review and excerpts](../../original-history-review.en.md) document five correct classes in each path, 637 matching INT8 features per PCM case, and maximum integer output differences of zero except for silence at one. These are excerpts from terminal results pasted into the conversation, not a newly recovered complete original serial log, and are identified separately from the PC reference JSON here.
+The fixed five-class `reference.json` contains PC reference data, while line-by-line board INPUT/PCM output is preserved in the original development conversation. On 2026-11-20, review recovered the actual CMP output. The [review and excerpts](../../original-history-review.en.md) document five correct classes in each path, 637 matching INT8 features per PCM case, and maximum integer output differences of zero except for silence at one. These records are retained as terminal-result excerpts in the conversation; the complete original serial log remains unavailable. They are identified separately from the PC reference JSON here.
 
 ## Code generation, memory, and writes
 
@@ -37,7 +37,7 @@ The [compiler configuration information](codegen_20261008/kws_network_c_info.jso
 - 11,409 bytes of KWS weights and 17,440 bytes of activations, placed in the 64 KiB `kwsFlash` and 256 KiB `kwsRAM` pools respectively.
 - Runtime overhead of 40,870 bytes for code/read-only data and 29 bytes of additional RAM. These are statistics from that KWS generation report, not the dual-model system's total peak memory usage.
 
-Both the [KWS write log](deployment_20261008/flash_kws_weights.bin.log) and [application write log](deployment_20261008/flash_finder_signed.bin.log) retain successful verification messages. Their addresses are `0x70700000` and `0x70100000`. The filename's `signed` follows the original tool naming; packaging used no-key mode and is not claimed as a cryptographic signature.
+Both the [KWS write log](deployment_20261008/flash_kws_weights.bin.log) and [application write log](deployment_20261008/flash_finder_signed.bin.log) retain successful verification messages. Their addresses are `0x70700000` and `0x70100000`. The filename's `signed` follows the original tool naming; no-key packaging includes a boot header without a cryptographic signature.
 
 ## Record formatting and publication scope
 

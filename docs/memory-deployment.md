@@ -29,11 +29,11 @@
 
 應用與顯示數字來自[定版建置日誌](evidence/development-history/deployment_20261008/build.log)；KWS 數字來自[定版產碼報告](evidence/development-history/codegen_20261008/kws_network_generate_report.txt)。它們不是全系統執行期間的動態記憶體峰值。
 
-連結器會將 `KWS_RAM` 顯示為 **0 B**，因為模型產碼另以絕對位址使用該區，沒有一般連結區段占入；模型報告記錄的 17,440 B 才是這次 KWS 活化值配置。**不能把連結器的 0 解讀成語音模型不使用 RAM。**
+連結器會將 `KWS_RAM` 顯示為 **0 B**，因為模型產碼另以絕對位址使用該區，沒有一般連結區段占入；模型報告記錄的 17,440 B 是這次 KWS 活化值配置。**0 B 表示一般連結區段未占用該保留區；KWS 仍透過產碼使用其中的 RAM。**
 
 ### 視覺模型的上游可配置池
 
-與本案固定視覺來源對應的[上游模型池](https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/my_mpools/stm32n6-app2_STM32N6570-DK.mpool)列出以下區域。這張表呈現編譯器配置，不以其他視覺專案的量測代替本案用量。
+與本案固定視覺來源對應的[上游模型池](https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/my_mpools/stm32n6-app2_STM32N6570-DK.mpool)列出以下區域。這張表呈現編譯器可配置的容量；本案各池的實際用量需對應本版視覺產碼報告。
 
 | 池名 | 起點 | 配置容量 |
 | --- | --- | ---: |
@@ -58,11 +58,11 @@
 
 五份映像共同組成雙模型部署。KWS 本版沒有獨立 EC blob：官方工具產生的 C 控制程式連入主應用，CPU 執行控制流程，NPU 執行 11 個硬體階段，最後一個 Softmax 階段由 CPU 執行。
 
-`finder_signed.bin` 是既有檔名；本案使用無金鑰模式（`-nk`）加入開機標頭，不將它描述成密碼學簽章。FSBL 的 Flash 位址由 HEX 內含記錄決定，不能從連結腳本中的 `_fsbl_start_address = 0x34180000` 推導；後者是 RAM 位址。
+`finder_signed.bin` 是既有檔名；本案使用無金鑰模式（`-nk`）加入開機標頭，封裝不含密碼學簽章。FSBL 的 Flash 位址由 HEX 內含記錄決定；連結腳本中的 `_fsbl_start_address = 0x34180000` 則是 RAM 位址，兩者分別描述儲存與記憶體配置。
 
 ### 視覺權重池與 KWS 權重的邊界
 
-上游視覺 `octoFlash` 模型池提供 `0x70380000–0x71380000`，共 16 MiB。**這個可配置範圍包含後來選定的 KWS 權重位置 `0x70700000`**，所以不能只根據兩個池名稱不同，就宣稱整個池互不重疊。
+上游視覺 `octoFlash` 模型池提供 `0x70380000–0x71380000`，共 16 MiB。**這個可配置範圍包含後來選定的 KWS 權重位置 `0x70700000`**。兩模型權重的配置因此需要核對實際內容邊界，除了池名稱，也須檢查各自占用的位址區間。
 
 原始開發輸出所記錄的視覺權重為 3,474,865 B，對應實際內容區間：
 
@@ -71,7 +71,7 @@
 | 視覺權重 | `0x70380000` | `0x706D05B1` | 到 KWS 起點尚有 **195,151 B** |
 | KWS 權重保留區 | `0x70700000` | `0x70710000` | 64 KiB 獨立保留配置 |
 
-視覺大小取自正式視覺主工程在 2026-10-04 的[使用者終端輸出節錄](evidence/development-history/vision_image_layout_20261004.txt)，其中記錄權重與指令的長度、位址；該輪應用大小屬尚未加入 KWS 的視覺階段。開發過程與版本對照見[原始歷程覆核](original-history-review.md)。這裡依記錄計算邊界，沒有宣稱本次重新讀取了未公開的二進位權重。
+視覺大小取自正式視覺主工程在 2026-10-04 的[使用者終端輸出節錄](evidence/development-history/vision_image_layout_20261004.txt)，其中記錄權重與指令的長度、位址；該輪應用大小屬尚未加入 KWS 的視覺階段。開發過程與版本對照見[原始歷程覆核](original-history-review.md)。邊界計算依據為這份大小紀錄；未公開的二進位權重不在本次重新讀取範圍內。
 
 目前記錄的內容邊界落在 KWS 之前。**更換或重新產生視覺模型後，必須重新核對**權重起點加檔案長度、產碼報告的使用範圍及燒錄區域；不能以原有 16 MiB 池容量作為雙模型工程的可用權重上限。若越過 `0x70700000`，應一致調整模型池、權重位置與部署清單，再重新產碼及建置。
 

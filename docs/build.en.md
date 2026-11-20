@@ -8,7 +8,7 @@ The environment used was GCC 14.3.1, ST Edge AI 4.0.1, ATON 1.1.3-275, `NetworkR
 
 The checked build path is GCC: the vision reference's Runtime1200 and the hand-framework base's Runtime1100 were aligned to GCC Runtime1201 during integration. The retained IAR configuration in `ai.mk` still points to Runtime1100 and is not listed as a completed build path for this project. Vision generation, memory sections, and image packaging are traced in the [engineering workflow](engineering-workflow.en.md) and [original-history review](original-history-review.en.md).
 
-The public repository retains application sources, build settings, and training scripts. Models and prebuilt images are outside the publication scope. A complete build still requires matching generated model code and runtime dependencies; downloading this repository alone does not provide an immediately buildable package.
+The public repository retains application sources, build settings, and training scripts. Models and prebuilt images are outside the publication scope. A complete build still requires matching generated model code and runtime dependencies.
 
 Model locations in the complete local project are `firmware/Model/` and `firmware/Model/kws/st_ai_output/`. The actual compilation lists are defined in `firmware/mks/ai.mk` and `firmware/mks/kws.mk`.
 
@@ -33,6 +33,6 @@ The build script accepts a compiler directory through `GCC_PATH`, or searches fo
 
 The [vision-generation source guide](../vision/deployment/README.en.md) provides the script/configuration entry point; speech generation is covered by the [KWS configuration](../kws/deployment/README.en.md). Regenerated models require matching runtime components, synchronized KWS feature/quantization coefficients, and memory checks against actual image ranges. The upstream vision Flash candidate pool includes this project's KWS weight address, so its capacity is not a safe dual-model weight budget.
 
-This is workflow documentation; publication preparation does not automatically build, generate code, or flash a board. The recording host tools are in `kws/recording_tools/`, and the corresponding [FSBL sources and IDE snapshot](../kws/recording_firmware/README.en.md) are also published. Rebuilding requires the pinned STM32CubeN6 SDK and adjustment of original development paths in the snapshot. The host tools require matching ELF/BIN files; prebuilt images are not included.
+The recording host tools are in `kws/recording_tools/`, and the corresponding [FSBL sources and IDE snapshot](../kws/recording_firmware/README.en.md) are also published. Rebuilding requires the pinned STM32CubeN6 SDK and adjustment of original development paths in the snapshot. The host tools require matching ELF/BIN files; prebuilt images are not included.
 
 [Final code-generation and deployment records](evidence/development-history/README.en.md) retain commands, the tool's internal ONNX stage, memory/execution-stage reports, build output, and successful write verification for tracing the existing workflow.
