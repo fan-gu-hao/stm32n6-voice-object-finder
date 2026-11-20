@@ -1,154 +1,9 @@
 {
   "review_date": "2026-11-13",
   "report_sha256": "9f295a730d8e19abd33546d796a38ba154220153327a444c7989512f3be0c2dd",
-  "scope": "本次上傳報告的 67 個檔案項目；不是使用者整台電腦或全部歷史對話的完整清單",
+  "scope": "雙模型語音找物專案的來源材料清單：25 項 course17 材料及 23 項其資料蒐集所依賴的錄音元件材料。由既有報告篩選，保留各項原始來源與雜湊；不表示完整儲存庫檔案總數。",
   "upstream_microphone_commit": "1fc803683e03b0ce78e64523441d31acd0db2829",
-  "discovery_notes": [
-    "未找到目錄：course13_yolov8_coco80_n6/scripts",
-    "未找到目錄：course13_yolov8_coco80_n6/tools",
-    "未找到目錄：course13_yolov8_coco80_n6/configs",
-    "未找到目錄：course13_yolov8_coco80_n6/patches",
-    "未找到目錄：course13_yolov8_coco80_n6/docs",
-    "未找到目錄：course15_n6_mic_test/scripts",
-    "未找到目錄：course15_n6_mic_test/tools",
-    "未找到目錄：course15_n6_mic_test/configs",
-    "未找到目錄：course15_n6_mic_test/patches",
-    "未找到目錄：course15_n6_mic_test/docs"
-  ],
   "files": [
-    {
-      "source": "course14_yolov8n_seg_n6/patches/uart_it_v1_20260914_054405_207092.patch",
-      "source_sha256": "353a52fab1bf5a341860b318e085ffd328017b62fdffae1b579659f348c24bf1",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/patches/uart_it_v1_20260914_054405_207092.patch"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/patches/uart_it_v1_20260914_055728_067784.patch",
-      "source_sha256": "7b012f2ce672526d67ae9231dc4ca28b64d2fcb6b432aa89dfdc54ec6f45099d",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/patches/uart_it_v1_20260914_055728_067784.patch"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/build_20260914_055733_234190.json",
-      "source_sha256": "8480b13ab34d6e42307ac8444be6a577f5c8f8b1020fbc7f08603a5f2021db6c",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/build_20260914_055733_234190.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/deploy.log",
-      "source_sha256": "062e6eb3f371cfad32440d223bf750604a09872f9e0345157cdec019b4c96ae2",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/deploy.log"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/deploy_uart_it_v1.py",
-      "source_sha256": "430ec4c4dfe84553515bba1a418aa85795aa828b14f4e9e3c4c389af704380bd",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/deploy_uart_it_v1.py"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/manifest.json",
-      "source_sha256": "94141b53b49b46032b8a497c8646bbfa932ace6adef5944ad2d0c7ea99c18565",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/manifest.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/deploy_20260914_060547_683657/sections.txt",
-      "source_sha256": "d1270deed1794a22c8fae472eb99da893c9d88cfe44d9978b5b072ecc9ea2e2d",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/deploy_20260914_060547_683657/sections.txt"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/install_20260914_054405_207092/manifest.json",
-      "source_sha256": "aafbbc6c45855bac8b69967fbd31afa63f5da8791ba4a31d3130a72396de8e83",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/install_20260914_054405_207092/manifest.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/install_20260914_055728_067784/before/scripts/install_uart_it_v1.py",
-      "source_sha256": "00d5731c56ae11678facc41c5203c24b039996d697d8899d7f24ac9388924e46",
-      "status": "本次補入",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/install_uart_it_v1_initial.py"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/install_20260914_055728_067784/manifest.json",
-      "source_sha256": "7285d144efb857ae9cb64a371175a72fb5f89e0ee1846fcce6132c70332296cf",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/install_20260914_055728_067784/manifest.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/scripts/install_uart_it_v1.py",
-      "source_sha256": "b956e48e165b58406ff301ebd6099c2ec1095ad4441770b53d4123c4f9ae8b97",
-      "status": "本次補入",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/install_uart_it_v1_hal_fix1.py"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/stm32ai-modelzoo-services/application_code/instance_segmentation/STM32N6/Application/STM32N6570-DK/Inc/project_uart_it.h",
-      "source_sha256": "b93d1386b841bb4f36b2b94f3913db125d633cf1071224465644e1564f49ce5d",
-      "status": "本次補入",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/Inc/project_uart_it.h"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/stm32ai-modelzoo-services/application_code/instance_segmentation/STM32N6/Application/STM32N6570-DK/Src/main.c",
-      "source_sha256": "e579c62d8c64f1582c7b131b19ed5fcb613c7deb6bf9b208e7753b68adf87164",
-      "status": "本次補入",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/Src/main.c"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/before/stm32ai-modelzoo-services/application_code/instance_segmentation/STM32N6/Application/STM32N6570-DK/Src/project_uart_it.c",
-      "source_sha256": "9078af44a22b7b490c88f6867e9839ed71e9442f64b1e387f82e5faa0573ab1c",
-      "status": "本次補入",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/source_snapshot/Src/project_uart_it.c"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/flash.log",
-      "source_sha256": "1106355d2d7f13cd8b62b540e83b2feeaa63156c61ed7f0bd11c8dd9e86f9efe",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/flash.log"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/install_manifest_0.json",
-      "source_sha256": "aafbbc6c45855bac8b69967fbd31afa63f5da8791ba4a31d3130a72396de8e83",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/install_manifest_0.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/install_manifest_1.json",
-      "source_sha256": "7285d144efb857ae9cb64a371175a72fb5f89e0ee1846fcce6132c70332296cf",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/install_manifest_1.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/manifest.json",
-      "source_sha256": "261044f59df4ca4c521a3aeaac5526c2e35b52d4d7e7b932dd523950c3c5ea91",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/manifest.json"
-    },
-    {
-      "source": "course14_yolov8n_seg_n6/results/uart_it/rollback_20260914_061621_901943/restore_before_uart_it.py",
-      "source_sha256": "e70a5daf20ce28f0d1a11cfd05df51055159fbe1d13776334953d7813d874c0f",
-      "status": "已公開，與本次原檔逐位元組一致",
-      "repository": "stm32n6-instance-segmentation",
-      "public_path": "docs/publication_supplement_20261113/uart_it/rollback_20260914_061621_901943/restore_before_uart_it.py"
-    },
     {
       "source": "course15_n6_mic_test/STM32CubeN6/LICENSE.md",
       "source_sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
@@ -485,5 +340,7 @@
       "repository": "stm32n6-voice-object-finder",
       "public_path": "tools/ide/sync_cubeide_sources.py"
     }
-  ]
+  ],
+  "scope_updated_date": "2026-11-20",
+  "scope_en": "Source-material inventory for the dual-model voice object finder: 25 course17 items and 23 recording-component items used by its data-collection workflow. Filtered from the existing report while preserving original sources and hashes; this is not the total repository file count."
 }

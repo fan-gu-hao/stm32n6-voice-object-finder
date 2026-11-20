@@ -1,31 +1,33 @@
-# 完整開發流程、跨階段延續與實作證據
+# 雙模型語音找物：從資料建立到 N6 部署
 
 [繁體中文](engineering-workflow.md) | [English](engineering-workflow.en.md)
 
-本作品的工程範圍涵蓋模型部署、音訊驅動、資料製作、模型訓練與量化、Python／C 對照、NPU 整合、即時作業系統排程、快取與記憶體配置，以及映像交付。這些工作分階段完成，部分先在其他課程專案與開發對話中驗證，再沿用至雙模型找物系統。
+本專案在 STM32N6570-DK 上建立關鍵字辨識（Keyword Spotting，KWS）與 YOLOv8 實例分割的雙模型系統。工程流程涵蓋資料蒐集、梅爾頻率倒譜係數（MFCC）前處理、客製模型訓練與 INT8 量化、N6 模型產碼、電腦／板端數值對照，以及 FreeRTOS 下的音訊、視覺與顯示整合。
 
-跨作品的逐階段核對見[從起步到定版的對照表](development-coverage.md)，另補共享時脈、DMA 存取屬性、緩衝所有權、遮罩生命週期、語音錯誤隔離與主機傳輸等程式細節。最早環境與所有歷史對話尚未完整取得，不將目前可取得的材料稱為百分之百歷史覆蓋。
+視覺持續辨識攝影機畫面；語音命令 cup、bottle、phone 改變搜尋目標。兩個模型在同一推論工作中依序使用神經網路處理器（NPU），顯示與影像訊號處理（ISP）由另外兩個工作協作。[實作與證據索引](development-coverage.md)列出各步驟對應的程式、設定與結果。
 
-## 開發脈絡
+## 系統建立與模型分工
 
-| 階段 | 累積的工作 | 本作品如何延續 |
+| 階段 | 本專案完成的工作 | 實作入口 |
 | --- | --- | --- |
-| 前期 YOLO 偵測 | COCO 類別模型的匯出、量化與 N6 工具環境 | 建立後續分割模型部署的工具與流程；課程 14 的部署腳本保留前期環境路徑 |
-| course14 實例分割 | PyTorch → ONNX → onnx2tf／SavedModel → ST INT8；模型輸出對應修補、攝影機與 LCD、UART、固定輸入回歸、效能與記憶體實驗 | 延續視覺模型介面、後處理移植、部署、記憶體及除錯經驗；[完整程式與證據](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/engineering-workflow.md) |
-| course15 板上收音 | MDF／DMA 回呼、五秒 RAM 錄音、暖機與逾時、UART 交握及 CRC32、RAM 載入與 WAV 保存 | [獨立錄音韌體](../kws/recording_firmware/README.md)與[主機工具](../kws/recording_tools/README.md)已納入本庫；連續收音實作進一步整合在 finder_mic.c |
-| course17 雙模型 | 自行蒐集資料、MFCC、KWS 訓練與量化、板端比對、現場補樣本及分組交叉驗證 | KWS 與 YOLO 在 FreeRTOS 下整合為語音選擇搜尋目標的系統 |
+| 平台與應用框架 | 固定 GCC、ST Edge AI、Neural-ART 與執行期版本，將 ST 雙模型 FreeRTOS 框架改接語音與視覺模型 | [建置環境](build.md)、[來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
+| 語音資料蒐集子系統 | MDF／DMA 五秒錄音、RAM 啟動、UART 交握及 CRC32、WAV 保存、分類收集與切段 | [錄音韌體](../kws/recording_firmware/README.md)、[主機工具](../kws/recording_tools/README.md)、[collect_n6.py](../kws/collect_n6.py) |
+| KWS 模型建立 | 自行蒐集五分類資料、MFCC、深度可分離卷積、資料增強與分組交叉驗證，匯出 INT8 模型 | [訓練快照](../kws/training_snapshot/README.md)、[訓練演進](../kws/training_history/README.md) |
+| 兩模型部署與整合 | KWS 產碼、既有量化 YOLO 模型介面、ST 後處理、記憶體區隔、共享 NPU 與搜尋狀態 | [KWS 部署](../kws/deployment/README.md)、[app.c](../firmware/Src/app.c)、[連結腳本](../firmware/Gcc/STM32N657xx.ld) |
 
-本頁同時保留「完成過哪些工程工作」與「本版實際使用哪個產物」兩條線。課程 14 自行量化模型的歷史 SHA-256 為 312ea45821140094d6a637d11f2e7daf1c8eb3e9ad5f93b8ed6c595128eaec2e；本版視覺模型的來源與 33167331… 雜湊記錄於 [sources.txt](../sources.txt)。前期自行量化與模型庫修補的成果仍由上表連到原始證據。
+## 本系統的視覺模型介面與後處理整合
 
-## 視覺模型匯出、量化與後處理延續
+視覺使用 [sources.txt](../sources.txt) 固定來源與雜湊的 ST 量化模型 `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`，SHA-256 為 `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`。本專案將其 N6 產碼、ST 推論執行期與實例分割後處理接入雙模型應用，並配置模型輸入、輸出與指令區。
 
-前期分割作品已保存[匯出成功日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log)：ONNX 1.16.1／opset 19 匯出 yolov8n-seg.onnx，再由 onnx2tf 1.26.3 與 TensorFlow 2.18.0 產生 SavedModel／TFLite。ST 逐通道量化另有[設定](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml)與[成功日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log)。
+| 介面／處理 | 整合方式 |
+| --- | --- |
+| 攝影機輸入 | 從顯示視野取中央正方形，縮放成 `256×256 RGB UINT8`；檢查輸入大小與型別 |
+| 模型輸出 | 兩組 INT8 張量分別承載 `1×116×1344` 偵測資料與 `1×64×64×32` 遮罩原型；沿用 ST 轉接層辨識輸出並取得量化參數 |
+| 後處理 | 接入 ST 解碼、非極大值抑制（NMS）與遮罩生成；信心門檻 0.50、NMS 交併比（IoU）0.40、最多 10 個結果 |
+| 搜尋目標 | 從 80 類結果篩選 cup=41、bottle=39、cell phone=67；選最高信心框，連續兩幀且框 IoU 至少 0.30 才發布 FOUND |
+| 顯示適配 | 將框與遮罩映射回液晶螢幕（LCD）中央方形區域；保存遮罩快照，避免下一輪後處理覆寫顯示資料 |
 
-[Model Zoo 修補](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/patches/modelzoo_seg_output_mapping.patch)依張量形狀辨識 1×116×1344 偵測資料與 1×64×64×32 遮罩原型，並驗證型別、類別數、遮罩係數及輸出大小；另完成本機 Neural-ART 產碼參數與映像對齊修補。這些屬於已完成的部署與後處理介面工程。
-
-本雙模型版本將視覺產碼與 ST 後處理接入手部雙模型範例的 FreeRTOS 框架，再加入目標選擇、連續幀確認與狀態顯示。[app.c](../firmware/Src/app.c)、[後處理轉接層](../firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c)、[建置清單](../firmware/mks/ai.mk)保存這一版的整合入口。
-
-前期亦保存[串列中斷傳送試驗的 C／H 與兩版安裝工具](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/tree/main/docs/publication_supplement_20261113/uart_it/source_snapshot)，涵蓋環形佇列、完整列提交、重要訊息預留、HAL 相依修復及部署／還原。它屬於已還原的歷史試驗，正式 A1 仍使用原本的串列傳送方式。
+[app.c](../firmware/Src/app.c)、[app_cam.c](../firmware/Src/app_cam.c)、[後處理轉接層](../firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c)及[建置清單](../firmware/mks/ai.mk)保存這些整合入口。NMS 與遮罩重建演算法保留 ST 來源，本專案實作模型接入、目標與狀態管理、座標適配及跨工作資料交接。
 
 ## 音訊、訓練與板端部署的逐步工作
 
@@ -52,7 +54,7 @@
 | 17. 即時原始資料回傳 | 保存同一視窗的 PCM、637 個 INT8 特徵與五個輸出，以分段十六進位及 CRC32 回傳供電腦比對 | [finder_kws_live_capture／live_send](../firmware/Src/finder_kws.c) |
 | 18. 語音接受狀態機 | 音量、最高分、與次高分差距、連續視窗、命令間隔、安靜後重新啟用；同一持續發音只接受一次 | [finder_voice_poll](../firmware/Src/app.c) |
 
-KWS 的完整路線是 Keras／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX 與量化中繼資料 → Neural-ART → N6。[原始產碼日誌](evidence/development-history/codegen_20261008/codegen.log)保留內部 ONNX 檔名與實際編譯器呼叫；它與前期 YOLO 由 PyTorch 匯出 ONNX 的階段分別說明。這裡的「分組」以原始錄音和 PCM 內容為單位，沒有把它描述成未執行的跨說話者驗證。
+KWS 的完整路線是 Keras／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX 與量化中繼資料 → Neural-ART → N6。[原始產碼日誌](evidence/development-history/codegen_20261008/codegen.log)保留內部 ONNX 檔名與實際編譯器呼叫；此 ONNX 是 ST 工具鏈的內部中介表示。這裡的「分組」以原始錄音和 PCM 內容為單位，沒有把它描述成未執行的跨說話者驗證。
 
 [訓練歷程](../kws/training_history/README.md)另外補入 2026-10-05 初版原檔，呈現早期資料增強、現場補樣本、發音邊界限制，到分組定版的實作演進。[48 段現場收集清單](evidence/development-history/live_dataset_manifest_20261008.json)保存 32 段訓練、16 段保留及逐段 PCM 雜湊。
 
@@ -63,23 +65,28 @@ KWS 的完整路線是 Keras／SavedModel → INT8 TFLite → ST Edge AI 內部 
 | 雙模型排程 | 單一推論工作依序輪詢 KWS 與執行 YOLO，共用 NPU；顯示與 ISP 為另外的工作 | [nn_thread_fct／dp_thread_fct／isp_thread_fct](../firmware/Src/app.c) |
 | 攝影機與顯示協作 | DCMIPP 顯示與推論管線、雙輸入緩衝、計數號誌、顯示互斥鎖、遮罩快照及快取維護 | [app.c](../firmware/Src/app.c)、[app_cam.c](../firmware/Src/app_cam.c) |
 | 目標與狀態一致性 | 接受語音或按鍵後切換類別；用目標世代編號捨棄推論途中切換前的舊結果；連續框 IoU 確認後顯示 FOUND | [finder_select_target 與推論結果發布](../firmware/Src/app.c) |
-| 開機整合 | 時脈、NPU、CPU 快取、外部記憶體、UART、顯示與 FreeRTOS 初始化 | [main.c](../firmware/Src/main.c) |
+| 開機整合 | 沿用 ST 時脈、NPU、CPU 快取、外部記憶體、UART、顯示與 FreeRTOS 啟動，改接本案模型 | [main.c](../firmware/Src/main.c) |
 | 記憶體區隔 | 應用 SRAM、顯示與後處理 PSRAM、獨立視覺指令區；保留 KWS RAM 0x91FC0000／256 KiB、權重 Flash 0x70700000／64 KiB | [連結腳本](../firmware/Gcc/STM32N657xx.ld)、[KWS 記憶體池](../kws/deployment/kws.mpool) |
 | 建置整合 | 納入兩模型、HAL MDF、CMSIS-DSP 與執行環境；統一 FFT 相關編譯設定；將 .flash_section 分開輸出 | [Makefile](../firmware/Makefile)、[kws.mk](../firmware/mks/kws.mk)、[ai.mk](../firmware/mks/ai.mk) |
 | IDE 整理 | 同步來源與標頭的瀏覽入口，核對既有連結、備份、競態檢查與原子替換；建置入口支援 GCC_PATH 並核對 GCC 14.3.1 | [原始同步工具](../tools/ide/README.md)、[IDE 專案](../firmware/STM32CubeIDE/STM32N6570-DK/.project)、[IDE 建置入口](../firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh) |
 | 定版與交付 | 保存來源版本、模型與工具設定、訓練快照、五映像的本機定版包及既有寫入驗證紀錄 | [來源紀錄](source-provenance.json)、[結果](results.md)、[建置說明](build.md) |
 
-KWS 產碼沒有啟用 epoch controller（執行階段控制器）；CPU 執行模型控制流程，NPU 仍執行對應硬體運算。控制程式連入主應用，另配置語音權重；沒有獨立 KWS ecblob 映像。這是本版的配置選擇，沒有宣稱做過 EC 開關效能比較。
+KWS 產碼沒有啟用 epoch controller（執行階段控制器）；CPU 執行模型控制流程，NPU 仍執行對應硬體運算。控制程式連入主應用，另配置語音權重；沒有獨立 KWS ecblob 映像。本版由同一推論工作依序執行兩個模型，控制流程與權重各自按配置連結。
 
 [定版編譯報告](evidence/development-history/codegen_20261008/kws_network_generate_report.txt)記錄 11 個硬體及 1 個軟體 Softmax 執行階段，權重配置 11,409 位元組、活化值 17,440 位元組。這些是 KWS 編譯統計，與兩個模型整合後的全系統記憶體峰值分開解讀。
 
 本機五映像包分別包含 FSBL、應用、視覺權重、KWS 權重、視覺執行指令；不是五個 AI 模型。映像封裝工具使用無金鑰模式（-nk），因此不把封裝標頭描述成密碼學簽章。
 
-## 驗證歷程與公開範圍
+## 驗證與版本對應
 
-[結果說明](results.md)區分早期部署比對、現場資料改進與最終分組模型，保留已有結果的適用範圍。早期 INPUT／PCM 比對及即時 PCM／特徵回傳，用來區分前處理、部署與模型本身的問題；它們也是工程成果，不只看最後的辨識率。
+| 階段 | 保存的結果 | 適用範圍 |
+| --- | --- | --- |
+| 前處理與部署比較 | 即時四例 INT8 特徵與電腦完全一致，輸出最大整數差異為 0、0、3、1 | [早期比較模型的原始報告](evidence/development-history/live_comparison_20261007.json)；固定 INPUT／PCM 比較程式另保留在韌體中 |
+| 模型與資料問題定位 | 同一 silence 樣本在板端、電腦特徵輸入及完整 PCM 前處理三路皆判成 phone | 同份比較報告；保留失敗案例，與後續現場資料改進分開記錄 |
+| 分組定版 | 五折開發驗證 224/227（98.68%）；保留音訊 INT8 15/16（93.75%） | [評估報告](evidence/README.md)；五折用於開發與選輪，保留結果是 16 段單窗離線評估 |
+| 定版板上操作 | cup、bottle、phone 各兩次接受；同輪保存的視覺訊息皆為 found=0 | [2026-10-08 日誌](evidence/development-history/voice_groupcv_20261008.log)；統計語音接受，與較早視覺 FOUND 紀錄分開 |
+| 部署 | 應用與 KWS 權重的寫入及驗證成功 | [部署清單與紀錄](evidence/development-history/deployment_20261008/)；其餘映像沿用已配置內容 |
 
-目前已公開：前期視覺轉換與量化日誌、修改補丁、A1～A5 及串列中斷試驗；本作品的獨立收音韌體、主機工具、訓練歷程、比對／即時擷取程式、配置與離線評估。另補入[原始語音／視覺日誌、早期比較、現場收集、產碼及部署紀錄](evidence/development-history/README.md)，逐項來源與仍缺少的原始紀錄列在[公開內容盤點](publication-review.md)。
+完整[結果說明](results.md)依各次模型雜湊與日誌區分版本。展示影片待補；雙模型系統的獨立供電與冷啟動不列為已實測通過。
 
-上游 HAL、BSP、CMSIS-DSP、RTOS、模型架構、推論執行環境與後處理演算法保留來源聲明。模型轉換、參數選擇、介面修補、驅動整合、資料流程、快取處理、排程、除錯與驗證則在本頁逐一列明。模型權重與預建映像的公開範圍見 [第三方來源說明](../THIRD_PARTY_NOTICES.md)。
-
+本庫保存資料蒐集韌體與主機工具、訓練歷程、比對與即時擷取程式、模型配置、整合應用及[原始證據](evidence/development-history/README.md)。HAL、BSP、CMSIS-DSP、FreeRTOS、ST 推論執行期與視覺後處理保留上游來源。模型權重、原始音訊、模型產碼與預建映像的公開範圍及建置依賴見[第三方來源說明](../THIRD_PARTY_NOTICES.md)與[建置文件](build.md)。

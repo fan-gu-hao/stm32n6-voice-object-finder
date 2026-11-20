@@ -1,46 +1,38 @@
-# Engineering results and publication inventory
+# Published contents, provenance, and build dependencies
 
 [繁體中文](publication-review.md) | [English](publication-review.en.md)
 
-A subsequent review added the [work and evidence map from setup to freeze](development-coverage.en.md). The 67 items below form a disposition list of supplied materials, not an exhaustive master list of all STM32N6 project conversations and files. Explicit historical gaps remain for early environment setup, course13, and temporary terminal programs.
+This repository preserves the application, data processing, model training, firmware integration, and deployment records for the STM32N6 dual-model voice object finder. The main application is in `firmware/`; `vision/` retains the adopted official instance-segmentation reference sources; `kws/` contains the speech-data workflow, training code, and recording dependencies.
 
-Preparation date: 2026-11-13. The 67-item source/evidence report supplied by the user was checked against published dual-model version 988aeb31f35e358c7c75bc898e52a201da4b9298 and vision version c044d7d4230eb2438340255e51df5c88162a3fda. The original project and frozen firmware were left intact.
+## What each part provides
 
-## Published entry points by stage
-
-| Engineering stage | Preserved implementation and evidence | Public entry |
+| Part | Published contents | Reading entry |
 | --- | --- | --- |
-| Earlier models and tool environment | Original model, ONNX, onnx2tf/SavedModel, ST INT8, tool versions, and successful logs | [Complete vision work index](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/WORK_IMPLEMENTATION_INDEX.md) |
-| Model Zoo postprocessing adaptation | Detection/mask output identification, quantized interface and header-generation patches; local Neural-ART argument and image-alignment fixes | [Vision engineering guide](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/engineering-workflow.md) |
-| Vision validation and experiments | A1 sources, A2 numerics/boxes/masks, A3 performance, A4 memory, A5 reliability | [Vision project](https://github.com/fan-gu-hao/stm32n6-instance-segmentation) |
-| Historical serial-interrupt experiment | Queue, interrupt callbacks, HAL dependencies, two installers, deployment and rollback, with experimental-version boundaries | [Experiment source snapshot](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/tree/main/docs/publication_supplement_20261113/uart_it/source_snapshot) |
-| Standalone recording firmware | Five-second recording, DMA callbacks, warm-up, timeout, errors and CRC32; complete FSBL sources, IDE snapshot, and upstream diff | [Recording firmware](../kws/recording_firmware/README.en.md) |
-| Host loading and data collection | Vector-table/RAM startup, serial handshake, exact length and CRC32, WAV, labeling, and segmentation | [Host tools](../kws/recording_tools/README.en.md), [dataset preparation](../kws/prepare_dataset.py) |
-| Training evolution | Initial MFCC/depthwise-separable model and INT8 export, live-data versions 2/3, final grouped version | [Training history](../kws/training_history/README.en.md), [final snapshot](../kws/training_snapshot/README.en.md) |
-| Deployment debugging | Fixed INPUT/PCM comparison code, live raw-window/feature return, and CPU/NPU cache corrections | [Board code](../firmware/Src/finder_kws.c), [comparison reports](evidence/development-history/README.en.md) |
-| Live data and evaluation | 48-clip manifest, usage and PCM hashes; five-fold and held-out evaluation | [Dataset manifest](evidence/development-history/live_dataset_manifest_20261008.json), [evaluation reports](evidence/README.en.md) |
-| Final generation and deployment | Commands, internal ONNX/quantization metadata, execution stages, memory, build, and successful write verification | [Generation and deployment evidence](evidence/development-history/README.en.md) |
-| Live voice and vision | Six final-version command acceptances and non-command results; earlier FOUND vision records, each labeled by version | [Results](results.en.md) |
-| Tasks and memory integration | MDF/DMA, caches, one NPU inference task, display and ISP, target generations, linking, and build | [Engineering workflow](engineering-workflow.en.md), [code tour](code-tour.en.md) |
-| IDE source synchronization | Original tool, path checks, preview, backups, hash-based concurrency checks, and atomic replacement | [Synchronization tool](../tools/ide/README.en.md) |
+| Dual-model application | Sequential NPU use, voice acceptance, target changes, consecutive-frame confirmation, camera and LCD coordination | [app.c](../firmware/Src/app.c), [app_cam.c](../firmware/Src/app_cam.c) |
+| Continuous audio and C frontend | MDF/circular DMA, ring-buffer windows, caches, MFCC, quantized interfaces, and layered comparisons | [finder_mic.c](../firmware/Src/finder_mic.c), [finder_kws.c](../firmware/Src/finder_kws.c) |
+| Data-collection dependencies | Five-second recorder, RAM startup, serial reception, length and CRC32 checks | [Recording sources](../kws/recording_firmware/README.en.md), [host tools](../kws/recording_tools/README.en.md) |
+| Data and training | Labeled recording, segmentation, source groups, features, augmentation, five-fold validation, and quantization | [collect_n6.py](../kws/collect_n6.py), [prepare_dataset.py](../kws/prepare_dataset.py), [training history](../kws/training_history/README.en.md), [final snapshot](../kws/training_snapshot/README.en.md) |
+| Model deployment | KWS network name, memory pools, generation command, internal ONNX stage, and compiler reports | [Deployment settings](../kws/deployment/README.en.md), [generation records](evidence/development-history/README.en.md) |
+| System build | Model/DSP build lists, memory regions, separate command image, and IDE entry | [Makefile](../firmware/Makefile), [kws.mk](../firmware/mks/kws.mk), [linker script](../firmware/Gcc/STM32N657xx.ld), [build notes](build.en.md) |
+| Results and versions | Grouped evaluation, held-out audio, live comparisons, collection manifest, voice/vision logs, and write verification | [Results](results.en.md), [evidence index](evidence/README.en.md) |
+| Development tools | IDE source synchronization, path checks, preview, backups, concurrency checks, and atomic replacement | [IDE tool](../tools/ide/README.en.md) |
 
-## Disposition of the 67 materials
+## Sources and implementation scope
 
-The [itemized inventory](evidence/development-history/review_inventory.json) records each original path, hash, publication location, and disposition. The [provenance record](evidence/development-history/source_provenance.json) additionally records original/public hashes and transformations for the files added in that preparation.
+ST's hand dual-model example supplies the FreeRTOS, camera, display, and inference-runtime base. ST's instance-segmentation example supplies interfaces and postprocessing for the selected vision model. HAL, BSP, CMSIS-DSP, FreeRTOS, and STAI/ATON reuse upstream components. Versions, original file headers, and license indexes are retained in [third-party notices](../THIRD_PARTY_NOTICES.en.md), [model sources](../sources.txt), and [source versions](source-provenance.json).
 
-- Fourteen UART patch/deployment/rollback materials already published in the vision repository were verified against the supplied originals using Git object hashes. Readable C/H sources, the main program, and two installer versions were then added.
-- Recording firmware, early training, IDE synchronization, comparison/live-data reports, and final generation/deployment records were added to their corresponding directories.
-- Existing host recording, collection, and segmentation tools retain their public versions with adjusted paths. Differences from original local paths are not counted again as missing uploads.
-- SDK startup files for other toolchains are indexed through the pinned upstream version. This repository adds CubeIDE source/configuration snapshots while preserving file copyrights and license indexes.
+Project implementation covers the five-class speech dataset and model, live-data iteration, Python/C frontend port, continuous audio capture, quantization-interface checks, CPU/DMA/NPU cache handling, joint model build, search state and inter-task data handoffs, memory layout, and deployment verification. The [code tour](code-tour.en.md) maps these to functions and files.
 
-The 107 content differences in an earlier hash inventory included backups, official SDK files, generated code, and build files; they are not 107 original programs. The additions preserve actual engineering sources and evidence item by item.
+The standalone recorder used by labeled collection originally lived in `course15_n6_mic_test`. It is retained here as a data-collection dependency with its original version and upstream diff. Training and recording-IDE snapshots also retain their original path and environment assumptions, documented in each directory.
 
-## Known material scope
+## Source materials and hashes
 
-- The fixed five-class PC reference report is public, but original line-by-line board CMP logs for INPUT/PCM are not in the supplied report. Code and the existing development-result summary are retained with their evidence level identified.
-- The specified course13 custom-tool directories were absent from the collection results. Environment inheritance and successful course14 conversions are supported by evidence; failure to collect a standalone script is not described as failure to perform that work.
-- Receiver, coefficient-generation, or analysis programs executed temporarily in a terminal and not saved as files cannot be reconstructed verbatim from this report. Existing functions, settings, reports, and development steps have entry points; newly written programs are not passed off as historical originals.
-- Raw recordings, model weights, generated model code, and the complete local frozen five-image package retain the established publication scope. Their roles, versions, and available hashes are documented separately.
-- The demonstration video remains pending. Preparation added no training, builds, flashing, or hardware acceptance tests.
+The [project source-material inventory](evidence/development-history/review_inventory.json) covers 25 dual-model materials and 23 recording-dependency materials. It traces sources and public locations; it is not the total repository file count. [Supplementary provenance](evidence/development-history/source_provenance.json) retains original/public hashes, path substitutions, and excerpt methods. [Evaluation provenance](evidence/provenance.json) traces final training and evaluation files.
 
-The completeness scope of this inventory is the supplied material and evidence accessible in the two repositories. It does not claim access to every file on the user's computer or every historical conversation.
+Model comparisons, voice acceptance, and vision records are presented against their respective versions. Fixed PC reference JSON, board comparison code, and original serial logs are distinct materials; see [test records](results.en.md) for interpretation.
+
+## Materials required for a complete build
+
+The public repository provides sources, configuration, and engineering records. A complete build additionally requires matching vision/KWS generated code and weights, the corresponding runtime, and required SDK dependencies. Raw recordings and prebuilt flash images are not included. Final deployment pointers, image roles, addresses, and available hashes are preserved in the documentation and evidence.
+
+Compiler/tool versions and build entry points are in the [build notes](build.en.md). The demonstration video is pending. Documentation retains existing results, with firmware behavior and original test data kept at their frozen versions.

@@ -2,7 +2,7 @@
 
 [繁體中文](code-tour.md) | [English](code-tour.en.md)
 
-Start with the [complete engineering workflow](engineering-workflow.en.md) for the cross-stage development context, then follow the code entries below. This tour covers host tools, data, models, and the board-side system.
+This tour follows the construction of the dual-model object finder: recording tools, data and training, the board frontend, dual-model integration, memory layout, and deployment. See the [engineering workflow](engineering-workflow.en.md) for the overall sequence.
 
 ## 1. From recording to training data
 
@@ -14,7 +14,7 @@ Start with the [complete engineering workflow](engineering-workflow.en.md) for t
 | [collect_n6.py](../kws/collect_n6.py) | Five-class recording plan, resuming completed work, format and source metadata |
 | [prepare_dataset.py](../kws/prepare_dataset.py): speech_regions / extract_word | Short-time energy, utterance gaps, neighboring-word boundaries, and zero padding; grouping original recordings before cutting one-second clips |
 
-The host tools carry forward the course15 recording work. They still require the matching recording firmware; see the [tool documentation](../kws/recording_tools/README.en.md).
+These host tools acquire speech data for this project and require the matching standalone recording firmware; see the [tool documentation](../kws/recording_tools/README.en.md). Their RAM-loading procedure is distinct from booting the dual-model application from external Flash.
 
 The standalone recorder's [FSBL sources, IDE snapshot, and upstream diff](../kws/recording_firmware/README.en.md) are preserved for comparison with the later continuous capture driver.
 
@@ -43,23 +43,23 @@ The [training history](../kws/training_history/README.en.md) adds the earliest o
 
 ## 3. Audio driver, DMA, and ring buffer
 
-In [finder_mic.c](../firmware/Src/finder_mic.c), finder_mic_start configures the MDF1 clock, GPIO, digital filtering/decimation, and a circular linked list on GPDMA1 Channel6.
+In [finder_mic.c](../firmware/Src/finder_mic.c), finder_mic_start retains the existing system PLL2, configures the IC8 divider, and checks the MDF1 clock. It then sets up PE2/PE8, peripheral and DMA access attributes, digital filtering/decimation, and a circular linked list on GPDMA1 Channel6. The DMA descriptor and sample buffer are aligned to 64 and 32 bytes respectively.
 
-HAL_MDF_AcqHalfCpltCallback / HAL_MDF_AcqCpltCallback process 256 samples per callback. receive_block first handles DMA/CPU cache coherence, skips warm-up blocks, writes into the 32,768-sample ring buffer, and publishes the write position after a memory barrier.
+HAL_MDF_AcqHalfCpltCallback / HAL_MDF_AcqCpltCallback process 256 samples per callback. receive_block first handles DMA/CPU cache coherence, skips 16 warm-up blocks, writes into the 32,768-sample ring buffer, and publishes the write position after a memory barrier.
 
-finder_mic_take obtains the latest 16,000-sample snapshot with a 3,200-sample hop. Ring wraparound is handled with two copies. If copying is delayed long enough for data to be overwritten, the snapshot is discarded. Error callbacks and interrupt entries are retained in the same file.
+finder_mic_take obtains the latest 16,000-sample snapshot after at least 3,200 new samples; the actual interval depends on DMA block delivery and inference-task scheduling. Ring wraparound is handled with two copies. If copying is delayed long enough for data to be overwritten, the snapshot is discarded. Error callbacks and interrupt entries are retained in the same file.
 
 ## 4. C frontend, NPU interface, and comparison tools
 
-[finder_kws.c](../firmware/Src/finder_kws.c) includes both production inference and development comparisons:
+[finder_kws.c](../firmware/Src/finder_kws.c) includes both production inference and development comparisons. The frame, spectrum, power, and log_mel arrays are static to avoid placing them on the task stack. These shared workspaces are restricted to a single inference task.
 
 | Function/section | Reading focus |
 | --- | --- |
 | Static assertions and finder_kws_init | Check input/output counts, shapes, INT8 types, and quantization parameters from training versus generated code |
-| encode_mfcc | DC removal, a 480-sample window/320-sample hop, 512-point real FFT, power spectrum, 40 Mel filters, 13-dimensional DCT, normalization, clipping, and quantization |
+| encode_mfcc | DC removal, a 480-sample window/320-sample hop, and 512-point real FFT; handle the separate DC/Nyquist storage locations, then compute the power spectrum, 40 Mel filters, 13-dimensional DCT, normalization, clipping, and quantization |
 | kws_begin_input_update | Clean the NPU's 64-byte cache lines before the CPU writes new input, invalidate the CPU's stale copy, and issue a barrier |
 | prepare_input_cache | After writing, clean using CPU-cache-line alignment so the NPU can read the input |
-| finder_kws_classify | Asynchronous execution state and event waiting, separate MFCC/model timing, quantized-output reading, and preparation for the next inference |
+| finder_kws_classify | Asynchronous execution state and event waiting, separate MFCC/model timing; the final Softmax runs on the CPU, so read its CPU-produced quantized output directly and prepare the next inference |
 | finder_kws_compare | Test inference directly with reference INT8 features, then frontend plus inference with reference PCM; report input_diff, input_max, output_max, and CMP_Q |
 | finder_kws_live_capture / live_send | Select windows by audio energy and return matching PCM, actual INT8 features, and outputs with offsets and CRC32 |
 
@@ -67,27 +67,47 @@ The [comparison switches](../firmware/Inc/finder_kws_compare.h) are disabled in 
 
 ## 5. Dual models, real-time tasks, and state consistency
 
-[app.c](../firmware/Src/app.c) divides responsibilities among nn_thread_fct, dp_thread_fct, and isp_thread_fct. The inference task runs KWS and YOLO sequentially. Counting semaphores hand off camera buffers, while a mutex and mask snapshots coordinate display data.
+In [app.c](../firmware/Src/app.c), nn_thread_fct calls stai_runtime_init once at startup, initializes the vision network_ctx, and invokes finder_kws_init to initialize the speech-specific context. Each model has its own generated name, context, and input/output pointers, linked to one runtime. The inference task polls KWS and runs YOLO sequentially, without allowing simultaneous NPU use. Asynchronous model calls use LL_ATON_OSAL_WFE when waiting and reset inference state after completion.
 
-finder_voice_poll implements the acceptance state machine: peak amplitude, score, score margin, consecutive hits, minimum interval, and re-arming after quiet windows. finder_select_target updates the target and generation number. If the target changes during inference, old results cannot overwrite the new state. Vision uses the target class and consecutive-box IoU to determine FOUND.
+nn_thread_fct, dp_thread_fct, and isp_thread_fct handle inference, display, and ISP updates respectively, reusing the official framework's static tasks, priorities, and interrupt handoffs. Vision runs continuously; speech changes the search target.
 
-Vision input adaptation, Model Zoo patches, and earlier conversion evidence are covered in the [engineering workflow](engineering-workflow.en.md). This version uses official NMS/mask reconstruction as its core; application code adds target selection, result confirmation, coordinate drawing, and display integration.
+| Function/data | Integration work in this project |
+| --- | --- |
+| nn_thread_fct / nn_input_queue | Counting semaphores hand off camera buffers; invalidate cache, copy into model input, clean cache, and only then return the camera buffer |
+| finder_voice_poll | Peak of at least 2500, score of at least 0.90, margin of at least 0.25 over the runner-up, two consecutive windows, and a 1200 ms minimum interval; re-arm after two quiet windows |
+| finder_select_target / generation | Increment the generation and clear found state on a target change; reject stale results after inference and restart consecutive-hit accumulation |
+| box_iou / FINDER_CONFIRM_FRAMES | Select the highest-confidence result of the requested class; require two consecutive frames with box IoU of at least 0.30 before reporting FOUND |
+| result_mask / drawing_mask | Copy model output into a result snapshot; the display task takes a second drawing snapshot under the mutex, then draws outside the lock to avoid overwrite by later postprocessing |
+| DCMIPP_PipeInitNn / Display_NetworkOutput | Take a central square from the LCD field of view and map boxes/masks back to the same square; render transparent overlays from official NMS/mask-reconstruction results |
+| dp_thread_fct | USER1 rising-edge detection and a 200 ms debounce interval share the speech target-selection interface; clean cache after drawing and swap foreground buffers |
+| voice_error path in finder_voice_poll | Disable speech and show an error when capture/classification returns a runtime error; code paths remain for vision and buttons, excluding initialization assertion failures and without guaranteeing operation after a shared-hardware failure |
+
+These error paths describe source-code behavior, not fault-injection validation or automatic recovery.
 
 ## 6. Startup, memory, code generation, and build
 
-- [main.c](../firmware/Src/main.c): clock, NPU, CPU cache, external memory, UART, and operating-system initialization.
+- [main.c](../firmware/Src/main.c): reuse official clock, NPU/AXISRAM, CPU cache, external-memory, GPU2D, access-attribute, UART, and operating-system initialization, with this version's vision-model header and information connected.
 - [app_cam.c](../firmware/Src/app_cam.c): camera pipelines and model-input interface.
 - [Linker script](../firmware/Gcc/STM32N657xx.ld): application SRAM, vision command Flash, display/postprocessing PSRAM, and reserved KWS RAM.
 - [KWS generation settings](../kws/deployment/README.en.md): separate model name, RAM/Flash addresses, and Neural-ART options.
-- [Makefile](../firmware/Makefile), [ai.mk](../firmware/mks/ai.mk), [kws.mk](../firmware/mks/kws.mk): linking models, runtime, CMSIS-DSP, and firmware, with separate extraction of vision command data.
+- [Makefile](../firmware/Makefile), [ai.mk](../firmware/mks/ai.mk), [kws.mk](../firmware/mks/kws.mk): link both models, the runtime, MDF, and CMSIS-DSP, with consistent compiler settings for FFT and frontend objects. Exclude .flash_section from the application image and extract it separately as vision_commands.bin.
 - [IDE build entry](../firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh): project-relative paths, GCC_PATH, and compiler-version checks.
 
-Some model working memory is allocated at absolute addresses by generated code and must be checked against the memory pools and generation reports. The linker's KWS_RAM usage alone omits these allocations.
+The [final build log](evidence/development-history/deployment_20261008/build.log) can be read alongside the linker script:
 
-[Original generation and deployment evidence](evidence/development-history/README.en.md) records the ST tool's internal ONNX stage, quantization metadata, 11 hardware and 1 software execution stages, memory allocation, and existing write verification. The [IDE synchronization tool](../tools/ide/README.en.md) additionally demonstrates path validation, backups, concurrent-configuration-change detection, and atomic updates.
+| Region | Start/capacity | Usage reported by that link |
+| --- | --- | ---: |
+| Application SRAM | 0x34000400 / 1023 KiB | 535,544 bytes |
+| Vision-command Flash | 0x71380000 / 2 MiB | 230,528 bytes |
+| Application/display PSRAM | 0x91000000 / 16,128 KiB | 8,949,920 bytes |
+| Reserved KWS RAM | 0x91FC0000 / 256 KiB | Reported as 0; generated code allocates at absolute addresses |
+
+KWS generation separately reports 17,440 bytes of activation allocation. The linker's zero does not mean KWS uses no RAM. KWS weights have a 64 KiB reservation at 0x70700000. Reserved capacity, linker usage, and model allocation are different statistics; none is a runtime measurement of whole-system peak memory.
+
+[Original generation and deployment evidence](evidence/development-history/README.en.md) records the ST tool's internal ONNX stage, quantization metadata, 11 hardware stages and 1 CPU Softmax stage, memory allocation, and existing write verification. KWS control code is linked into the application; there is no separate KWS epoch-controller command blob. The [IDE synchronization tool](../tools/ide/README.en.md) additionally demonstrates path validation, backups, concurrent-configuration-change detection, and atomic updates.
 
 ## Sources and contributions
 
-The project uses ST examples, HAL/BSP, CMSIS-DSP, FreeRTOS, camera middleware, STAI/ATON, and official postprocessing. Engineering contributions include the data workflow, model training/quantization, deployment-interface patches, driver integration, cache coherence, task coordination, tooling, and validation described above. Each entry links to actual code.
+The project uses ST examples, HAL/BSP, CMSIS-DSP, FreeRTOS, camera middleware, STAI/ATON, and official postprocessing. Engineering contributions include the speech-data workflow, KWS training/quantization, model-interface and build integration, audio-driver integration, cache coherence, task coordination, tooling, and validation described above. Each entry links to actual code.
 
 Generated coefficients and generated model code are identified as artifacts; their configuration, export, and consistency checks belong to the deployment workflow. Upstream reuse and this project's engineering work are both documented in the [publication inventory](publication-review.en.md).

@@ -2,7 +2,7 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-These files come from existing recording, model-comparison, code-generation, build, and flashing workspaces. Preparation on 2026-11-13 added original text, provenance, and reading notes without retraining or board tests. [Sources and hashes](source_provenance.json) map originals to public copies; the [67-item review inventory](review_inventory.json) records where each received material was placed.
+This directory preserves records from recording, model comparison, code generation, builds, flashing, and board operation during development of the dual-model voice object finder. [Sources and hashes](source_provenance.json) map originals to public copies; the [project source-material inventory](review_inventory.json) indexes this project's sources and its actual recording dependencies.
 
 ## Versions and results
 
@@ -25,11 +25,11 @@ The four live cases are ordered silence, cup, bottle, phone. All four record `in
 
 The silence case was classified as phone by all three paths: the board, PC inference from features, and the complete PC PCM frontend. This failure preserves the model problem observed at the time and connects to later [training evolution](../../../kws/training_history/README.en.md) and live-data collection. The earlier error is not erased, and deployment consistency on four windows is not treated as generalization accuracy.
 
-The fixed five-class `reference.json` contains PC reference data, not line-by-line board INPUT/PCM output. The board-comparison summary in [results](../../results.en.md) remains identified as coming from earlier development records, rather than newly obtained original serial evidence.
+The fixed five-class `reference.json` contains PC reference data, not line-by-line board INPUT/PCM output. The repository does not contain the original line-by-line CMP serial log. [Results](../../results.en.md) therefore identifies that board comparison as an existing development summary, separate from the original comparison JSON.
 
 ## Code generation, memory, and writes
 
-ST Edge AI 4.0.1 accepts the final INT8 TFLite, internally creates `kws_int8_OE_3_3_1.onnx` and [quantization metadata](codegen_20261008/kws_int8_OE_3_3_1_Q.json), then invokes Neural-ART 1.1.3-275. This internal ONNX stage is recorded separately from the earlier explicit PyTorch-to-ONNX export for YOLO.
+ST Edge AI 4.0.1 accepts the final INT8 TFLite, internally creates `kws_int8_OE_3_3_1.onnx` and [quantization metadata](codegen_20261008/kws_int8_OE_3_3_1_Q.json), then invokes Neural-ART 1.1.3-275. This is the intermediate representation used by the N6 compilation tools for this project's quantized KWS model.
 
 The [compiler configuration information](codegen_20261008/kws_network_c_info.json) and text report record:
 
@@ -39,10 +39,10 @@ The [compiler configuration information](codegen_20261008/kws_network_c_info.jso
 
 Both the [KWS write log](deployment_20261008/flash_kws_weights.bin.log) and [application write log](deployment_20261008/flash_finder_signed.bin.log) retain successful verification messages. Their addresses are `0x70700000` and `0x70100000`. The filename's `signed` follows the original tool naming; packaging used no-key mode and is not claimed as a cryptographic signature.
 
-## Publication preparation
+## Record formatting and publication scope
 
 Local project/tool prefixes and debugger serial numbers in JSON/text records were replaced with placeholders, and terminal control codes were removed. Model hashes, numerical values, failure cases, and image-verification results were preserved. Original models, ONNX model files, weights, images, and personal recordings were not added to this repository. The two published compiler JSON files contain graph, quantization-parameter, and allocation information.
 
-The exported report of the original live serial file had already omitted 1,181 `LIVE,D` packet lines; one remaining hexadecimal fragment was additionally omitted during preparation. It is therefore called an event excerpt and cannot be used to revalidate CRC32 for the complete PCM transfer. Original and excerpt hashes are retained separately. The log begins with residual events from a previous run, followed by the complete four-case collection; the two portions are not combined in the counts.
+The exported report of the original live serial file had already omitted 1,181 `LIVE,D` packet lines; the public excerpt additionally omits one remaining hexadecimal fragment. It is therefore called an event excerpt and cannot be used to revalidate CRC32 for the complete PCM transfer. Original and excerpt hashes are retained separately. The log begins with residual events from a previous run, followed by the complete four-case collection; the two portions are not combined in the counts.
 
-The [log observation summary](observations.json) was parsed from retained text. An earlier vision-log line has a truncated ending and remains unchanged; line counts are not scene-recognition rates. Preparation did not add a demonstration video, standalone-power verification, or cold-boot verification for the dual-model system.
+The [log observation summary](observations.json) was parsed from retained text. An earlier vision-log line has a truncated ending and remains unchanged; line counts are not scene-recognition rates. The demonstration video is pending; these materials do not contain passing standalone-power or cold-boot test records for the dual-model system.

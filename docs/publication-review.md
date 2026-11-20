@@ -1,47 +1,38 @@
-# 工程成果與公開材料盤點
+# 公開內容、來源與建置依賴
 
 [繁體中文](publication-review.md) | [English](publication-review.en.md)
 
-後續重審新增[從起步到定版的工作與證據對照](development-coverage.md)。下列 67 項是已提供材料的處理清單，並非整個 STM32N6 專案所有對話與檔案的完整母清單；早期環境、course13 及臨時終端程式仍有明列的歷史缺口。
+本儲存庫保存 STM32N6 雙模型語音找物系統的應用、資料處理、模型訓練、板端整合與部署紀錄。主應用位於 `firmware/`；`vision/` 保存採用的官方實例分割參考來源；`kws/` 保存語音資料流程、訓練程式與收音依賴。
 
-整理日期：2026-11-13。本次以使用者提供的 67 項原始碼／證據報告，接續核對已公開的雙模型版本 988aeb31f35e358c7c75bc898e52a201da4b9298 與視覺版本 c044d7d4230eb2438340255e51df5c88162a3fda。原始專案與定版韌體保持原狀。
+## 各部分提供什麼
 
-## 各階段的公開入口
-
-| 工程階段 | 保存的實作與證據 | 公開入口 |
+| 部分 | 公開內容 | 閱讀入口 |
 | --- | --- | --- |
-| 前期模型與工具環境 | 原始模型、ONNX、onnx2tf／SavedModel、ST INT8、工具版本與成功日誌 | [視覺完整工作索引](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/WORK_IMPLEMENTATION_INDEX.md) |
-| 模型庫後處理適配 | 偵測／遮罩輸出識別、量化介面與產生標頭修補；本機 Neural-ART 參數及映像對齊修補 | [視覺工程導覽](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/main/docs/engineering-workflow.md) |
-| 視覺驗證與實驗 | A1 來源、A2 數值與框／遮罩、A3 效能、A4 記憶體、A5 可靠性 | [視覺專案](https://github.com/fan-gu-hao/stm32n6-instance-segmentation) |
-| 串列中斷歷史試驗 | 佇列、中斷回呼、HAL 相依、兩版安裝工具、部署與還原；保存實驗版本界線 | [試驗來源快照](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/tree/main/docs/publication_supplement_20261113/uart_it/source_snapshot) |
-| 獨立收音韌體 | 五秒錄音、DMA 回呼、暖機、逾時、錯誤與 CRC32；完整 FSBL 來源及 IDE 快照、上游差異 | [錄音韌體](../kws/recording_firmware/README.md) |
-| 主機載入與資料蒐集 | 向量表／RAM 啟動、串列交握、完整長度及 CRC32、WAV、分類與切段 | [主機工具](../kws/recording_tools/README.md)、[資料整理](../kws/prepare_dataset.py) |
-| 模型訓練演進 | 最初 MFCC／深度可分離卷積與 INT8 匯出、現場資料第二／第三版、分組定版 | [訓練歷程](../kws/training_history/README.md)、[定版快照](../kws/training_snapshot/README.md) |
-| 部署除錯 | 固定 INPUT／PCM 比對程式、即時原始視窗與特徵回傳、CPU／NPU 快取修正 | [板端程式](../firmware/Src/finder_kws.c)、[比較報告](evidence/development-history/README.md) |
-| 現場資料與評估 | 48 段收集清單、用途與 PCM 雜湊；五折及保留評估 | [資料清單](evidence/development-history/live_dataset_manifest_20261008.json)、[評估報告](evidence/README.md) |
-| 定版產碼與部署 | 命令、內部 ONNX／量化資訊、執行階段、記憶體、建置與成功寫入驗證 | [產碼與部署證據](evidence/development-history/README.md) |
-| 即時語音與視覺 | 定版六次命令接受、非命令結果；較早視覺 FOUND 紀錄，各自標示版本 | [結果說明](results.md) |
-| 多工作與記憶體整合 | MDF／DMA、快取、單一 NPU 推論工作、顯示與 ISP、目標世代、連結及建置 | [工程流程](engineering-workflow.md)、[程式導讀](code-tour.md) |
-| IDE 來源同步 | 原始同步工具、路徑檢查、預覽、備份、雜湊競態檢查與原子替換 | [同步工具](../tools/ide/README.md) |
+| 雙模型應用 | NPU 依序使用、語音接受、目標切換、連續幀確認、相機與 LCD 協作 | [app.c](../firmware/Src/app.c)、[app_cam.c](../firmware/Src/app_cam.c) |
+| 連續音訊與 C 前處理 | MDF／循環 DMA、環形視窗、快取、MFCC、量化介面與分層比對 | [finder_mic.c](../firmware/Src/finder_mic.c)、[finder_kws.c](../firmware/Src/finder_kws.c) |
+| 資料蒐集依賴 | 五秒錄音韌體、RAM 啟動、串列接收、長度及 CRC32 檢查 | [錄音來源](../kws/recording_firmware/README.md)、[主機工具](../kws/recording_tools/README.md) |
+| 資料與訓練 | 分類錄音、切段、來源分組、特徵、資料增強、五折驗證及量化 | [collect_n6.py](../kws/collect_n6.py)、[prepare_dataset.py](../kws/prepare_dataset.py)、[訓練歷程](../kws/training_history/README.md)、[定版快照](../kws/training_snapshot/README.md) |
+| 模型部署 | KWS 網路名稱、記憶體池、產碼命令、工具內部 ONNX 與配置報告 | [部署設定](../kws/deployment/README.md)、[產碼紀錄](evidence/development-history/README.md) |
+| 系統建置 | 模型與 DSP 建置清單、記憶體分區、獨立指令映像及 IDE 入口 | [Makefile](../firmware/Makefile)、[kws.mk](../firmware/mks/kws.mk)、[連結腳本](../firmware/Gcc/STM32N657xx.ld)、[建置說明](build.md) |
+| 結果與版本 | 分組評估、保留音訊、即時比較、收集清單、語音／視覺日誌與寫入驗證 | [結果](results.md)、[證據索引](evidence/README.md) |
+| 開發工具 | IDE 來源同步、路徑檢查、預覽、備份、競態檢查與原子替換 | [IDE 工具](../tools/ide/README.md) |
 
-## 本次 67 項材料的處理
+## 程式來源與實作範圍
 
-[逐項清單](evidence/development-history/review_inventory.json)記錄每個原始路徑、雜湊、公開位置與處理狀態。[來源紀錄](evidence/development-history/source_provenance.json)另外保存這次補入檔案的原始與公開雜湊及轉換方式。
+ST 手部雙模型範例提供 FreeRTOS、相機、顯示與推論執行環境的底座；ST 實例分割範例提供所選視覺模型的介面與後處理。HAL、BSP、CMSIS-DSP、FreeRTOS 及 STAI／ATON 沿用上游元件。其版本、原始檔頭與授權索引保留，詳見[第三方來源](../THIRD_PARTY_NOTICES.md)、[模型來源](../sources.txt)及[來源版本](source-provenance.json)。
 
-- 視覺專案已先公開的 14 份 UART 修補、部署與還原材料，已用 Git 物件雜湊對照本次原文確認一致；再補入可直接閱讀的 C／H、主程式與兩版安裝工具。
-- 收音韌體、早期訓練、IDE 同步、比較及現場資料報告、定版產碼和部署紀錄已補入對應目錄。
-- 現有主機收音、收集與切段工具沿用已整理的公開路徑版本；其內容與原環境不同之處不重複算成漏傳。
-- SDK 的其他工具鏈啟動檔以固定上游版本索引；本庫補入 CubeIDE 的來源與設定快照，保留各檔著作權及授權索引。
+本專案實作包括五分類語音資料與模型建立、現場資料迭代、Python／C 特徵移植、連續收音、量化介面檢查、CPU／DMA／NPU 快取處理、兩模型共同建置、搜尋狀態與跨工作資料交接、記憶體配置及部署驗證。函式與檔案對應見[程式導讀](code-tour.md)。
 
-先前內容雜湊盤點的 107 種差異，涵蓋備份、官方 SDK、自動產碼與建置檔，不能直接當成 107 份原創程式。這次逐項補的是實際保存的工程來源與證據。
+分類收集程式使用的獨立錄音元件原先位於 `course15_n6_mic_test`。本庫保存它作為資料蒐集依賴，並保留原始版本及上游差異。訓練快照與錄音 IDE 快照也保留當時的路徑及環境假設，使用方式由各目錄說明。
 
-## 已知資料範圍
+## 來源材料與雜湊
 
-- 固定五類電腦參考報告已公開；INPUT／PCM 的原始板端 CMP 逐列日誌不在本次報告內。其程式與既有開發結果摘要保留，且標明來源層級。
-- course13 的指定自訂工具目錄沒有出現在本次收集結果；前期環境沿用的關係及 course14 成功模型轉換紀錄已有證據，沒有把未收集到獨立腳本寫成未做過該工作。
-- 臨時終端機中執行、未另存成檔的接收、係數產生或分析程式，不能由這份報告逐字還原。現有函式、設定、報告與開發步驟已有入口，不以新寫的程式冒充歷史原檔。
-- 原始錄音、模型權重、產生的模型程式與完整五映像凍結包沿用既定公開範圍；它們的角色、版本及可得雜湊分別記錄。
-- 展示影片待補；本次未追加訓練、建置、燒錄或硬體驗收。
+[本專案來源材料清單](evidence/development-history/review_inventory.json)涵蓋 25 項雙模型原始材料與 23 項收音依賴材料；它用於追溯來源與公開位置，不是整個儲存庫的檔案總數。[補充來源紀錄](evidence/development-history/source_provenance.json)保存原始／公開雜湊、路徑替換與節錄方式；[評估來源](evidence/provenance.json)保存定版訓練與評估檔案的追溯資訊。
 
-這份盤點的完整性範圍是本次提供的材料及兩個儲存庫可取得的證據，不宣稱已讀取使用者電腦上所有檔案或所有歷史對話。
+模型比較、語音接受與視覺紀錄依各自版本呈現。固定電腦參考 JSON、板端比較程式與原始串列日誌是不同材料，結果解讀見[測試紀錄](results.md)。
 
+## 完整建置所需材料
+
+公開庫提供原始碼、設定與工程紀錄。完整建置另需匹配版本的視覺／KWS 模型產碼與權重、對應執行環境及所需 SDK；原始錄音與預建燒錄映像不隨庫提供。定版部署指標、映像角色、位址與可得雜湊則保存於文件及證據中。
+
+編譯器、工具版本與入口見[建置說明](build.md)。展示影片待補；公開文件保留既有結果，韌體功能與原始測試數據維持定版內容。
