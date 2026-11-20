@@ -76,7 +76,7 @@ bash firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh \
 | 定版映像更新 | [部署清單](evidence/development-history/deployment_20261008/flash_manifest.json)與[驗證紀錄](evidence/development-history/deployment_20261008/flash_verified.json)確認此次應用 `0x70100000`、KWS 權重 `0x70700000` 的寫入及驗證成功；其餘映像沿用已有配置 |
 | 定版板端操作 | [10月8日日誌](evidence/development-history/voice_groupcv_20261008.log)保存 cup、bottle、phone各兩次正確接受；同輪視覺結果皆為 found=0，因此與10月4日視覺 FOUND 分開記錄 |
 
-現行建置入口是公開整理後的入口；上述成功結果來自保留的歷史建置與硬體紀錄，本次文件整理未重跑建置或燒錄。展示影片與最終雙模型的獨立供電／冷啟動仍待完成，完整結果見[結果說明](results.md)。
+現行建置入口是公開整理後的入口；上述成功結果來自保留的歷史建置與硬體紀錄，本次文件整理未重跑建置或燒錄。[實機展示影片](https://youtu.be/m7wET9g5u6k)已提供；最終雙模型的獨立供電／冷啟動仍待核對，完整結果見[結果說明](results.md)。
 
 [v-tools]: https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/README.md#L112-L116
 [v-runtime]: https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Application/STM32N6570-DK/Makefile#L219

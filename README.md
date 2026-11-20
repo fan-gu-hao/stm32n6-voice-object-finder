@@ -4,6 +4,18 @@
 
 **技術關鍵字：嵌入式人工智慧（Embedded AI）・C／Python・FreeRTOS 多工作・神經網路加速器（NPU）・Neural-ART・關鍵字辨識（KWS）・YOLOv8 實例分割・INT8 量化・梅爾頻率倒譜係數（MFCC）・CMSIS-DSP・MDF／GPDMA・快取一致性・DCMIPP／LCD・UART／CRC32・GDB・連結腳本（Linker script）・模型記憶體池（Memory pool）・權重與指令分區・工具鏈版本對齊・韌體部署。**
 
+<h1 align="center">實機展示</h1>
+
+<p align="center">
+  <a href="https://youtu.be/m7wET9g5u6k">
+    <img src="https://img.youtube.com/vi/m7wET9g5u6k/hqdefault.jpg" alt="STM32N6 雙模型語音找物系統實機展示" width="800">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/m7wET9g5u6k"><strong>▶ 點此觀看完整實機展示影片</strong></a>
+</p>
+
 在 **STM32N6570-DK** 上，從需求、模型與資料建立，到板端整合、除錯及部署，完成一套由語音指定搜尋目標的雙模型系統。說出 `cup`、`bottle` 或 `phone`，自行訓練的語音模型選定目標；持續運作的 YOLOv8 實例分割模型尋找該物件，LCD 顯示搜尋狀態、物件框與遮罩。USER1 按鍵也能切換目標。
 
 本案以 ST 官方手部雙模型範例建立 FreeRTOS 韌體底座，為官方已量化的 YOLOv8 模型重新產生 N6 程式、配對執行期並移植後處理，再建立自己的五分類語音資料與 KWS 模型。工程重點是把**資料、兩個模型、音訊與影像周邊、共享 NPU、記憶體及應用狀態**整合成同一套 MCU 韌體。
@@ -201,7 +213,7 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 | 定版板上語音紀錄 | **6/6 正確接受：cup、bottle、phone 各兩次** | [操作日誌](docs/evidence/development-history/voice_groupcv_20261008.log)；接受後目標與命令一致；後續五次可見目標類別切換，同輪 53 列視覺均為 `found=0` |
 | 本案早期視覺整合 | CUP、PHONE 有 `found=1` | [視覺日誌](docs/evidence/development-history/finder_vision_20261004.log)；與定版語音紀錄分屬不同版本 |
 
-展示影片待補；本雙模型版本的獨立供電與冷啟動尚未列為實測通過。[完整結果與版本對照](docs/results.md)
+[實機展示影片](https://youtu.be/m7wET9g5u6k)已提供；本雙模型版本的獨立供電與冷啟動尚未列為實測通過。[完整結果與版本對照](docs/results.md)
 
 ## 文件、建置與來源
 

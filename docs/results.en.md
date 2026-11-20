@@ -41,7 +41,7 @@ The fixed references and four live cases use different inputs; passing the fixed
 
 The [2026-10-04 vision log](evidence/development-history/finder_vision_20261004.log) retains 5 PHONE lines and 8 CUP lines with found=1. These line counts are not scene success rates; an originally truncated line is also preserved. This earlier vision record does not replace a three-object demonstration of the current integrated version.
 
-The demonstration video is pending. Standalone power, autonomous boot from external Flash, and cold boot of the dual-model system are not listed as tested.
+The [hardware demonstration video](https://youtu.be/m7wET9g5u6k) is available. Standalone power, autonomous boot from external Flash, and cold boot of the dual-model system are not listed as tested.
 
 ## Code-generation and delivery evidence
 

@@ -93,7 +93,7 @@
 | 來源與版本封存 | 原本 firmware／vision 來源、模型版本、訓練快照、本機整合 Git、定版包與雜湊 | [來源紀錄](source-provenance.json)、[訓練快照](../kws/training_snapshot/README.md)；公開庫與本機完整封存的範圍不同 |
 | IDE 來源同步 | linked resources、路徑核對、預覽、備份、雜湊競態檢查、原子替換、編譯器入口 | [同步工具](../tools/ide/README.md)、[建置說明](build.md) |
 | 公開整理 | 來源聲明、程式導覽、證據索引、模型／映像公開界線、提交與同步 | [材料盤點](publication-review.md)、[第三方說明](../THIRD_PARTY_NOTICES.md) |
-| 展示影片 | 預定補拍整合系統的實際操作 | 待補；不以其他版本的測試代替 |
+| 展示影片 | [觀看實機展示](https://youtu.be/m7wET9g5u6k) | 已提供影片；原始量測與版本範圍仍依各項紀錄呈現 |
 
 獨立錄音範例的 FSBL 原始碼與整合系統採用的官方預建啟動 FSBL 是不同材料；公開前者不代表後者已具完整建置來源。映像的無金鑰標頭封裝不描述為密碼學簽章。
 

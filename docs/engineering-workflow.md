@@ -119,6 +119,6 @@ KWS 產碼沒有啟用 epoch controller（執行階段控制器）；CPU 執行�
 | 定版板上操作 | cup、bottle、phone 各兩次接受；同輪保存的視覺訊息皆為 found=0 | [2026-10-08 日誌](evidence/development-history/voice_groupcv_20261008.log)；統計語音接受，與較早視覺 FOUND 紀錄分開 |
 | 部署 | 應用與 KWS 權重的寫入及驗證成功 | [部署清單與紀錄](evidence/development-history/deployment_20261008/)；其餘映像沿用已配置內容 |
 
-完整[結果說明](results.md)依各次模型雜湊與日誌區分版本。展示影片待補；雙模型系統的獨立供電與冷啟動不列為已實測通過。
+完整[結果說明](results.md)依各次模型雜湊與日誌區分版本。[實機展示影片](https://youtu.be/m7wET9g5u6k)已提供；雙模型系統的獨立供電與冷啟動不列為已實測通過。
 
 本庫保存資料蒐集韌體與主機工具、訓練歷程、比對與即時擷取程式、模型配置、整合應用及[原始證據](evidence/development-history/README.md)。HAL、BSP、CMSIS-DSP、FreeRTOS、ST 推論執行期與視覺後處理保留上游來源。模型權重、原始音訊、模型產碼與預建映像的公開範圍及建置依賴見[第三方來源說明](../THIRD_PARTY_NOTICES.md)與[建置文件](build.md)。

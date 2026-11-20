@@ -93,7 +93,7 @@ Source responsibilities: `main.c` changes focus on model headers and startup inf
 | Source/version archiving | Original firmware/vision sources, model versions, training snapshot, integrated local Git, frozen package, and hashes | [Provenance](source-provenance.json), [training snapshot](../kws/training_snapshot/README.en.md); public and complete local archive scopes differ |
 | IDE source synchronization | Linked resources, path checks, preview, backup, hash-based concurrency checks, atomic replacement, and compiler entry | [Sync tool](../tools/ide/README.en.md), [build notes](build.en.md) |
 | Publication preparation | Attribution, code guide, evidence index, model/image publication scope, commits, and synchronization | [Material inventory](publication-review.en.md), [third-party notices](../THIRD_PARTY_NOTICES.en.md) |
-| Demonstration video | Planned recording of integrated-system operation | Pending; tests of other versions do not replace it |
+| Demonstration video | [Watch the hardware demonstration](https://youtu.be/m7wET9g5u6k) | Video provided; recorded measurements and version scope remain tied to their respective evidence |
 
 The standalone recording example's FSBL sources and the official prebuilt boot FSBL used by the integrated system are distinct materials. Publishing the former does not provide complete build sources for the latter. No-key image-header packaging is not described as a cryptographic signature.
 

@@ -47,4 +47,4 @@ Existing firmware and training behavior are unchanged. The Makefile only clarifi
 
 The public repository provides sources, configuration, and engineering records. A complete build additionally requires matching vision/KWS generated code and weights, the corresponding runtime, and required SDK dependencies. Raw recordings and prebuilt flash images are not included. Final deployment pointers, image roles, addresses, and available hashes are preserved in the documentation and evidence.
 
-Compiler/tool versions and build entry points are in the [build notes](build.en.md). The demonstration video is pending. Documentation retains existing results, with firmware behavior and original test data kept at their frozen versions.
+Compiler/tool versions and build entry points are in the [build notes](build.en.md). The [hardware demonstration video](https://youtu.be/m7wET9g5u6k) is available. Documentation retains existing results, with firmware behavior and original test data kept at their frozen versions.
