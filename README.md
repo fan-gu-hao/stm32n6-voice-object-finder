@@ -2,7 +2,7 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-**技術關鍵字：嵌入式人工智慧（Embedded AI）・C／Python・FreeRTOS 多工作・神經網路加速器（NPU）・Neural-ART・關鍵字辨識（KWS）・YOLOv8 實例分割・INT8 量化・梅爾頻率倒譜係數（MFCC）・CMSIS-DSP・MDF／GPDMA・快取一致性・DCMIPP／LCD・UART／CRC32・GDB・連結腳本（Linker script）・模型記憶體池（Memory pool）・權重與指令分區・工具鏈版本對齊・韌體部署。**
+本專案是一套部署在 **STM32N6570-DK** 上的 **微控制器（MCU）級的邊緣人工智慧（Edge AI）雙模型找物系統**。板上的 STM32N657 微控制器整合 **Arm Cortex-M55 處理器與 Neural-ART 神經網路加速器（NPU）**，在同一套 FreeRTOS 韌體中執行自行訓練的關鍵字辨識模型（KWS）與 YOLOv8 實例分割模型；語音前處理、模型推論、搜尋判定及畫面顯示都由開發板完成。
 
 <h1 align="center">實機展示</h1>
 
@@ -16,154 +16,30 @@
   <a href="https://youtu.be/m7wET9g5u6k"><strong>▶ 點此觀看完整實機展示影片</strong></a>
 </p>
 
-本專案在 **STM32N6570-DK** 上完成語音與視覺協作的嵌入式找物系統，開發範圍從需求定義、板端錄音、資料整理與模型訓練，延伸到雙模型韌體、即時運作及部署除錯。說出杯子（`cup`）、水瓶（`bottle`）或手機（`phone`）的英文名稱，自行訓練的語音模型便選定搜尋目標；持續運作的 YOLOv8 實例分割模型辨識影像，液晶螢幕（LCD）顯示搜尋狀態、物件框與遮罩。USER1 按鍵也能切換目標。
+說出杯子（`cup`）、水瓶（`bottle`）或手機（`phone`）的英文名稱，語音模型便選定搜尋目標；攝影機與視覺辨識持續運作，液晶螢幕（LCD）疊加搜尋狀態、物件框與分割遮罩，USER1 按鍵也能切換目標。Cortex-M55 負責周邊控制、音訊特徵、後處理與工作排程，兩個模型依序使用共享 NPU。
+
+系統的開機交接也納入部署：晶片內建開機程式（Boot ROM）啟動第一階段開機載入程式（FSBL），再由 FSBL 將外部快閃記憶體（Flash）中的主應用載入內部 SRAM，交接至應用啟動流程。主應用啟動 FreeRTOS，完成初始化後，建立推論、顯示與影像訊號處理工作。
 
 **本案自行建立五分類語音資料集，設計、訓練並量化關鍵字辨識（KWS）模型，完成 YOLOv8 與 KWS 的 N6 產碼及整合部署。** 在模型與硬體之間，將 Python 語音特徵流程移植為 C，建立電腦與板端的逐項數值比對；配置兩模型的 RAM／Flash、權重與執行指令，實作共享神經網路加速器（NPU）的排程、CPU／DMA／NPU 快取交接，以及 FreeRTOS 工作間的影像、目標狀態與顯示資料協作。開發過程也包含現場誤判分析、補充資料與重新訓練，以及啟動、映像封裝和工具鏈相容性問題的定位與修正。
 
+**技術關鍵字：嵌入式人工智慧（Embedded AI）・微控制器（MCU）・Cortex-M55・開機交接（Boot ROM／FSBL）・C／Python・FreeRTOS 多工作・神經網路加速器（NPU）・Neural-ART・關鍵字辨識（KWS）・YOLOv8 實例分割・INT8 量化・梅爾頻率倒譜係數（MFCC）・CMSIS-DSP・MDF／GPDMA・快取一致性・DCMIPP／LCD・UART／CRC32・GDB・連結腳本（Linker script）・模型記憶體池（Memory pool）・權重與指令分區・工具鏈版本對齊・韌體部署。**
+
+**本頁導覽：**[系統分工](#system-flow) · [開機交接](#boot-flow) · [記憶體配置](#memory-layout) · [模型部署](#model-deployment) · [語音訓練](#kws-training) · [數值除錯](#numerical-debugging) · [工具鏈與封裝](#toolchain-packaging) · [成果](#results) · [完整 32 步](#development-route)
+
 ## 本專案完成的工程實作
 
-| 工作範圍 | 具體實作 | 程式與紀錄 |
-| --- | --- | --- |
-| 語音資料與模型開發 | 建立五分類資料、切段與來源分組；設計深度可分離卷積模型，加入資料增強、資料洩漏檢查、分組五折驗證及 INT8 量化 | [資料整理](kws/prepare_dataset.py)、[定版訓練與量化](kws/training_snapshot/README.md) |
-| 板端收音與數值移植 | 建立 RAM 啟動與 UART／CRC32 收音工具；整合連續 MDF／DMA、環形緩衝與防覆寫快照；移植 C 語音前處理並逐項核對 637 個特徵 | [收音工具](kws/recording_tools/README.md)、[連續收音](firmware/Src/finder_mic.c)、[特徵與比對](firmware/Src/finder_kws.c) |
-| 視覺模型轉換與部署 | 執行 YOLOv8 的 N6 產碼，配對 Runtime1201，移植後處理介面與建置清單，完成中央裁切、目標篩選、座標映射及遮罩顯示 | [產碼流程](vision/deployment/README.md)、[部署與移植步驟](docs/engineering-workflow.md) |
-| 雙模型記憶體配置 | 調整應用 SRAM 邊界、分配 KWS 專用 RAM／Flash，配置視覺指令與後處理區段，核對權重邊界並拆分映像 | [記憶體配置與部署](docs/memory-deployment.md)、[連結腳本](firmware/Gcc/STM32N657xx.ld) |
-| 即時系統與應用狀態 | 兩模型依序共用 NPU；修正相機中斷號誌，處理快取一致性；以目標世代、遮罩快照及語音接受狀態機協調推論與顯示 | [整合應用](firmware/Src/app.c)、[系統架構](docs/architecture.md) |
-| 問題定位與工程交付 | 以固定特徵、固定音訊及即時視窗分層比對；依現場結果迭代資料與模型；對齊產碼／執行期版本並修正封裝偏移，完成建置與板端部署 | [除錯與迭代歷程](docs/original-history-review.md)、[工具鏈與封裝修正](docs/toolchain-compatibility.md) |
+| 工作範圍 | 具體實作 |
+| --- | --- |
+| 語音資料與模型開發 | 建立五分類資料、切段與來源分組；設計深度可分離卷積模型，加入資料增強、資料洩漏檢查、分組五折驗證及 INT8 量化 |
+| 板端收音與數值移植 | 建立 RAM 啟動與 UART／CRC32 收音工具；整合連續 MDF／DMA、環形緩衝與防覆寫快照；移植 C 語音前處理並逐項核對 637 個特徵 |
+| 視覺模型轉換與部署 | 執行 YOLOv8 的 N6 產碼，配對 Runtime1201，移植後處理介面與建置清單，完成中央裁切、目標篩選、座標映射及遮罩顯示 |
+| 雙模型記憶體配置 | 調整應用 SRAM 邊界、分配 KWS 專用 RAM／Flash，配置視覺指令與後處理區段，核對權重邊界並拆分映像 |
+| 即時系統與應用狀態 | 兩模型依序共用 NPU；修正相機中斷號誌，處理快取一致性；以目標世代、遮罩快照及語音接受狀態機協調推論與顯示 |
+| 問題定位與工程交付 | 以固定特徵、固定音訊及即時視窗分層比對；依現場結果迭代資料與模型；對齊產碼／執行期版本並修正封裝偏移，完成建置與板端部署 |
 
 **已保存結果：**五折 INT8 開發驗證 **224/227（98.68%）**；定版模型在 16 段保留音訊的浮點與 INT8 評估皆為 **15/16（93.75%）**；定版板端操作的六次語音命令 **6/6 正確接受**。早期固定五類與四例即時音訊另完成板端／電腦數值對照；這些比較與語音接受紀錄各有版本及測試範圍。[結果與版本範圍](docs/results.md)
 
-## 工程重點：雙模型記憶體配置與部署
-
-**兩個模型的共存，涉及應用連結位址、模型工作區、權重與執行指令的共同配置。** 本案重新配置主應用與 YOLO 的記憶體邊界，再切出 KWS 專用區域；同時處理 CPU／DMA／NPU 快取與資料生命週期。
-
-| 執行時用途 | 位置與保留容量 | 已保存的配置結果 |
-| --- | --- | --- |
-| 主應用、FreeRTOS、驅動與兩模型 CPU 控制程式 | 內部 SRAM，`0x34000400` 起，**1,023 KiB** | 定版連結用量 **535,544 B**；區域結束於 `0x34100000`，避開視覺模型工作區 |
-| YOLO 活化值與輸入輸出 | 模型池中的內部 SRAM／NPU RAM，以及 `0x90000000` 起的外部 RAM 池 | 由視覺模型產碼配置；與應用連結器統計分開追蹤 |
-| 相機、LCD、後處理與遮罩快照 | 外部 PSRAM，`0x91000000` 起，**15.75 MiB** | 連結區段用量 **8,949,920 B**；尾端止於 KWS 專區 |
-| KWS 活化值與輸入輸出 | 外部 PSRAM，`0x91FC0000` 起，**256 KiB** | 模型產碼配置 **17,440 B**，採絕對位址使用 |
-
-| 非揮發儲存內容 | 外部 Flash 位置 | 配置用途 |
-| --- | --- | --- |
-| 主應用開機映像 | `0x70100000` | 儲存封裝映像；應用的連結執行位置是上表內部 SRAM |
-| YOLO 權重 | `0x70380000` | 與 KWS 權重依實際映像邊界核對；已記錄視覺權重為 **3,474,865 B** |
-| KWS 權重 | `0x70700000`，保留 **64 KiB** | 模型產碼配置 **11,409 B** |
-| YOLO 執行階段控制器指令（EC blob） | `0x71380000`，保留 **2 MiB** | 獨立指令區段用量 **230,528 B** |
-
-**實際完成的配置工作：**應用 SRAM 由 1,535 KiB 調整為 1,023 KiB；16 MiB PSRAM 尾端切出 256 KiB 給 KWS；視覺指令與應用從同一 ELF 分開輸出，避免跨位址空洞使映像膨脹。KWS 控制程式連入主應用，沒有另外一份 KWS EC blob。
-
-保留容量、連結器用量與模型產碼配置量各有不同意義。KWS 區域在連結器顯示 0 B，是因為產碼採絕對位址配置。視覺上游 Flash 模型池的容量也不等於權重實際長度；本版依已記錄產物邊界核對與 KWS 的間隔，重新產碼時仍須核對。**[完整位址配置、分配責任與映像邊界](docs/memory-deployment.md)**列出細節與原始依據。
-
-## 完整開發路線：32 步
-
-從需求與視覺部署開始，建立語音資料與模型，再完成即時協作、數值除錯、現場迭代及交付。以下 32 步直接列出實作與程式入口；點選步驟名稱可查看該步的問題、做法、產物及結果。
-
-| 階段 | 步驟 | 工作成果 |
-| --- | --- | --- |
-| [需求與工程版本](#route-foundation) | 01–02 | 定義操作行為，建立正式工程與版本追溯 |
-| [視覺模型與尋物功能](#route-vision) | 03–11 | YOLO N6 產碼、執行期配對、相機與後處理、畫面及記憶體整合 |
-| [語音資料與 KWS 開發](#route-kws) | 12–17 | 錄音、分組、特徵、模型訓練、INT8 量化及第二模型產碼 |
-| [連續收音與雙模型協作](#route-runtime) | 18–21 | 循環 DMA、C 前處理、快取及共享 NPU／跨工作狀態 |
-| [部署除錯與現場改善](#route-debugging) | 22–25 | 封裝對齊、分層數值比對、誤判定位與語音接受規則 |
-| [定版訓練與板端部署](#route-finalization) | 26–30 | 擴充現場資料、分組五折、保留評估、產物同步與語音操作 |
-| [工程交付與實機展示](#route-delivery) | 31–32 | IDE 同步、Git／公開整理與展示影片 |
-
-<a id="route-foundation"></a>
-
-### 01–02｜需求與工程版本
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [01 定義功能與操作](docs/development-steps.md#step-01) | 語音指定 cup、bottle、phone；視覺持續尋物、LCD 顯示狀態與遮罩，USER1 提供手動切換。 | [目標選擇與操作邏輯](firmware/Src/app.c) |
-| [02 建立正式專案並固定版本](docs/development-steps.md#step-02) | 組織正式韌體、視覺參考與 KWS 開發目錄，固定模型、來源提交與工具版本，保存追溯資料。 | [建立視覺工程原碼](tools/development-history/vision_01_prepare_vision.sh)、[來源版本](docs/source-provenance.json)、[模型紀錄](sources.txt)、[建置入口](firmware/Makefile) |
-
-<a id="route-vision"></a>
-
-### 03–11｜視覺模型與尋物功能
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [03 執行 YOLO 模型轉換與 N6 產碼](docs/development-steps.md#step-03) | 在本案執行 ST Edge AI 4.0.1 產碼，產生 N6 網路、STAI 介面、權重及執行指令，完成參考工程建置。 | [本案產碼與建置原碼](tools/development-history/vision_03_generate_and_build_vision.sh)、[產碼參考腳本](vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh)、[Neural-ART 設定](vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json) |
-| [04 配對模型執行期](docs/development-steps.md#step-04) | 將視覺參考的 Runtime1200 與正式底座的 Runtime1100 統一至 Runtime1201，同步標頭、函式庫與 NPU 支援來源。 | [參考執行期配對](tools/development-history/vision_02_match_vision_runtime.py)、[正式執行期配對](tools/development-history/vision_06_match_main_runtime.py)、[執行期連結設定](firmware/mks/ai.mk)、[版本差異與修正](docs/toolchain-compatibility.md) |
-| [05 將手部模型工程改為 YOLO](docs/development-steps.md#step-05) | 替換原模型產碼與編譯清單，接入 YOLO 網路上下文、輸入輸出及啟動介面。 | [六項產物移植](tools/development-history/vision_05_copy_vision_artifacts.sh)、[模型建置替換](tools/development-history/vision_07_update_model_build_list.py)、[模型建置清單](firmware/mks/ai.mk)、[模型初始化與推論](firmware/Src/app.c)、[啟動入口](firmware/Src/main.c) |
-| [06 配置 DCMIPP 裁切與輸入](docs/development-steps.md#step-06) | 從 LCD 視野取中央正方形，縮放為 256×256 RGB 模型輸入，保留顯示管線。 | [DCMIPP_PipeInitNn](firmware/Src/app_cam.c) |
-| [07 移植後處理核心與轉接層](docs/development-steps.md#step-07) | 接入偵測解碼與遮罩生成，設定 80 類、1,344 個候選框及 32 張 64×64 遮罩原型。 | [後處理移植原碼](tools/development-history/vision_08_import_postprocessing.py)、[後處理轉接](firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c)、[應用配置](firmware/Inc/app_config.h) |
-| [08 實作指定物件與連續幀確認](docs/development-steps.md#step-08) | 篩選目標類別的最高信心結果，連續兩幀且框交併比（IoU）至少 0.30 才判定找到。 | [box_iou／目標篩選](firmware/Src/app.c) |
-| [09 整合 LCD 框、遮罩與快照](docs/development-steps.md#step-09) | 將框與遮罩映回顯示座標；分開結果快照與繪圖快照，在鎖外繪製，避免後處理覆寫顯示資料。 | [Display_NetworkOutput／顯示工作](firmware/Src/app.c) |
-| [10 修正相機中斷與緩衝交接](docs/development-steps.md#step-10) | 中斷路徑使用專用號誌介面與必要的工作切換；複製模型輸入並完成快取維護後才歸還相機緩衝。 | [應用與中斷介面整合原碼](tools/development-history/vision_12_integrate_vision_application.py)、[相機佇列／nn_thread_fct](firmware/Src/app.c) |
-| [11 配置視覺記憶體與映像區段](docs/development-steps.md#step-11) | 調整應用 SRAM 邊界，配置 Flash 指令區與 PSRAM 後處理緩衝，從 ELF 分開輸出應用與視覺指令。 | [裁切與記憶體修改原碼](tools/development-history/vision_13_configure_camera_and_memory.py)、[連結腳本](firmware/Gcc/STM32N657xx.ld)、[區段輸出規則](firmware/Makefile) |
-
-<a id="route-kws"></a>
-
-### 12–17｜語音資料與 KWS 開發
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [12 建立五類錄音資料](docs/development-steps.md#step-12) | 收集 47 段五秒錄音：三個命令各 12 段、unknown 8 段、silence 3 段；以 GDB RAM 啟動、UART 與 CRC32 完成板端收音。 | [分類收集](kws/collect_n6.py)、[RAM 啟動](kws/recording_tools/n6_mic_start_and_record.sh)、[接收工具](kws/recording_tools/n6_receive_wav.py) |
-| [13 切段並按原始錄音分組](docs/development-steps.md#step-13) | 依短時能量與相鄰發音邊界切成一秒片段，分為 142 段訓練、49 段驗證，同一原始錄音的切片保持同組。 | [speech_regions／extract_word](kws/prepare_dataset.py) |
-| [14 建立 Python MFCC 前處理](docs/development-steps.md#step-14) | 實作去平均值、Hann 窗、FFT、Mel、對數、DCT 及標準化，產生 49×13 特徵並匯出係數。 | [features 與係數匯出](kws/training_snapshot/train_kws.py) |
-| [15 設計並訓練五分類 KWS](docs/development-steps.md#step-15) | 建立深度可分離卷積網路，加入類別權重、音量／噪音／時間平移增強、選模與訓練紀錄。 | [初版訓練](kws/training_history/20261005_baseline/train_kws.py)、[定版模型設計](kws/training_snapshot/train_kws.py) |
-| [16 從 SavedModel 匯出 INT8](docs/development-steps.md#step-16) | 以訓練資料作代表資料校正，匯出 INT8 TFLite，保存尺度、零點、前處理係數並比較浮點與量化結果。 | [export_int8](kws/training_snapshot/train_kws_groupcv.py) |
-| [17 產生並連入第二模型](docs/development-steps.md#step-17) | 為 KWS 配置獨立名稱、上下文及 RAM／Flash；完成 ST 內部 ONNX 與 Neural-ART 產碼，定版為 11 個 NPU 硬體階段與 1 個 CPU Softmax 階段。 | [KWS 產碼主機流程](tools/development-history/generate_groupcv_model.py)、[記憶體池](kws/deployment/kws.mpool)、[產碼設定](kws/deployment/kws_neuralart.json)、[KWS 建置](firmware/mks/kws.mk) |
-
-<a id="route-runtime"></a>
-
-### 18–21｜連續收音與雙模型協作
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [18 整合連續 MDF／GPDMA 收音](docs/development-steps.md#step-18) | 配置循環 DMA、時脈與存取屬性，以 32,768 點環形緩衝提供最新一秒音訊，處理暖機、跨界與快照覆寫。 | [finder_mic_start／receive_block／finder_mic_take](firmware/Src/finder_mic.c) |
-| [19 將前處理移植為 C](docs/development-steps.md#step-19) | 使用 CMSIS-DSP 實作與 Python 對應的特徵流程，處理實數 FFT 的直流／奈奎斯特配置，產生 637 個 INT8 特徵。 | [encode_mfcc](firmware/Src/finder_kws.c)、[前處理係數](firmware/Inc/finder_kws_tables.h) |
-| [20 處理 CPU／DMA／NPU 快取](docs/development-steps.md#step-20) | DMA 收樣後維護 CPU 快取；更新模型輸入前處理 NPU／CPU 舊快取，寫入後回寫，搭配對齊與記憶體屏障。 | [音訊快取交接](firmware/Src/finder_mic.c)、[kws_begin_input_update／prepare_input_cache](firmware/Src/finder_kws.c) |
-| [21 協調雙模型與跨工作狀態](docs/development-steps.md#step-21) | 同一推論工作依序使用 NPU，顯示與 ISP 工作協作；以目標世代捨棄過期結果，配合遮罩快照維持資料一致性。 | [nn_thread_fct／dp_thread_fct／finder_select_target](firmware/Src/app.c) |
-
-<a id="route-debugging"></a>
-
-### 22–25｜部署除錯與現場改善
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [22 排查建置、啟動與映像封裝](docs/development-steps.md#step-22) | 分開核對建置、封裝、寫入與啟動；將有效載荷偏移由 0x240 修正為 0x400，確認程式內容一致。 | [封裝偏移檢查](tools/development-history/inspect_boot_payload.py)、[對齊修正原碼](tools/development-history/realign_and_flash_application.sh)、[建置與映像抽取](firmware/Makefile)、[封裝修正紀錄](docs/original-history-review.md) |
-| [23 建立三層數值比對](docs/development-steps.md#step-23) | 固定特徵測推論、固定 PCM 測 C 前處理、即時視窗回傳後電腦重算；早期五類固定案例兩路皆正確，PCM 每段 637 個特徵一致。 | [固定參考匯出](tools/development-history/export_fixed_reference.py)、[即時接收與電腦重算](tools/development-history/compare_live_windows.py)、[finder_kws_compare／即時回傳](firmware/Src/finder_kws.c)、[固定參考資料](firmware/Inc/finder_kws_compare_data.h) |
-| [24 定位現場誤判並補入樣本](docs/development-steps.md#step-24) | 用板端與電腦三路比對定位安靜誤判 phone，回收現場語音與底噪補訓，加入逐窗分數及收音統計追查漏接。 | [現場診斷錄製](tools/development-history/record_voice_diagnostics.py)、[現場補訓](kws/train_kws.py)、[診斷與取樣](firmware/Src/finder_kws.c)、[比較結果](docs/evidence/development-history/live_comparison_20261007.json) |
-| [25 設計語音接受規則](docs/development-steps.md#step-25) | 結合音量、分數、分差、連續兩窗、最短間隔與安靜後重新啟用，將分類結果轉為穩定的目標切換事件。 | [finder_voice_poll](firmware/Src/app.c) |
-
-<a id="route-finalization"></a>
-
-### 26–30｜定版訓練與板端部署
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [26 擴充現場資料與開發池](docs/development-steps.md#step-26) | 收集 48 段現場音訊，32 段加入訓練、16 段保留；合併既有 142＋49 段及 4 段現場資料，形成 227 段開發池。 | [現場資料收集程式](tools/development-history/collect_live_dataset.py)、[資料載入](kws/training_snapshot/train_kws_groupcv.py)、[48 段清單](docs/evidence/development-history/live_dataset_manifest_20261008.json) |
-| [27 防洩漏分組五折與最終訓練](docs/development-steps.md#step-27) | 以 PCM 雜湊合併來源組別、隔離保留資料，每折獨立標準化與校正；五折 INT8 為 224/227，以最佳輪數中位數 66 輪重訓。 | [make_splits／make_training／fit_model](kws/training_snapshot/train_kws_groupcv.py)、[五折報告](docs/evidence/kws-groupcv.json) |
-| [28 保留評估與定版產物同步](docs/development-steps.md#step-28) | 浮點與 INT8 在 16 段保留音訊皆為 15/16；同步模型、係數、量化尺度／零點與診斷開關，固定定版版本。 | [定版安裝與建置原碼](tools/development-history/install_build_groupcv.py)、[匯出與評估](kws/training_snapshot/train_kws_groupcv.py)、[量化介面檢查](firmware/Src/finder_kws.c)、[保留報告](docs/evidence/kws-int8-holdout.json) |
-| [29 配置五映像並完成定版寫入](docs/development-steps.md#step-29) | 分工 FSBL、應用、視覺權重、KWS 權重與視覺指令，核對位址及雜湊；定版紀錄保存應用與 KWS 權重兩份寫入驗證。 | [定版寫入與驗證原碼](tools/development-history/flash_groupcv.py)、[連結腳本](firmware/Gcc/STM32N657xx.ld)、[定版寫入清單](docs/evidence/development-history/deployment_20261008/flash_manifest.json)、[寫入驗證](docs/evidence/development-history/deployment_20261008/flash_verified.json) |
-| [30 完成定版語音操作測試](docs/development-steps.md#step-30) | cup、bottle、phone 各兩次，共 6/6 語音命令正確接受且目標對應；語音接受與視覺找物結果分別記錄。 | [定版操作錄製](tools/development-history/record_voice_groupcv.py)、[接受與目標切換](firmware/Src/app.c)、[板端操作日誌](docs/evidence/development-history/voice_groupcv_20261008.log) |
-
-<a id="route-delivery"></a>
-
-### 31–32｜工程交付與實機展示
-
-| 步驟 | 完成內容 | 直接程式、設定或紀錄 |
-| --- | --- | --- |
-| [31 整理 IDE、Git 與公開工程](docs/development-steps.md#step-31) | 同步 IDE 來源與建置入口，保存來源版本、提交與雜湊，整理公開原始碼、依賴及授權。 | [IDE 同步工具](tools/ide/sync_cubeide_sources.py)、[編譯入口](firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh)、[來源紀錄](docs/source-provenance.json) |
-| [32 完成實機展示影片](docs/development-steps.md#step-32) | 實機影片已完成並置於首頁；獨立供電與冷啟動尚無已核對紀錄，與影片及既有板測分開呈現。 | [實機影片](https://youtu.be/m7wET9g5u6k)、[展示應用](firmware/Src/app.c) |
-
-每步的完整說明見[32 步開發詳解](docs/development-steps.md)；既有[工程流程](docs/engineering-workflow.md)與[實作索引](docs/development-coverage.md)保留各項程式、配置與結果的對照。
-
-## 雙模型產碼、執行期與封裝整合
-
-本案以 ST Edge AI 4.0.1 產碼，統一兩模型使用的執行期、建置區段與映像封裝規則，完成從模型產物到板端應用的部署。以下列出開發時採用的官方版本、原設定與本案修正，包含官方文件與 Makefile 在封裝對齊要求上的具體差異。
-
-| 官方來源與原設定 | 本案的整合處理 | 完成結果 |
-| --- | --- | --- |
-| ST 實例分割範例 `42f7d645…`：README 基準為 **ST Edge AI 4.0.0**，Makefile 連結 **Runtime1200**；產碼腳本呼叫系統路徑中的 `stedgeai` | 本案使用 **4.0.1** 產碼，配對 **Runtime1201**，同步更新標頭、函式庫與 NPU 支援來源 | 視覺產碼、參考工程連結與正式工程移植完成 |
-| ST 手部雙模型範例 `6c313001…`：README 基準為 **3.0.0**，GCC 建置連結 **Runtime1100** | 將正式韌體底座統一至 **Runtime1201**，讓 YOLO 與 KWS 使用匹配的共用執行環境 | 雙模型 GCC 工程成功建置 |
-| ST 分割範例的 CubeIDE `ModelZoo` 組態有視覺指令／後處理區段定義，獨立 Makefile 未帶相同設定 | 在正式 Makefile 明確加入 Flash／PSRAM 區段巨集，並分開輸出應用與視覺指令 | 指令與大型後處理緩衝落入預定區域，映像不因位址空洞膨脹 |
-| 同版 ST 分割範例 README 要求 CubeProgrammer **2.21 以上加 `--align`**，但 Makefile 的封裝規則未帶對齊選項 | 本案封裝流程補上對齊，確認有效載荷偏移由 **`0x240` 修正為 `0x400`**，且程式內容一致 | 後續定版紀錄確認應用與 KWS 權重寫入驗證成功，板端完成六次正確語音接受與目標對應 |
-
-版本配對屬跨工具版本的移植工作；封裝部分則有同一官方提交中文件與 Makefile 的具體差異。**[官方原始檔、建置指令、修正與成功紀錄](docs/toolchain-compatibility.md)**逐項說明，並保留本案實際採用的 GCC 路徑。
+<a id="system-flow"></a>
 
 ## 系統如何運作
 
@@ -180,6 +56,85 @@ flowchart TD
 ```
 
 **視覺持續執行，語音負責切換搜尋目標。** KWS 與 YOLO 在同一個推論工作中依序使用 NPU；顯示與影像訊號處理（ISP）由另外兩個 FreeRTOS 工作協作。音訊 DMA 持續收樣，推論工作取出最新的一秒視窗。
+
+### 處理器、NPU 與即時工作的分工
+
+| 執行單元／工作 | 直接負責的內容 | 協作方式 |
+| --- | --- | --- |
+| Cortex-M55／推論工作 `nn` | 取得音訊視窗、計算 MFCC、接受語音命令；取得影像、啟動 YOLO、執行後處理與目標確認 | KWS 與 YOLO 各有上下文及輸入輸出，在同一工作內依序使用共享 NPU |
+| Neural-ART NPU | 執行產碼分配的模型硬體運算階段 | 定版 KWS 包含 11 個 NPU 階段，最後 Softmax 由 CPU 執行；模型控制由產碼與執行期協調 |
+| 顯示工作 `dp` | 取得結果快照，更新搜尋文字、物件框與遮罩 | 在互斥鎖內複製快照，鎖外繪圖，縮短共享資料占用時間 |
+| 影像訊號處理工作 `isp` | 回應影像事件並更新攝影機 ISP | 透過號誌與相機事件協作，和推論／顯示分工 |
+| MDF／GPDMA 與相機周邊 | 持續擷取音訊及影像 | DMA、中斷、緩衝與號誌交接資料；CPU／DMA／NPU 之間明確維護快取一致性 |
+
+### 從分類分數到穩定的搜尋結果
+
+| 判定階段 | 實際條件與作用 |
+| --- | --- |
+| 語音候選 | 音訊峰值至少 **2,500**、第一名分數至少 **90%**，且領先第二名至少 **25 個百分點** |
+| 接受與重新啟用 | **連續兩個視窗**符合，兩次命令接受間隔至少 **1,200 ms**；接受後等待**兩個安靜視窗**才重新啟用 |
+| 視覺後處理 | 信心門檻 **0.50**、非極大值抑制（NMS）的交併比門檻 **0.40**，最多保留 **10** 個結果 |
+| 指定物件確認 | 對應 COCO 的 cup=41、bottle=39、cell phone=67；選取目標類別最高信心框，要求**連續兩幀且框交併比至少 0.30**才顯示找到（FOUND） |
+| 目標切換與舊結果 | 語音與按鍵共用切換介面；更新目標世代並清除命中累積，推論完成後捨棄舊目標的結果。按鍵使用上升緣與 **200 ms** 去彈跳 |
+
+<a id="boot-flow"></a>
+
+## 從上電到雙模型應用：FSBL 與主程式的交接
+
+本案採用官方 FSBL 配合主應用的**載入後執行（Load & Run）**流程。主應用映像儲存在外部 Flash 的 `0x70100000`，向量表與 CPU 程式則連結在**內部 SRAM 的 `0x34000400` 起**；兩個位址分別描述映像保存位置與程式執行配置。
+
+| 開機階段 | 本案中的角色與交接 |
+| --- | --- |
+| 晶片內建開機程式（Boot ROM） | 晶片上電或重設後執行，依開機設定從開機媒體載入 FSBL 至 SRAM，交出控制權。 |
+| 第一階段開機載入程式（FSBL） | 準備載入環境，將外部 Flash 中的主應用載入 SRAM，再跳至應用啟動入口。本案沿用官方 FSBL，並完成與應用封裝、位置及其他部署映像的配合。 |
+| 應用啟動碼 | `Reset_Handler` 設定堆疊、呼叫 `SystemInit`、準備資料區與 C 執行環境，再進入 `main()`。 |
+| FreeRTOS 初始化工作 | `main()` 完成 HAL 與 CPU 快取等基本設定，建立 `main` 工作並啟動排程器；`main_thread_fct()` 再設定時脈、UART、NPU RAM／快取、外部 RAM／Flash 記憶體映射及周邊存取屬性。 |
+| 雙模型應用 | `app_run()` 初始化 LCD、相機及同步物件，建立 `nn`、`dp`、`isp` 三個工作；推論工作接續初始化共用執行期、兩模型與麥克風，開始持續收音、影像推論及畫面更新。 |
+
+這裡的初始化順序具有實際相依性：系統時脈設定會使用延遲服務，因此程式**先啟動 FreeRTOS 排程器，再在初始化工作中設定時脈**。主應用接手後也會重新建立所需的外部記憶體映射；模型權重與視覺指令留在各自的 Flash 區域，執行時依產碼位址存取。
+
+FSBL 的寫入位置依 `ai_fsbl.hex` 內含位址決定。應用檔名 `finder_signed.bin` 沿用既有命名，本案實際採無金鑰模式（`-nk`），完成開機標頭與對齊封裝。
+
+開機依據：[主應用初始化](firmware/Src/main.c)、[應用工作建立](firmware/Src/app.c)、[連結配置](firmware/Gcc/STM32N657xx.ld)、[固定官方 FSBL／應用部署說明](https://github.com/STMicroelectronics/x-cube-n6-ai-hand-landmarks/blob/6c313001f69d3ddb1ffa7bd700aba74f9c11037b/README.md)。
+
+<a id="memory-layout"></a>
+
+## 工程重點：雙模型記憶體配置與部署
+
+**兩個模型的共存，涉及應用連結位址、模型工作區、權重與執行指令的共同配置。** 本案重新配置主應用與 YOLO 的記憶體邊界，再切出 KWS 專用區域；同時處理 CPU／DMA／NPU 快取與資料生命週期。
+
+| 執行時用途 | 位置與保留容量 | 已保存的配置結果 |
+| --- | --- | --- |
+| 主應用、FreeRTOS、驅動與兩模型 CPU 控制程式 | 內部 SRAM，`0x34000400` 起，**1,023 KiB** | 定版連結用量 **535,544 B**；區域結束於 `0x34100000`，避開視覺模型工作區 |
+| YOLO 活化值與輸入輸出 | 模型池中的內部 SRAM／NPU RAM，以及 `0x90000000` 起的外部 RAM 池 | 由視覺模型產碼配置；與應用連結器統計分開追蹤 |
+| 相機、LCD、後處理與遮罩快照 | 外部 PSRAM，`0x91000000` 起，**15.75 MiB** | 連結區段用量 **8,949,920 B**；尾端止於 KWS 專區 |
+| KWS 活化值與輸入輸出 | 外部 PSRAM，`0x91FC0000` 起，**256 KiB** | 模型產碼配置 **17,440 B**，採絕對位址使用 |
+
+| 非揮發儲存內容 | 外部 Flash 位置 | 配置用途 |
+| --- | --- | --- |
+| 第一階段開機載入程式（FSBL） | 依 `ai_fsbl.hex` 內含位址 | 載入主應用並交接至 SRAM 中的啟動碼 |
+| 主應用開機映像 | `0x70100000` | 儲存封裝映像；應用的連結執行位置是上表內部 SRAM |
+| YOLO 權重 | `0x70380000` | 與 KWS 權重依實際映像邊界核對；已記錄視覺權重為 **3,474,865 B** |
+| KWS 權重 | `0x70700000`，保留 **64 KiB** | 模型產碼配置 **11,409 B** |
+| YOLO 執行階段控制器指令（EC blob） | `0x71380000`，保留 **2 MiB** | 獨立指令區段用量 **230,528 B** |
+
+**實際完成的配置工作：**應用 SRAM 由 1,535 KiB 調整為 1,023 KiB；16 MiB PSRAM 尾端切出 256 KiB 給 KWS；視覺指令與應用從同一 ELF 分開輸出，避免跨位址空洞使映像膨脹。KWS 控制程式連入主應用，沒有另外一份 KWS EC blob。
+
+### 三個配置層必須一起調整
+
+| 配置層 | 管理的內容 | 本案實作 |
+| --- | --- | --- |
+| 模型記憶體池（`.mpool`） | 模型編譯器配置權重、活化值及輸入輸出的範圍與存取屬性 | KWS 另設 `0x91FC0000` RAM 與 `0x70700000` Flash，使用獨立網路名稱與產碼符號 |
+| 韌體連結腳本與區段屬性 | CPU 程式、FreeRTOS、全域資料、顯示／後處理緩衝與視覺指令 | 限制應用 SRAM；配置 `.flash_section` 與 `.psram_section (NOLOAD)`，並切出 KWS 專用 RAM |
+| 封裝與燒錄清單 | 實際寫入的內容、位址、長度、開機標頭與對齊 | 配對 FSBL、主應用、兩模型權重及視覺指令，核對各映像雜湊與內容邊界 |
+
+### 權重邊界與記憶體用量的判讀
+
+本版視覺權重自 `0x70380000` 起、長 **3,474,865 B**，實際末端為 `0x706D05B1`（不含），距 KWS 權重起點 `0x70700000` 尚有 **195,151 B**。上游視覺 Flash 模型池的可配置範圍是 `0x70380000–0x71380000`，涵蓋這個 KWS 位置；因此重產視覺模型時，必須再次核對實際產物與產碼使用範圍，不能直接沿用整個 16 MiB 池作為雙模型權重的可用上限。
+
+KWS 區域在連結器顯示 **0 B**，是因為模型產碼以絕對位址使用 RAM；模型報告仍記錄 **17,440 B** 的活化值配置。保留容量、連結器用量、模型產碼配置與執行期間峰值各有不同意義。PSRAM 的 `NOLOAD` 工作緩衝不作為初始化資料塞入燒錄映像；視覺指令則獨立抽出，避免將跨位址空洞寫進應用 BIN。
+
+<a id="model-deployment"></a>
 
 ## 兩個模型如何部署到 N6
 
@@ -205,6 +160,21 @@ KWS 的[原始編譯紀錄](docs/evidence/development-history/codegen_20261008/c
 
 兩個模型各有網路介面與上下文，共用初始化一次的推論執行環境。視覺模型版本與來源固定在 [sources.txt](sources.txt)，KWS 版本則由[模型雜湊與產碼設定](kws/deployment/README.md)追溯。
 
+### 模型產碼如何成為可執行韌體
+
+視覺移植時，實際從參考工程移交六份產物，再同步修改正式韌體的編譯清單、模型初始化、後處理介面與記憶體區段：
+
+| 產碼產物 | 在正式工程中的用途 |
+| --- | --- |
+| `network.c`、`network.h` | 網路執行與模型控制介面，參與 CPU 韌體建置 |
+| `stai_network.c`、`stai_network.h` | STAI 模型介面、上下文及輸入輸出資訊，供應用初始化與呼叫 |
+| `network_ecblobs.h` | 視覺執行階段控制器指令，經連結與區段抽取形成 `vision_commands.bin` |
+| `network_data.xSPI2.bin` | 視覺權重，依部署配置另行寫入外部 Flash |
+
+KWS 另用獨立網路名稱與模型池產碼，將自己的程式及介面連入同一應用，權重另存專區。重新訓練後，模型程式、權重、MFCC 係數、尺度及零點必須一起更新；定版輸入零點由 **8 改為 7**，並在 C 程式中核對模型介面。KWS 本版的階段控制由官方工具產生的 C 程式負責，沒有另外一份 KWS EC 指令包。
+
+<a id="audio-capture"></a>
+
 ## 收音資料流程與連續音訊輸入
 
 資料蒐集子系統建立板上數位麥克風到電腦資料集的完整路徑：啟用開發板串列功能（BSP COM）與 HAL UART，將兩個 UART 驅動來源加入 IDE 連結，經多功能數位濾波器（MDF）取得音訊。以 MDF 錄音範例的周邊設定為基礎，加入區塊數、最小值、最大值及峰對峰值監測，再實作獨立五秒錄音與傳輸流程。
@@ -219,7 +189,7 @@ KWS 的[原始編譯紀錄](docs/evidence/development-history/codegen_20261008/c
 - **DMA 與快取**：循環鏈結描述節點與樣本緩衝分別對齊 64／32 位元組；回呼完成快取處理後，用記憶體屏障發布環形緩衝位置。
 - **滑動視窗一致性**：名目 16 kHz、32,768 點環形緩衝、每窗 16,000 點；累積至少 3,200 個新樣本才可取窗（名目約 200 ms），實際間隔受 DMA 區塊與工作排程影響；處理環形跨界，若複製過程延遲到資料可能被覆寫，就捨棄該次快照。
 
-程式：[獨立錄音來源與上游差異](kws/recording_firmware/README.md) · [RAM 啟動與接收工具](kws/recording_tools/README.md) · [連續收音模組](firmware/Src/finder_mic.c)
+<a id="kws-training"></a>
 
 ## 資料工程與 KWS 訓練演進
 
@@ -232,9 +202,21 @@ KWS 的[原始編譯紀錄](docs/evidence/development-history/codegen_20261008/c
 - **資料洩漏防護**：以 PCM 雜湊識別相同內容並合併來源組別，拒絕標籤矛盾及開發／保留資料重複；每折的標準化與背景噪音只來自訓練組。
 - **可追溯評估**：檢查每折類別覆蓋與組別不交疊，五折選輪後以 66 輪完成最終訓練；現場收集清單另保存 48 段音訊的用途與雜湊，其中 32 段供訓練、16 段保留。
 
-程式：[切段與分組](kws/prepare_dataset.py) · [MFCC 與模型](kws/training_snapshot/train_kws.py) · [分組驗證與量化](kws/training_snapshot/train_kws_groupcv.py) · [版本演進](kws/training_history/README.md)
+定版開發池共有 **227 段**：原始訓練 142 段＋原始驗證 49 段＋早期現場 4 段＋新增現場訓練 32 段。原來 49 段驗證資料納入開發池後，另外保留的 **16 段現場音訊**負責最終評估。五折各自只用該折訓練資料計算標準化、背景噪音與 INT8 校正資料；最佳訓練輪數為 **82、28、66、9、79**，取中位數 **66 輪**，再使用全部 227 段訓練定版模型。
+
+<a id="numerical-debugging"></a>
 
 ## Python／C 數值對照與問題定位
+
+### 電腦訓練與板端 C 共用的特徵規格
+
+| 處理步驟 | 固定參數與輸出 |
+| --- | --- |
+| 音訊視窗 | 一秒、16,000 點、16 位元單聲道；先去除平均值 |
+| 分框與頻譜 | **480 點漢寧窗（Hann window）、320 點位移、512 點快速傅立葉轉換（FFT）**，計算功率頻譜 |
+| 聲學特徵 | **40 個梅爾濾波器（Mel filters）**、自然對數、**13 維離散餘弦轉換（DCT）**，得到 **49×13×1** MFCC |
+| 標準化與量化 | 使用訓練組計算的參數，截限至 **±6**，依模型尺度與零點轉為 **637 個 INT8 特徵值** |
+| 板端一致性 | 匯出同版窗函數、濾波器、DCT 與標準化係數；C 程式處理實數 FFT 的直流／奈奎斯特位置，避免電腦與板端前處理定義不同 |
 
 板端用 CMSIS-DSP 浮點 FFT，接續 Mel 濾波、對數及 DCT，再標準化、截限並量化成 INT8。移植時處理實數 FFT 的直流／奈奎斯特儲存位置，並在編譯及初始化階段檢查形狀、型別、尺度與零點。FFT 與特徵工作區採靜態配置，由單一推論工作使用。
 
@@ -253,7 +235,7 @@ KWS 的[原始編譯紀錄](docs/evidence/development-history/codegen_20261008/c
 
 早期離線驗證即有 48/49，但補入四段現場聲音後，一輪帶標籤的六次口令仍只接受兩次。因此再加入逐窗分數、分差、命中數及削波統計，擴充現場資料並採分組五折選輪，最後完成前述定版保留測試與板端 6/6 語音接受紀錄。
 
-程式：[前處理、推論與比較工具](firmware/Src/finder_kws.c) · [前處理係數](firmware/Inc/finder_kws_tables.h) · [原始比較與結果](docs/results.md)
+<a id="runtime-coordination"></a>
 
 ## FreeRTOS 多工作與共享資源整合
 
@@ -273,7 +255,24 @@ KWS 的[原始編譯紀錄](docs/evidence/development-history/codegen_20261008/c
 
 上述實作將連續音訊、兩個模型、搜尋狀態與顯示資料串成協作流程，並明確處理中斷情境、資料所有權與結果有效期。語音錯誤處理的適用範圍與驗證狀態見[系統架構](docs/architecture.md)及[實作索引](docs/development-coverage.md)。
 
-程式：[推論、顯示與狀態機](firmware/Src/app.c) · [相機裁切](firmware/Src/app_cam.c) · [CPU／NPU 快取順序](firmware/Src/finder_kws.c)
+<a id="toolchain-packaging"></a>
+
+## 雙模型產碼、執行期與封裝整合
+
+本案以 ST Edge AI 4.0.1 產碼，統一兩模型使用的執行期、建置區段與映像封裝規則，完成從模型產物到板端應用的部署。以下列出開發時採用的官方版本、原設定與本案修正，包含官方文件與 Makefile 在封裝對齊要求上的具體差異。
+
+| 官方來源與原設定 | 本案的整合處理 | 完成結果 |
+| --- | --- | --- |
+| ST 實例分割範例 `42f7d645…`：README 基準為 **ST Edge AI 4.0.0**，Makefile 連結 **Runtime1200**；產碼腳本呼叫系統路徑中的 `stedgeai` | 本案使用 **4.0.1** 產碼，配對 **Runtime1201**，同步更新標頭、函式庫與 NPU 支援來源 | 視覺產碼、參考工程連結與正式工程移植完成 |
+| ST 手部雙模型範例 `6c313001…`：README 基準為 **3.0.0**，GCC 建置連結 **Runtime1100** | 將正式韌體底座統一至 **Runtime1201**，讓 YOLO 與 KWS 使用匹配的共用執行環境 | 雙模型 GCC 工程成功建置 |
+| ST 分割範例的 CubeIDE `ModelZoo` 組態有視覺指令／後處理區段定義，獨立 Makefile 未帶相同設定 | 在正式 Makefile 明確加入 Flash／PSRAM 區段巨集，並分開輸出應用與視覺指令 | 指令與大型後處理緩衝落入預定區域，映像不因位址空洞膨脹 |
+| 同版 ST 分割範例 README 要求 CubeProgrammer **2.21 以上加 `--align`**，但 Makefile 的封裝規則未帶對齊選項 | 本案封裝流程補上對齊，確認有效載荷偏移由 **`0x240` 修正為 `0x400`**，且程式內容一致 | 後續定版紀錄確認應用與 KWS 權重寫入驗證成功，板端完成六次正確語音接受與目標對應 |
+
+版本配對屬跨工具版本的移植工作；封裝部分則有同一官方提交中文件與 Makefile 的具體差異。**[官方原始檔、建置指令、修正與成功紀錄](docs/toolchain-compatibility.md)**逐項說明，並保留本案實際採用的 GCC 路徑。
+
+本案早期視覺版已使用 `0x400` 對齊；後續整合即時語音版時，封裝指令曾遺漏對齊選項，造成寫入驗證成功卻沒有正常啟動輸出。逐位元組比較確認程式內容相同後，恢復無金鑰封裝的對齊設定，將有效載荷由 `0x240` 修正為 `0x400`，之後恢復 KWS 輸出並繼續雙模型測試。這次定位同時處理官方入口差異與本案整合時的設定回歸。
+
+<a id="build-delivery"></a>
 
 ## 建置與工程交付
 
@@ -292,7 +291,19 @@ bash firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh \
 
 IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢查與原子替換，使來源瀏覽入口對應工程內容。公開庫補入[視覺產碼來源與配置入口](vision/deployment/README.md)，搭配既有 [KWS 產碼配置](kws/deployment/README.md)，讓兩個模型的部署流程都有可追溯入口。
 
-程式：[連結腳本](firmware/Gcc/STM32N657xx.ld) · [Makefile](firmware/Makefile) · [KWS 建置](firmware/mks/kws.mk) · [IDE 同步](tools/ide/README.md) · [部署證據](docs/evidence/development-history/README.md)
+### 建置、封裝與寫入各自產生什麼
+
+| 階段 | 輸出與用途 |
+| --- | --- |
+| 編譯與連結 | `Project.elf` 保存程式、符號與連結區段，用來檢查記憶體配置；兩個模型與共用執行期連入同一應用 |
+| 分開抽取 | `Project.bin` 排除視覺指令區段；`vision_commands.bin` 只抽取 `.flash_section` |
+| 主應用封裝 | 加入 FSBL 載入所需的開機標頭，核對有效載荷位於 **`0x400`** 且內容與原始 BIN 一致 |
+| 寫入部署 | FSBL 依 HEX 位址；主應用、YOLO 權重、KWS 權重及 YOLO 指令按上方五映像表寫入並核對 |
+| 定版更新 | 保存主應用 `0x70100000` 與 KWS 權重 `0x70700000` 的寫入及驗證成功紀錄；其他三份沿用既有配置 |
+
+目前已核對的工具組合為 **GCC 14.3.1、ST Edge AI 4.0.1、Neural-ART 1.1.3-275、Runtime1201、HAL 1.3.0、FreeRTOS 10.6.2、STM32CubeIDE 2.2.0**。公開庫保留程式與設定，完整重建仍需同版模型產碼、權重及相依工具。
+
+<a id="results"></a>
 
 ## 已有結果與適用範圍
 
@@ -307,7 +318,167 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 
 [實機展示影片](https://youtu.be/m7wET9g5u6k)已提供；本雙模型版本的獨立供電與冷啟動尚未列為實測通過。[完整結果與版本對照](docs/results.md)
 
-## 文件、建置與來源
+<a id="development-route"></a>
+
+## 完整開發路線：32 步
+
+以下依實際開發順序保留全部 32 步；系統設計、判定條件、記憶體、模型流程與除錯結果已在上方展開說明。對應程式與紀錄集中在頁尾的原始碼索引，方便需要查閱實作時逐項追溯。
+
+| 階段 | 步驟 | 工作成果 |
+| --- | --- | --- |
+| [需求與工程版本](#route-foundation) | 01–02 | 定義操作行為，建立正式工程與版本追溯 |
+| [視覺模型與尋物功能](#route-vision) | 03–11 | YOLO N6 產碼、執行期配對、相機與後處理、畫面及記憶體整合 |
+| [語音資料與 KWS 開發](#route-kws) | 12–17 | 錄音、分組、特徵、模型訓練、INT8 量化及第二模型產碼 |
+| [連續收音與雙模型協作](#route-runtime) | 18–21 | 循環 DMA、C 前處理、快取及共享 NPU／跨工作狀態 |
+| [部署除錯與現場改善](#route-debugging) | 22–25 | 封裝對齊、分層數值比對、誤判定位與語音接受規則 |
+| [定版訓練與板端部署](#route-finalization) | 26–30 | 擴充現場資料、分組五折、保留評估、產物同步與語音操作 |
+| [工程交付與實機展示](#route-delivery) | 31–32 | IDE 同步、Git／公開整理與展示影片 |
+
+<a id="route-foundation"></a>
+
+### 01–02｜需求與工程版本
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **01 定義功能與操作** | 語音指定 cup、bottle、phone；視覺持續尋物、LCD 顯示狀態與遮罩，USER1 提供手動切換。 |
+| **02 建立正式專案並固定版本** | 組織正式韌體、視覺參考與 KWS 開發目錄，固定模型、來源提交與工具版本，保存追溯資料。 |
+
+<a id="route-vision"></a>
+
+### 03–11｜視覺模型與尋物功能
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **03 執行 YOLO 模型轉換與 N6 產碼** | 在本案執行 ST Edge AI 4.0.1 產碼，產生 N6 網路、STAI 介面、權重及執行指令，完成參考工程建置。 |
+| **04 配對模型執行期** | 將視覺參考的 Runtime1200 與正式底座的 Runtime1100 統一至 Runtime1201，同步標頭、函式庫與 NPU 支援來源。 |
+| **05 將手部模型工程改為 YOLO** | 替換原模型產碼與編譯清單，接入 YOLO 網路上下文、輸入輸出及啟動介面。 |
+| **06 配置 DCMIPP 裁切與輸入** | 從 LCD 視野取中央正方形，縮放為 256×256 RGB 模型輸入，保留顯示管線。 |
+| **07 移植後處理核心與轉接層** | 接入偵測解碼與遮罩生成，設定 80 類、1,344 個候選框及 32 張 64×64 遮罩原型。 |
+| **08 實作指定物件與連續幀確認** | 篩選目標類別的最高信心結果，連續兩幀且框交併比（IoU）至少 0.30 才判定找到。 |
+| **09 整合 LCD 框、遮罩與快照** | 將框與遮罩映回顯示座標；分開結果快照與繪圖快照，在鎖外繪製，避免後處理覆寫顯示資料。 |
+| **10 修正相機中斷與緩衝交接** | 中斷路徑使用專用號誌介面與必要的工作切換；複製模型輸入並完成快取維護後才歸還相機緩衝。 |
+| **11 配置視覺記憶體與映像區段** | 調整應用 SRAM 邊界，配置 Flash 指令區與 PSRAM 後處理緩衝，從 ELF 分開輸出應用與視覺指令。 |
+
+<a id="route-kws"></a>
+
+### 12–17｜語音資料與 KWS 開發
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **12 建立五類錄音資料** | 收集 47 段五秒錄音：三個命令各 12 段、unknown 8 段、silence 3 段；以 GDB RAM 啟動、UART 與 CRC32 完成板端收音。 |
+| **13 切段並按原始錄音分組** | 依短時能量與相鄰發音邊界切成一秒片段，分為 142 段訓練、49 段驗證，同一原始錄音的切片保持同組。 |
+| **14 建立 Python MFCC 前處理** | 實作去平均值、Hann 窗、FFT、Mel、對數、DCT 及標準化，產生 49×13 特徵並匯出係數。 |
+| **15 設計並訓練五分類 KWS** | 建立深度可分離卷積網路，加入類別權重、音量／噪音／時間平移增強、選模與訓練紀錄。 |
+| **16 從 SavedModel 匯出 INT8** | 以訓練資料作代表資料校正，匯出 INT8 TFLite，保存尺度、零點、前處理係數並比較浮點與量化結果。 |
+| **17 產生並連入第二模型** | 為 KWS 配置獨立名稱、上下文及 RAM／Flash；完成 ST 內部 ONNX 與 Neural-ART 產碼，定版為 11 個 NPU 硬體階段與 1 個 CPU Softmax 階段。 |
+
+<a id="route-runtime"></a>
+
+### 18–21｜連續收音與雙模型協作
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **18 整合連續 MDF／GPDMA 收音** | 配置循環 DMA、時脈與存取屬性，以 32,768 點環形緩衝提供最新一秒音訊，處理暖機、跨界與快照覆寫。 |
+| **19 將前處理移植為 C** | 使用 CMSIS-DSP 實作與 Python 對應的特徵流程，處理實數 FFT 的直流／奈奎斯特配置，產生 637 個 INT8 特徵。 |
+| **20 處理 CPU／DMA／NPU 快取** | DMA 收樣後維護 CPU 快取；更新模型輸入前處理 NPU／CPU 舊快取，寫入後回寫，搭配對齊與記憶體屏障。 |
+| **21 協調雙模型與跨工作狀態** | 同一推論工作依序使用 NPU，顯示與 ISP 工作協作；以目標世代捨棄過期結果，配合遮罩快照維持資料一致性。 |
+
+<a id="route-debugging"></a>
+
+### 22–25｜部署除錯與現場改善
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **22 排查建置、啟動與映像封裝** | 分開核對建置、封裝、寫入與啟動；將有效載荷偏移由 0x240 修正為 0x400，確認程式內容一致。 |
+| **23 建立三層數值比對** | 固定特徵測推論、固定 PCM 測 C 前處理、即時視窗回傳後電腦重算；早期五類固定案例兩路皆正確，PCM 每段 637 個特徵一致。 |
+| **24 定位現場誤判並補入樣本** | 用板端與電腦三路比對定位安靜誤判 phone，回收現場語音與底噪補訓，加入逐窗分數及收音統計追查漏接。 |
+| **25 設計語音接受規則** | 結合音量、分數、分差、連續兩窗、最短間隔與安靜後重新啟用，將分類結果轉為穩定的目標切換事件。 |
+
+<a id="route-finalization"></a>
+
+### 26–30｜定版訓練與板端部署
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **26 擴充現場資料與開發池** | 收集 48 段現場音訊，32 段加入訓練、16 段保留；合併既有 142＋49 段及 4 段現場資料，形成 227 段開發池。 |
+| **27 防洩漏分組五折與最終訓練** | 以 PCM 雜湊合併來源組別、隔離保留資料，每折獨立標準化與校正；五折 INT8 為 224/227，以最佳輪數中位數 66 輪重訓。 |
+| **28 保留評估與定版產物同步** | 浮點與 INT8 在 16 段保留音訊皆為 15/16；同步模型、係數、量化尺度／零點與診斷開關，固定定版版本。 |
+| **29 配置五映像並完成定版寫入** | 分工 FSBL、應用、視覺權重、KWS 權重與視覺指令，核對位址及雜湊；定版紀錄保存應用與 KWS 權重兩份寫入驗證。 |
+| **30 完成定版語音操作測試** | cup、bottle、phone 各兩次，共 6/6 語音命令正確接受且目標對應；語音接受與視覺找物結果分別記錄。 |
+
+<a id="route-delivery"></a>
+
+### 31–32｜工程交付與實機展示
+
+| 步驟 | 完成內容 |
+| --- | --- |
+| **31 整理 IDE、Git 與公開工程** | 同步 IDE 來源與建置入口，保存來源版本、提交與雜湊，整理公開原始碼、依賴及授權。 |
+| **32 完成實機展示影片** | 實機影片已完成並置於首頁；獨立供電與冷啟動尚無已核對紀錄，與影片及既有板測分開呈現。 |
+
+## 原始碼與佐證索引
+
+以下入口供查閱原始碼與核對紀錄；本頁前面的技術說明可直接連續閱讀。
+
+<details>
+<summary>展開各主題與 32 步的原始碼、設定及紀錄</summary>
+
+| 主題 | 對應程式與紀錄 |
+| --- | --- |
+| 語音資料與模型開發 | [資料整理](kws/prepare_dataset.py)、[定版訓練與量化](kws/training_snapshot/README.md) |
+| 板端收音與數值移植 | [收音工具](kws/recording_tools/README.md)、[連續收音](firmware/Src/finder_mic.c)、[特徵與比對](firmware/Src/finder_kws.c) |
+| 視覺模型轉換與部署 | [產碼流程](vision/deployment/README.md)、[部署與移植步驟](docs/engineering-workflow.md) |
+| 雙模型記憶體配置 | [記憶體配置與部署](docs/memory-deployment.md)、[連結腳本](firmware/Gcc/STM32N657xx.ld) |
+| 即時系統與應用狀態 | [整合應用](firmware/Src/app.c)、[系統架構](docs/architecture.md) |
+| 問題定位與工程交付 | [除錯與迭代歷程](docs/original-history-review.md)、[工具鏈與封裝修正](docs/toolchain-compatibility.md) |
+| 收音資料流程與連續音訊輸入 | [獨立錄音來源與上游差異](kws/recording_firmware/README.md) · [RAM 啟動與接收工具](kws/recording_tools/README.md) · [連續收音模組](firmware/Src/finder_mic.c) |
+| 資料工程與 KWS 訓練演進 | [切段與分組](kws/prepare_dataset.py) · [MFCC 與模型](kws/training_snapshot/train_kws.py) · [分組驗證與量化](kws/training_snapshot/train_kws_groupcv.py) · [版本演進](kws/training_history/README.md) |
+| Python／C 數值對照與問題定位 | [前處理、推論與比較工具](firmware/Src/finder_kws.c) · [前處理係數](firmware/Inc/finder_kws_tables.h) · [原始比較與結果](docs/results.md) |
+| FreeRTOS 多工作與共享資源整合 | [推論、顯示與狀態機](firmware/Src/app.c) · [相機裁切](firmware/Src/app_cam.c) · [CPU／NPU 快取順序](firmware/Src/finder_kws.c) |
+| 建置與工程交付 | [連結腳本](firmware/Gcc/STM32N657xx.ld) · [Makefile](firmware/Makefile) · [KWS 建置](firmware/mks/kws.mk) · [IDE 同步](tools/ide/README.md) · [部署證據](docs/evidence/development-history/README.md) |
+
+| 開發步驟 | 對應程式、設定與紀錄 |
+| --- | --- |
+| [01 定義功能與操作](docs/development-steps.md#step-01) | [目標選擇與操作邏輯](firmware/Src/app.c) |
+| [02 建立正式專案並固定版本](docs/development-steps.md#step-02) | [建立視覺工程原碼](tools/development-history/vision_01_prepare_vision.sh)、[來源版本](docs/source-provenance.json)、[模型紀錄](sources.txt)、[建置入口](firmware/Makefile) |
+| [03 執行 YOLO 模型轉換與 N6 產碼](docs/development-steps.md#step-03) | [本案產碼與建置原碼](tools/development-history/vision_03_generate_and_build_vision.sh)、[產碼參考腳本](vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh)、[Neural-ART 設定](vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json) |
+| [04 配對模型執行期](docs/development-steps.md#step-04) | [參考執行期配對](tools/development-history/vision_02_match_vision_runtime.py)、[正式執行期配對](tools/development-history/vision_06_match_main_runtime.py)、[執行期連結設定](firmware/mks/ai.mk)、[版本差異與修正](docs/toolchain-compatibility.md) |
+| [05 將手部模型工程改為 YOLO](docs/development-steps.md#step-05) | [六項產物移植](tools/development-history/vision_05_copy_vision_artifacts.sh)、[模型建置替換](tools/development-history/vision_07_update_model_build_list.py)、[模型建置清單](firmware/mks/ai.mk)、[模型初始化與推論](firmware/Src/app.c)、[啟動入口](firmware/Src/main.c) |
+| [06 配置 DCMIPP 裁切與輸入](docs/development-steps.md#step-06) | [DCMIPP_PipeInitNn](firmware/Src/app_cam.c) |
+| [07 移植後處理核心與轉接層](docs/development-steps.md#step-07) | [後處理移植原碼](tools/development-history/vision_08_import_postprocessing.py)、[後處理轉接](firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c)、[應用配置](firmware/Inc/app_config.h) |
+| [08 實作指定物件與連續幀確認](docs/development-steps.md#step-08) | [box_iou／目標篩選](firmware/Src/app.c) |
+| [09 整合 LCD 框、遮罩與快照](docs/development-steps.md#step-09) | [Display_NetworkOutput／顯示工作](firmware/Src/app.c) |
+| [10 修正相機中斷與緩衝交接](docs/development-steps.md#step-10) | [應用與中斷介面整合原碼](tools/development-history/vision_12_integrate_vision_application.py)、[相機佇列／nn_thread_fct](firmware/Src/app.c) |
+| [11 配置視覺記憶體與映像區段](docs/development-steps.md#step-11) | [裁切與記憶體修改原碼](tools/development-history/vision_13_configure_camera_and_memory.py)、[連結腳本](firmware/Gcc/STM32N657xx.ld)、[區段輸出規則](firmware/Makefile) |
+| [12 建立五類錄音資料](docs/development-steps.md#step-12) | [分類收集](kws/collect_n6.py)、[RAM 啟動](kws/recording_tools/n6_mic_start_and_record.sh)、[接收工具](kws/recording_tools/n6_receive_wav.py) |
+| [13 切段並按原始錄音分組](docs/development-steps.md#step-13) | [speech_regions／extract_word](kws/prepare_dataset.py) |
+| [14 建立 Python MFCC 前處理](docs/development-steps.md#step-14) | [features 與係數匯出](kws/training_snapshot/train_kws.py) |
+| [15 設計並訓練五分類 KWS](docs/development-steps.md#step-15) | [初版訓練](kws/training_history/20261005_baseline/train_kws.py)、[定版模型設計](kws/training_snapshot/train_kws.py) |
+| [16 從 SavedModel 匯出 INT8](docs/development-steps.md#step-16) | [export_int8](kws/training_snapshot/train_kws_groupcv.py) |
+| [17 產生並連入第二模型](docs/development-steps.md#step-17) | [KWS 產碼主機流程](tools/development-history/generate_groupcv_model.py)、[記憶體池](kws/deployment/kws.mpool)、[產碼設定](kws/deployment/kws_neuralart.json)、[KWS 建置](firmware/mks/kws.mk) |
+| [18 整合連續 MDF／GPDMA 收音](docs/development-steps.md#step-18) | [finder_mic_start／receive_block／finder_mic_take](firmware/Src/finder_mic.c) |
+| [19 將前處理移植為 C](docs/development-steps.md#step-19) | [encode_mfcc](firmware/Src/finder_kws.c)、[前處理係數](firmware/Inc/finder_kws_tables.h) |
+| [20 處理 CPU／DMA／NPU 快取](docs/development-steps.md#step-20) | [音訊快取交接](firmware/Src/finder_mic.c)、[kws_begin_input_update／prepare_input_cache](firmware/Src/finder_kws.c) |
+| [21 協調雙模型與跨工作狀態](docs/development-steps.md#step-21) | [nn_thread_fct／dp_thread_fct／finder_select_target](firmware/Src/app.c) |
+| [22 排查建置、啟動與映像封裝](docs/development-steps.md#step-22) | [封裝偏移檢查](tools/development-history/inspect_boot_payload.py)、[對齊修正原碼](tools/development-history/realign_and_flash_application.sh)、[建置與映像抽取](firmware/Makefile)、[封裝修正紀錄](docs/original-history-review.md) |
+| [23 建立三層數值比對](docs/development-steps.md#step-23) | [固定參考匯出](tools/development-history/export_fixed_reference.py)、[即時接收與電腦重算](tools/development-history/compare_live_windows.py)、[finder_kws_compare／即時回傳](firmware/Src/finder_kws.c)、[固定參考資料](firmware/Inc/finder_kws_compare_data.h) |
+| [24 定位現場誤判並補入樣本](docs/development-steps.md#step-24) | [現場診斷錄製](tools/development-history/record_voice_diagnostics.py)、[現場補訓](kws/train_kws.py)、[診斷與取樣](firmware/Src/finder_kws.c)、[比較結果](docs/evidence/development-history/live_comparison_20261007.json) |
+| [25 設計語音接受規則](docs/development-steps.md#step-25) | [finder_voice_poll](firmware/Src/app.c) |
+| [26 擴充現場資料與開發池](docs/development-steps.md#step-26) | [現場資料收集程式](tools/development-history/collect_live_dataset.py)、[資料載入](kws/training_snapshot/train_kws_groupcv.py)、[48 段清單](docs/evidence/development-history/live_dataset_manifest_20261008.json) |
+| [27 防洩漏分組五折與最終訓練](docs/development-steps.md#step-27) | [make_splits／make_training／fit_model](kws/training_snapshot/train_kws_groupcv.py)、[五折報告](docs/evidence/kws-groupcv.json) |
+| [28 保留評估與定版產物同步](docs/development-steps.md#step-28) | [定版安裝與建置原碼](tools/development-history/install_build_groupcv.py)、[匯出與評估](kws/training_snapshot/train_kws_groupcv.py)、[量化介面檢查](firmware/Src/finder_kws.c)、[保留報告](docs/evidence/kws-int8-holdout.json) |
+| [29 配置五映像並完成定版寫入](docs/development-steps.md#step-29) | [定版寫入與驗證原碼](tools/development-history/flash_groupcv.py)、[連結腳本](firmware/Gcc/STM32N657xx.ld)、[定版寫入清單](docs/evidence/development-history/deployment_20261008/flash_manifest.json)、[寫入驗證](docs/evidence/development-history/deployment_20261008/flash_verified.json) |
+| [30 完成定版語音操作測試](docs/development-steps.md#step-30) | [定版操作錄製](tools/development-history/record_voice_groupcv.py)、[接受與目標切換](firmware/Src/app.c)、[板端操作日誌](docs/evidence/development-history/voice_groupcv_20261008.log) |
+| [31 整理 IDE、Git 與公開工程](docs/development-steps.md#step-31) | [IDE 同步工具](tools/ide/sync_cubeide_sources.py)、[編譯入口](firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh)、[來源紀錄](docs/source-provenance.json) |
+| [32 完成實機展示影片](docs/development-steps.md#step-32) | [實機影片](https://youtu.be/m7wET9g5u6k)、[展示應用](firmware/Src/app.c) |
+
+每步的完整說明見[32 步開發詳解](docs/development-steps.md)；既有[工程流程](docs/engineering-workflow.md)與[實作索引](docs/development-coverage.md)保留各項程式、配置與結果的對照。
+
+保留容量、連結器用量與模型產碼配置量各有不同意義。KWS 區域在連結器顯示 0 B，是因為產碼採絕對位址配置。視覺上游 Flash 模型池的容量也不等於權重實際長度；本版依已記錄產物邊界核對與 KWS 的間隔，重新產碼時仍須核對。**[完整位址配置、分配責任與映像邊界](docs/memory-deployment.md)**列出細節與原始依據。
+
+</details>
+
+<details>
+<summary>展開完整文件與來源索引</summary>
 
 - [雙模型記憶體與部署配置](docs/memory-deployment.md)：RAM／Flash 位址、區段、模型池、映像邊界與快取交接。
 - [官方工具鏈相容性](docs/toolchain-compatibility.md)：固定官方版本、原始設定、修正方式與成功部署紀錄。
@@ -317,6 +488,8 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 - [工程流程](docs/engineering-workflow.md)與[原始證據](docs/evidence/development-history/README.md)：模型、資料、部署及實測紀錄。
 - [建置與外部依賴](docs/build.md)：GCC 14.3.1、ST Edge AI 4.0.1、Neural-ART 1.1.3-275、CubeIDE 2.2.0 及相依項目。
 - [公開材料盤點](docs/publication-review.md)與[第三方來源](THIRD_PARTY_NOTICES.md)：保存範圍與授權。
+
+</details>
 
 ## 模型與平台來源
 
