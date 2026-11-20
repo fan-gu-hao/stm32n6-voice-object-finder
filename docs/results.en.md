@@ -2,7 +2,7 @@
 
 [繁體中文](results.md) | [English](results.en.md)
 
-This page summarizes retained development and final-version results for the dual-model voice object finder, separating model versions and test methods. The data comes from evaluation reports, build/write logs, and board-operation records.
+This page summarizes retained development and final-version results for the dual-model voice object finder, separating model versions and test methods. The data comes from evaluation reports, build/write logs, board-operation records, and a renewed review of the original conversations and attachments. The [original development-history review](original-history-review.en.md) identifies the latter sources and their evidentiary limits.
 
 ## Results of the final grouped-training version
 
@@ -10,11 +10,16 @@ This page summarizes retained development and final-version results for the dual
 | --- | --- | --- |
 | Five-fold INT8 development validation | 224/227, 98.68%; aggregate across folds, used for development and epoch selection | [Cross-validation report](evidence/kws-groupcv.json) |
 | Final-model held-out audio | 15/16, 93.75% for both float and INT8; identical classifications on 16 clips, with one cup classified as phone | [Holdout report](evidence/kws-int8-holdout.json) |
+| Single-window score conditions on held-out audio | 11 of 12 command clips were correctly classified and passed the score conditions; 0 of 4 non-command clips falsely passed | [Original training-output reference](original-history-review.en.md); this does not apply the board's volume gate, consecutive-hit requirement, or cooldown |
 | On-board voice operation, 2026-10-08 | Two correct acceptances each for cup, bottle, and phone; no accepted commands for hello or two quiet intervals | [Original voice log](evidence/development-history/voice_groupcv_20261008.log) |
 | Vision in the same session | All 53 retained FINDER lines report found=0 | Same log; [line-by-line observation summary](evidence/development-history/observations.json) |
 | Application and KWS-weight deployment | Application written at 0x70100000 and KWS weights at 0x70700000, with successful verification and retained image hashes | [Image manifest](evidence/development-history/deployment_20261008/flash_manifest.json), [verification record](evidence/development-history/deployment_20261008/flash_verified.json) |
 
 The final KWS model SHA-256 is bc0612680d3e9efc4e5036a433a94d88b20344be4208545c9817ebacb6585b0b. The log preserves candidate hits, command acceptance, and FINDER targets. The target matched each of the six accepted commands; CUP was already selected before the first cup acceptance, while the subsequent five acceptances changed the target class. The six acceptances describe that operation session, not a success rate across arbitrary environments. Short non-command samples also do not establish a long-term false-trigger rate.
+
+For the misclassified held-out clip `cup/take_45.wav`, the INT8 model's highest score, for phone, was 60.9375%, below the 90% command-score threshold. Classifying that window as phone therefore does not mean the system accepted an incorrect phone command. The 15/16 result measures single-window classification; 11/12 and 0/4 check offline score conditions; the six correct acceptances come from a separate board-operation session. These are not one combined success rate.
+
+The original grouped-training attachment retains the end of fold 5, the five-fold summary, every epoch from 1 through 66 of final training, and both float and INT8 holdout results. The best epochs were `[82, 28, 66, 9, 79]`; their median, 66, was used to retrain on all 227 development clips. This directly confirms completion of final training, but is not a complete epoch-by-epoch log of all five folds.
 
 ## Earlier deployment debugging and data improvements
 
@@ -22,13 +27,15 @@ Earlier comparisons used model ffdec67ca044a3b8b94e8e670ee0a1f13225d00569827fdc6
 
 | Stage | Retained observation | Evidence and interpretation |
 | --- | --- | --- |
+| Earlier failure in actual use | Live predictions sometimes favored phone rather than the intended command or environment, prompting fixed-input and live-audio diagnostics | [Original development-history review](original-history-review.en.md); later final-version results do not establish that the initial version was already reliable |
 | Fixed reference audio for five classes | PC reference predictions, quantization parameters, model and frontend-coefficient hashes | [Public reference.json copy](evidence/development-history/fixed_reference_20261007.json); this JSON itself contains PC references only |
-| Fixed INPUT/PCM comparison paths | Test the model with fixed INT8 features, then the complete frontend and inference with fixed PCM | [Comparison code](../firmware/Src/finder_kws.c) and PC reference values are public; original line-by-line board CMP logs are not included, so this row describes the comparison method |
+| Fixed INPUT/PCM comparison results | Both direct INT8-feature input and PCM recomputation classified all five cases correctly, 5/5 per path. Each case had zero differing elements and zero maximum difference across 637 features. In both paths, the maximum integer output difference was 1 for silence and 0 for the other cases | [Comparison code](../firmware/Src/finder_kws.c), [original CMP-output reference](original-history-review.en.md); the original conversation contains ten result lines between `CMP,BEGIN` and `CMP,END`, establishing results as well as the method |
 | Four live comparisons | Matching INT8 input features for silence, cup, bottle, and phone; maximum output integer differences of 0, 0, 3, and 1 | [Original comparison report](evidence/development-history/live_comparison_20261007.json), [serial-event excerpt](evidence/development-history/live_serial_events_20261007.log) |
 | Silence misclassification | The silence case was classified as phone by the board, PC feature-input path, and PC PCM-frontend path | The same original report retains the failure to distinguish model/data issues from porting issues |
+| Retraining with four live clips | Training grew from 142 to 146 clips while validation remained at 49; both float and INT8 scored 48/49 (97.96%) | [Original training-output reference](original-history-review.en.md), [training script from that stage](../kws/train_kws.py); rechecking the four added training clips was not independent validation |
 | Live-data iteration | 48 clips collected: 32 for training and 16 held out, with labels, usage, and PCM hashes | [Live dataset manifest](evidence/development-history/live_dataset_manifest_20261008.json), [training evolution](../kws/training_history/README.en.md) |
 
-Deployment consistency in four cases is not overall model accuracy. Comparison and live-collection switches are disabled in the final version; the original code remains for reading the debugging methods used at the time.
+The fixed references and four live cases use different inputs; passing the fixed five-class comparison does not erase the live silence misclassification. Numerical agreement supports porting correctness for those samples, not overall model accuracy, and helped focus subsequent improvements on data and training. The live-v3 training script is retained, but no separate completed training log for that version has been found, so no completion metrics are assigned to it. Comparison and live-collection switches are disabled in the final version; the original code remains for reading the debugging methods used at the time.
 
 ## Earlier vision and demonstration scope
 

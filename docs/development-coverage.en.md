@@ -2,7 +2,7 @@
 
 [繁體中文](development-coverage.md) | [English](development-coverage.en.md)
 
-This index follows this project's implementation sequence: speech data → KWS training/quantization → N6 generation and numerical porting → KWS/YOLO integration → flashing and freeze. Each stage links actual code, configuration, and results for implementation review and version traceability. The [engineering workflow](engineering-workflow.en.md) describes the complete process.
+This index covers platform and recording tools, vision-model generation, speech data and KWS training, numerical porting, dual-model integration, flashing, and freeze. Work overlapped, so section numbers are not a strict chronology. Each stage links code, configuration, and results. See the [engineering workflow](engineering-workflow.en.md) and [original development-history review](original-history-review.en.md) for earlier failures, corrections, and execution evidence.
 
 ## 0. System goals, platform, and model interfaces
 
@@ -12,6 +12,7 @@ This index follows this project's implementation sequence: speech data → KWS t
 | Tools and runtime | GCC 14.3.1, ST Edge AI 4.0.1, Neural-ART 1.1.3-275, HAL 1.3.0, and FreeRTOS 10.6.2; configure model, MDF, and CMSIS-DSP build dependencies | [Build notes](build.en.md), [ai.mk](../firmware/mks/ai.mk), [kws.mk](../firmware/mks/kws.mk) |
 | Application framework | Reuse ST's dual-model FreeRTOS/camera framework and connect KWS/YOLO, target state, and display data | [Provenance](source-provenance.json), [app.c](../firmware/Src/app.c) |
 | Vision-model source | Select the ST quantized instance-segmentation model with a pinned source/SHA-256 and integrate its N6-generated/runtime interface | [sources.txt](../sources.txt), [model interfaces](engineering-workflow.en.md) |
+| Vision generation/runtime alignment | Run ST Edge AI 4.0.1 vision generation and the reference build in this project; move six generated files into the application and align headers, libraries, and NPU support to Runtime 1201 | [Vision deployment](engineering-workflow.en.md), [original history](original-history-review.en.md) |
 | Vision input/output | 256×256 RGB UINT8 input and two INT8 outputs; check shapes, types, pointers, and sizes, and connect detection/mask-prototype outputs | [app.c](../firmware/Src/app.c), [ST postprocessing adapter](../firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c) |
 | Postprocessing/target selection | Connect ST decoding, non-maximum suppression (NMS), and mask generation, filter the three target classes, and add consecutive-frame confirmation and display mapping | [app.c](../firmware/Src/app.c), [app_cam.c](../firmware/Src/app_cam.c) |
 
@@ -21,6 +22,7 @@ This index follows this project's implementation sequence: speech data → KWS t
 | --- | --- | --- |
 | Standalone recording firmware | Adapt official playback example to five-second RAM recording; DMA half/full copying, warm-up, timeout, errors, length, and CRC32 | [Recording FSBL and upstream diff](../kws/recording_firmware/README.en.md) |
 | RAM startup/debugging | ELF/BIN, stack/entry vector checks, version string, loading, core state, breakpoints, and detach | [Host tools](../kws/recording_tools/README.en.md) |
+| Recording build/startup debugging | Add UART/UART_EX build links, reducing 14 errors to zero; distinguish verified RAM writes from actual execution and check GDB breakpoints, handshake, CRC32, and WAV playback | [Original history](original-history-review.en.md), [recorder source diff](../kws/recording_firmware/README.en.md) |
 | Recording protocol/receiver | Exclusive serial access, query/start handshake, fixed length, trailer, timeout, CRC32, WAV format, and clipping statistics | [n6_receive_wav.py](../kws/recording_tools/n6_receive_wav.py) |
 | Labeled collection | cup/bottle/phone/unknown/silence plan, source/session metadata, format checks, and resume after interruption | [collect_n6.py](../kws/collect_n6.py) |
 | Segmentation/grouping | Locate speech by short-time energy, one-second clips with padding, neighboring-utterance boundaries; group originals before cutting clips | [prepare_dataset.py](../kws/prepare_dataset.py) |
@@ -52,6 +54,7 @@ Five-fold results are development/epoch-selection data; the held-out test is 16 
 | Framework adaptation | Use ST's hand dual-model FreeRTOS framework as the base and connect YOLO/KWS | [Provenance](source-provenance.json), [app.c](../firmware/Src/app.c) |
 | Shared NPU | Poll KWS and run YOLO sequentially within one inference task, with separate display/ISP tasks | `nn_thread_fct` / `dp_thread_fct` / `isp_thread_fct` |
 | Camera-input adaptation | Replace upstream hand-model aspect-ratio handling with a central square scaled to the model input | [app_cam.c](../firmware/Src/app_cam.c) |
+| Camera interrupt queue adaptation | Retain the upstream queue and correct interrupt-context semaphore acquisition and required task switching with `xSemaphoreTakeFromISR` and `portYIELD_FROM_ISR` | [Camera input queue](../firmware/Src/app.c), [original history](original-history-review.en.md) |
 | Target selection/voice acceptance | Three objects, amplitude/score/margin, consecutive windows, command interval, quiet re-arming, and USER1 operation | `finder_voice_poll`, `finder_select_target` |
 | Cross-task consistency | Target generations reject stale results after switching; consecutive-frame box IoU, mask snapshots, and display mutex | [app.c](../firmware/Src/app.c) |
 | Memory/build | Application SRAM, display/postprocessing PSRAM, vision command region, dedicated KWS RAM/Flash; link MDF, DSP, and both models | [Linker script](../firmware/Gcc/STM32N657xx.ld), [build fragment](../firmware/mks/kws.mk) |
@@ -79,7 +82,7 @@ The following details describe buffer, peripheral, feature, and state handoffs. 
 | Manual fallback/debounce | USER1 rising edge and 200 ms interval, sharing the target-selection interface with voice | `dp_thread_fct`, `finder_select_target` |
 | DSP compilation consistency | Use the same compilation settings for FFT and frontend objects to match this version's CMSIS-DSP path | [kws.mk](../firmware/mks/kws.mk) |
 
-Source responsibilities: `main.c` changes focus on model headers and startup information, while `FreeRTOSConfig.h` matches the ST base. Three tasks, static allocation, camera queues, and some interrupt handoffs are provided by the upstream framework. This project integrates the audio/vision application, models, and data/state handoffs; the base framework retains ST attribution.
+Source responsibilities: `main.c` changes focus on model headers and startup information, while `FreeRTOSConfig.h` matches the ST base. Three tasks, static allocation, and camera queues use the ST framework. This project also corrects interrupt-context queue semaphore handling and integrates audio/vision models and new data/state handoffs. Upstream components and actual modifications are attributed separately.
 
 ## 4. Freeze, IDE, and delivery
 
@@ -99,7 +102,7 @@ The standalone recording example's FSBL sources and the official prebuilt boot F
 | Result | Material | Interpretation |
 | --- | --- | --- |
 | Earlier four-example live comparison | [live_comparison_20261007.json](evidence/development-history/live_comparison_20261007.json) | All INT8 feature differences are zero; maximum integer output differences are 0, 0, 3, and 1; this evaluates the numerical port |
-| Fixed INPUT/PCM paths | [finder_kws_compare](../firmware/Src/finder_kws.c), [PC reference](evidence/development-history/fixed_reference_20261007.json) | Code tests the model and complete frontend separately; reference.json holds PC reference values and does not itself establish board comparison results |
+| Fixed INPUT/PCM paths | [Comparison code](../firmware/Src/finder_kws.c), [PC reference](evidence/development-history/fixed_reference_20261007.json), [actual output retained in the original conversation](original-history-review.en.md) | Both paths classify all five classes correctly; each PCM case has 637 matching INT8 features. Maximum output integer differences are zero except for silence at one. This is a numerical consistency check on five fixed examples |
 | Grouped-model five-fold validation | [kws-groupcv.json](evidence/kws-groupcv.json) | 224/227, 98.68%, used for development and epoch selection |
 | Final INT8 held-out audio | [kws-int8-holdout.json](evidence/kws-int8-holdout.json) | 15/16, 93.75%, based on 16 single-window offline examples |
 | Final on-board voice acceptance | [2026-10-08 operation log](evidence/development-history/voice_groupcv_20261008.log) | Each of three commands is accepted twice; vision has found=0 throughout the same run, so voice acceptance is not counted as successful end-to-end object finding |

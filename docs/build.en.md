@@ -4,6 +4,8 @@
 
 The environment used was GCC 14.3.1, ST Edge AI 4.0.1, ATON 1.1.3-275, `NetworkRuntime1201_CM55_GCC.a`, HAL 1.3.0, and FreeRTOS 10.6.2, with STM32CubeIDE 2.2.0.
 
+The checked build path is GCC: the vision reference's Runtime1200 and the hand-framework base's Runtime1100 were aligned to GCC Runtime1201 during integration. The retained IAR configuration in `ai.mk` still points to Runtime1100 and is not listed as a completed build path for this project. Vision generation, memory sections, and image packaging are traced in the [engineering workflow](engineering-workflow.en.md) and [original-history review](original-history-review.en.md).
+
 The public repository retains application sources, build settings, and training scripts. Models and prebuilt images are outside the publication scope. A complete build still requires matching generated model code and runtime dependencies; downloading this repository alone does not provide an immediately buildable package.
 
 Model locations in the complete local project are `firmware/Model/` and `firmware/Model/kws/st_ai_output/`. The actual compilation lists are defined in `firmware/mks/ai.mk` and `firmware/mks/kws.mk`.

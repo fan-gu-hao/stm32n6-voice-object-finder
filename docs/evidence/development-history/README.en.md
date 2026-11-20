@@ -25,7 +25,7 @@ The four live cases are ordered silence, cup, bottle, phone. All four record `in
 
 The silence case was classified as phone by all three paths: the board, PC inference from features, and the complete PC PCM frontend. This failure preserves the model problem observed at the time and connects to later [training evolution](../../../kws/training_history/README.en.md) and live-data collection. The earlier error is not erased, and deployment consistency on four windows is not treated as generalization accuracy.
 
-The fixed five-class `reference.json` contains PC reference data, not line-by-line board INPUT/PCM output. The repository does not contain the original line-by-line CMP serial log. [Results](../../results.en.md) therefore identifies that board comparison as an existing development summary, separate from the original comparison JSON.
+The fixed five-class `reference.json` contains PC reference data, not line-by-line board INPUT/PCM output. On 2026-11-20, actual CMP output was recovered from the original development conversation. The [review and excerpts](../../original-history-review.en.md) document five correct classes in each path, 637 matching INT8 features per PCM case, and maximum integer output differences of zero except for silence at one. These are excerpts from terminal results pasted into the conversation, not a newly recovered complete original serial log, and are identified separately from the PC reference JSON here.
 
 ## Code generation, memory, and writes
 

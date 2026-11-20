@@ -4,6 +4,8 @@
 
 已使用的環境為 GCC 14.3.1、ST Edge AI 4.0.1、ATON 1.1.3-275、`NetworkRuntime1201_CM55_GCC.a`、HAL 1.3.0 與 FreeRTOS 10.6.2。IDE 為 STM32CubeIDE 2.2.0。
 
+本案核對的是 GCC 建置路徑：視覺參考工程的 Runtime1200 與正式手部底座的 Runtime1100，均在整合時配對至 GCC Runtime1201。`ai.mk` 保留的 IAR 設定仍指向 Runtime1100，未列為本案已完成的建置路徑。視覺產碼、記憶體區段及映像封裝的演進見[工程流程](engineering-workflow.md)與[原始歷程覆核](original-history-review.md)。
+
 公開儲存庫保存應用程式、建置設定及訓練腳本。模型與預建映像未納入公開範圍，完整建置仍須具備對應版本的模型產碼與執行環境。不得將單獨下載公開儲存庫描述為可立即完成建置。
 
 完整本機專案的模型位置為 `firmware/Model/` 與 `firmware/Model/kws/st_ai_output/`。實際編入清單以 `firmware/mks/ai.mk` 與 `firmware/mks/kws.mk` 為準。

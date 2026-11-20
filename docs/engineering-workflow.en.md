@@ -6,6 +6,21 @@ This project builds a Keyword Spotting (KWS) and YOLOv8 instance-segmentation sy
 
 Vision continuously processes the camera image; the voice commands cup, bottle, and phone change the search target. Both models use the NPU sequentially in one inference task, with separate display and ISP tasks. The [implementation and evidence index](development-coverage.en.md) maps each step to code, configuration, and results.
 
+## Development sequence and stage-specific results
+
+The project first established the vision application, then added a KWS model trained on collected data, and finally addressed real-time recognition and deployment issues. Earlier vision/recording projects and attempts that were not adopted are covered in the [original-history review](original-history-review.en.md); results remain attributed to the project and model version that produced them.
+
+| Order/date | Work completed | Relationship to the final system |
+| --- | --- | --- |
+| Preceding recording dependency | course15 established N6 recording firmware and host reception tools | course17 reused this recording entry point for data collection; the recorder sources and tools it depends on were subsequently included in this repository |
+| 2026-10-04: vision generation | Create course17, pin the official segmentation example and ST quantized YOLO source, generate code in its own `vision/` tree, match Runtime1201, build, and package | `vision_20261004_181810` records this project's own vision generation/reference-application build |
+| 2026-10-04: main application | Base `firmware/` on the official dual-model hand example, bring in generated YOLO code, adapt postprocessing, center cropping, target selection, memory, and task handoffs; build the vision application and record board operation | `finder_vision_20261004_193031_265404` is the main application's vision build; USER1 selected targets at this stage, before voice control |
+| 2026-10-05: data and initial KWS | Record five classes, segment/group source recordings, compute MFCCs, train, and export INT8 | The initial training source is retained separately from the later final grouped version |
+| 2026-10-06: KWS core and capture integration | KWS generation, C features/model interface, dedicated memory, CMSIS-DSP build integration, continuous MDF/DMA capture, and voice acceptance state | Progress from a buildable core to the live dual-model system; compilation alone does not establish recognition performance |
+| 2026-10-06 to 10-07: deployment/numerical debugging | Investigate the black screen and core fault, inspect payload offsets and restore `0x400` alignment; compare fixed features, identical PCM, and live windows between PC and board | Retain the packaging failure, feature/output comparisons, and silence-to-phone misclassification as distinct outcomes |
+| 2026-10-07 to 10-08: data iteration and freeze | Add live data, prevent leakage, run grouped five-fold/held-out evaluation, deploy final KWS, and retain two accepted instances of each command | Corresponds to the validation table below; that run's vision messages have found=0, while earlier vision FOUND records are separate |
+| After freezing: engineering delivery | Prepare IDE source access, build paths, provenance, code guides, training/deployment evidence, and readable public sources | Demonstration video and untested items keep explicit status |
+
 ## System setup and model responsibilities
 
 | Stage | Work completed in this project | Implementation |
@@ -17,7 +32,22 @@ Vision continuously processes the camera image; the voice commands cup, bottle, 
 
 ## Vision-model interface and postprocessing in this system
 
-Vision uses the ST quantized model `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`, whose source and hash are pinned in [sources.txt](../sources.txt). Its SHA-256 is `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`. This project connects its N6-generated code, ST inference runtime, and instance-segmentation postprocessing to the dual-model application and configures model input, output, and command regions.
+Vision uses the ST quantized model `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`, whose source and hash are pinned in [sources.txt](../sources.txt). Its SHA-256 is `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`. On 2026-10-04 this project ran the official model-generation script in its newly created `vision/` tree, then integrated the generated artifacts and runtime into `firmware/`.
+
+| Porting step | Changes and evidence |
+| --- | --- |
+| Pin reference sources | Segmentation example at `42f7d645f1ed61967a922defa4aa97b95d390b16`; model source at `176ecaa749b79a3f53ce077d2b14412fa45e81a0`. The main application separately uses hand-example commit `6c313001f69d3ddb1ffa7bd700aba74f9c11037b` (v2.2.0) |
+| Generate vision code in this project | Run `generate-n6-model_STM32N6570-DK.sh` in `vision/Model/`; the tool reported ST Edge AI Core `4.0.1-20581` and STM32CubeAI `12.0.1-RC2`. User terminal output confirms generation, ELF linking, and image packaging |
+| Match the GCC runtime | Change the reference application from Runtime1200 to Runtime1201, and the main application from Runtime1100 to `NetworkRuntime1201_CM55_GCC.a`; update `Inc`, `Lib`, and `Npu` together, retaining the FreeRTOS OS abstraction and asynchronous execution mode |
+| Import artifacts and update the build | Bring `network.c/.h`, `network_ecblobs.h`, `stai_network.c/.h`, and weights into the main application; its [Makefile](../firmware/Makefile) compiles YOLO and removes the palm/landmark models and `Src/ld.c` from the build |
+| Connect ST postprocessing | [ai.mk](../firmware/mks/ai.mk) includes the vision postprocessing core and `app_postprocess_iseg_yolo_v8_ui.c`; adapt model I/O, postprocessing configuration, and display data while retaining ST algorithm attribution |
+| Repartition memory/images | Reduce application SRAM from 1535 KiB to 1023 KiB (`0x34000400–0x34100000`) to avoid model activations; collect vision commands as `.flash_blob` in `.flash_section` at `0x71380000` (2 MiB); place postprocessing buffers in the existing PSRAM `NOLOAD` section through `.psram_bss` |
+| Extract and package separately | Use `objcopy` to exclude/extract only `.flash_section`, producing application and vision-command binaries without a large address-gap-filled image. The vision stage has four images: FSBL, application at `0x70100000`, vision weights at `0x70380000`, and commands at `0x71380000`; KWS weights later make five |
+| Fix buffer acquisition in interrupts | Camera callbacks call `bqueue_get_free`. This project uses `xSemaphoreTakeFromISR` and `portYIELD_FROM_ISR` in interrupt context, retaining `xSemaphoreTake` in task context. Upstream already handled interrupt-side release of the ready semaphore; the added correction concerns acquisition of the free semaphore |
+
+The main vision application's build recorded 351,240 bytes of SRAM, 230,528 bytes in the vision-command region, and 8,949,920 bytes of PSRAM. These belong to the **2026-10-04 version before KWS integration**, not the final dual-model memory footprint. Original execution outputs, version distinctions, and evidence limits are covered in the [original-history review](original-history-review.en.md); current build entry points are in the [build notes](build.en.md).
+
+The resulting vision interface and search application are:
 
 | Interface/processing | Integration |
 | --- | --- |

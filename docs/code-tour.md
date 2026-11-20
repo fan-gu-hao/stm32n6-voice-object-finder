@@ -69,7 +69,7 @@ finder_mic_take 取得最新 16,000 點快照，以累積至少 3,200 個新樣�
 
 [app.c](../firmware/Src/app.c)在 nn_thread_fct 啟動時呼叫一次 stai_runtime_init，再初始化視覺 network_ctx，透過 finder_kws_init 初始化語音專用 context。兩個模型有各自的產碼名稱、上下文及輸入輸出指標，連結至同一套執行環境；推論工作依序輪詢 KWS 與執行 YOLO，不讓兩模型同時使用 NPU。非同步模型呼叫遇到等待狀態時使用 LL_ATON_OSAL_WFE，完成後重設下一次推論狀態。
 
-nn_thread_fct、dp_thread_fct、isp_thread_fct 分別處理推論、顯示及 ISP 更新，沿用官方框架的靜態工作、優先級與中斷交接機制。視覺持續執行；語音改變搜尋目標。
+nn_thread_fct、dp_thread_fct、isp_thread_fct 分別處理推論、顯示及 ISP 更新，沿用官方框架的靜態工作與優先級。[相機輸入佇列](../firmware/Src/app.c)另修正中斷情境的號誌取得與工作切換，使用 `xSemaphoreTakeFromISR`、`portYIELD_FROM_ISR`；這部分包含本案修改。視覺持續執行；語音改變搜尋目標。
 
 | 函式／資料 | 本專案的整合重點 |
 | --- | --- |

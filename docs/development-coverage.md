@@ -2,7 +2,7 @@
 
 [繁體中文](development-coverage.md) | [English](development-coverage.en.md)
 
-本索引按本專案的建立順序，對照「語音資料 → KWS 訓練與量化 → N6 產碼與數值移植 → KWS／YOLO 雙模型整合 → 燒錄與定版」。各階段列出實際程式、配置與結果，供閱讀實作及追溯版本。完整流程見[工程流程](engineering-workflow.md)。
+本索引對照從平台與收音工具、視覺模型產碼、語音資料與 KWS 訓練，到兩模型數值移植、系統整合、燒錄與定版的工作。各階段列出實際程式、配置與結果；部分工作交錯進行，章節編號不是每一步的時間順序。完整流程見[工程流程](engineering-workflow.md)，早期失敗、修正與執行結果見[原始開發歷程覆核](original-history-review.md)。
 
 ## 0. 系統目標、平台與模型介面
 
@@ -12,6 +12,7 @@
 | 工具與執行期 | GCC 14.3.1、ST Edge AI 4.0.1、Neural-ART 1.1.3-275、HAL 1.3.0、FreeRTOS 10.6.2；配置模型、MDF 與 CMSIS-DSP 建置相依 | [建置說明](build.md)、[ai.mk](../firmware/mks/ai.mk)、[kws.mk](../firmware/mks/kws.mk) |
 | 應用框架 | 沿用 ST 雙模型 FreeRTOS 與相機框架，改接 KWS／YOLO、目標狀態與顯示資料 | [來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
 | 視覺模型來源 | 選用來源與 SHA-256 已固定的 ST 量化實例分割模型，整合其 N6 產碼與執行期介面 | [sources.txt](../sources.txt)、[模型介面](engineering-workflow.md) |
+| 視覺產碼與執行期對齊 | 在本專案執行 ST Edge AI 4.0.1 視覺產碼與參考建置；將六份產碼檔移入正式韌體，統一標頭、函式庫與 NPU 支援至 Runtime 1201 | [視覺部署流程](engineering-workflow.md)、[原始歷程](original-history-review.md) |
 | 視覺輸入與輸出 | 256×256 RGB UINT8 輸入、兩組 INT8 輸出；檢查形狀、型別、指標及大小，對接偵測與遮罩原型 | [app.c](../firmware/Src/app.c)、[ST 後處理轉接層](../firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c) |
 | 後處理與物件選擇 | 接入 ST 解碼、非極大值抑制（NMS）與遮罩生成，篩選三種目標類別，加入連續幀確認與畫面映射 | [app.c](../firmware/Src/app.c)、[app_cam.c](../firmware/Src/app_cam.c) |
 
@@ -21,6 +22,7 @@
 | --- | --- | --- |
 | 獨立收音韌體 | 從官方播放範例改為五秒 RAM 錄音；DMA 半滿／全滿複製、暖機、逾時、錯誤、長度與 CRC32 | [錄音 FSBL 與上游差異](../kws/recording_firmware/README.md) |
 | RAM 啟動與偵錯 | ELF／BIN、堆疊與入口向量檢查、版本字串、載入、核心狀態、中斷點及解除偵錯連線 | [主機工具](../kws/recording_tools/README.md) |
+| 收音建置與啟動排錯 | 補齊 UART／UART_EX 建置連結，從 14 個錯誤修到 0 個錯誤；區分 RAM 寫入驗證與實際啟動，以 GDB 中斷點、交握、CRC32 及 WAV 回放逐層確認 | [原始歷程](original-history-review.md)、[錄音來源差異](../kws/recording_firmware/README.md) |
 | 錄音協定與接收 | 串列獨占、查詢／開始交握、固定長度、結尾、逾時與 CRC32；WAV 格式及削波統計 | [n6_receive_wav.py](../kws/recording_tools/n6_receive_wav.py) |
 | 分類資料收集 | cup／bottle／phone／unknown／silence 計畫、來源與工作階段、格式核對及中止後接續 | [collect_n6.py](../kws/collect_n6.py) |
 | 切段與分組 | 短時能量定位發音、一秒片段與補零、相鄰發音邊界；先依原始錄音分組再切片 | [prepare_dataset.py](../kws/prepare_dataset.py) |
@@ -52,6 +54,7 @@
 | 框架移植 | 以 ST 手部雙模型 FreeRTOS 框架為基礎，改接 YOLO 與 KWS | [來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
 | 模型共用 NPU | 在同一推論工作依序輪詢 KWS 與執行 YOLO，顯示及 ISP 由其他工作協作 | `nn_thread_fct`／`dp_thread_fct`／`isp_thread_fct` |
 | 相機輸入適配 | 把上游手部模型的寬高比處理改為中央正方形區域，再縮放到模型輸入 | [app_cam.c](../firmware/Src/app_cam.c) |
+| 相機中斷佇列適配 | 沿用上游佇列，修正中斷情境的號誌取得及必要的工作切換，使用 `xSemaphoreTakeFromISR` 與 `portYIELD_FROM_ISR` | [相機輸入佇列](../firmware/Src/app.c)、[原始歷程](original-history-review.md) |
 | 目標選擇與語音接受 | 三種物件、音量／分數／分差、連續視窗、命令間隔、安靜後重啟用、USER1 操作 | `finder_voice_poll`、`finder_select_target` |
 | 跨工作一致性 | 目標世代防止切換後發布舊結果、框的連續幀 IoU、遮罩快照與顯示互斥 | [app.c](../firmware/Src/app.c) |
 | 記憶體與建置 | 應用 SRAM、顯示／後處理 PSRAM、視覺指令區、KWS 專用 RAM／Flash；MDF、DSP、兩模型共同連結 | [連結腳本](../firmware/Gcc/STM32N657xx.ld)、[建置清單](../firmware/mks/kws.mk) |
@@ -79,7 +82,7 @@
 | 手動備援與去彈跳 | USER1 上升緣與 200 ms 間隔，與語音共用目標選擇介面 | `dp_thread_fct`、`finder_select_target` |
 | DSP 編譯一致性 | FFT 物件與前處理物件採相同編譯設定，配合此版 CMSIS-DSP 路徑 | [kws.mk](../firmware/mks/kws.mk) |
 
-來源分工：`main.c` 的修改集中於模型標頭與啟動資訊；`FreeRTOSConfig.h` 與 ST 基底相同。三工作、靜態配置、相機佇列與部分中斷交接原本已存在，本版新增的是音訊／視覺應用與新的資料／狀態交接。底層框架保留 ST 來源，應用層的模型、音訊、狀態及資料交接由本案整合。
+來源分工：`main.c` 的修改集中於模型標頭與啟動資訊；`FreeRTOSConfig.h` 與 ST 基底相同。三工作、靜態配置與相機佇列以 ST 框架為基礎；本案另外修正佇列的中斷情境號誌操作，並加入音訊／視覺模型及新的資料、狀態交接。底層來源與實際修改分開歸屬。
 
 ## 4. 定版、IDE 與交付
 
@@ -99,7 +102,7 @@
 | 結果 | 對應資料 | 解讀 |
 | --- | --- | --- |
 | 早期四例即時比較 | [live_comparison_20261007.json](evidence/development-history/live_comparison_20261007.json) | INT8 特徵差異皆為 0；輸出最大整數差異為 0、0、3、1，屬於數值移植比較 |
-| 固定 INPUT／PCM 路徑 | [finder_kws_compare](../firmware/Src/finder_kws.c)、[電腦參考資料](evidence/development-history/fixed_reference_20261007.json) | 程式分別測模型與完整前處理；reference.json 保存電腦參考值，其本身不構成板端比較結果 |
+| 固定 INPUT／PCM 路徑 | [比較程式](../firmware/Src/finder_kws.c)、[電腦參考](evidence/development-history/fixed_reference_20261007.json)、[原始對話中的實際輸出](original-history-review.md) | 五類在兩路各 5/5 正確；PCM 路徑每例 637 個 INT8 特徵完全一致，輸出最大整數差異為 0，silence 為 1。這是五個固定案例的數值一致性檢查 |
 | 分組模型五折驗證 | [kws-groupcv.json](evidence/kws-groupcv.json) | 224/227，98.68%，用於開發與選輪 |
 | 定版 INT8 保留音訊 | [kws-int8-holdout.json](evidence/kws-int8-holdout.json) | 15/16，93.75%，16 段單窗離線評估 |
 | 定版板上語音接受 | [2026-10-08 操作日誌](evidence/development-history/voice_groupcv_20261008.log) | 三個指定命令各接受兩次；同輪視覺皆為 found=0，不能把語音接受次數當成完整找物成功次數 |

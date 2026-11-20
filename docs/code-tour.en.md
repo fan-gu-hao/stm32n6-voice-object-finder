@@ -69,7 +69,7 @@ The [comparison switches](../firmware/Inc/finder_kws_compare.h) are disabled in 
 
 In [app.c](../firmware/Src/app.c), nn_thread_fct calls stai_runtime_init once at startup, initializes the vision network_ctx, and invokes finder_kws_init to initialize the speech-specific context. Each model has its own generated name, context, and input/output pointers, linked to one runtime. The inference task polls KWS and runs YOLO sequentially, without allowing simultaneous NPU use. Asynchronous model calls use LL_ATON_OSAL_WFE when waiting and reset inference state after completion.
 
-nn_thread_fct, dp_thread_fct, and isp_thread_fct handle inference, display, and ISP updates respectively, reusing the official framework's static tasks, priorities, and interrupt handoffs. Vision runs continuously; speech changes the search target.
+nn_thread_fct, dp_thread_fct, and isp_thread_fct handle inference, display, and ISP updates respectively, reusing the official framework's static tasks and priorities. The [camera input queue](../firmware/Src/app.c) also corrects interrupt-context semaphore acquisition and task switching with `xSemaphoreTakeFromISR` and `portYIELD_FROM_ISR`; this part includes project modifications. Vision runs continuously; speech changes the search target.
 
 | Function/data | Integration work in this project |
 | --- | --- |
