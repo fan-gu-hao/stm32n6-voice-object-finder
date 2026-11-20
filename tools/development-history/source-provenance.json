@@ -1,0 +1,1247 @@
+{
+  "publication_date": "2026-11-21",
+  "scope": "Original host-side development workflow blocks for course17_voice_object_finder; no standalone model weights, raw recordings, generated model source or private conversation transcripts are included.",
+  "entries": [
+    {
+      "path": "tools/development-history/export_fixed_reference.py",
+      "steps": [
+        23
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "bbb21fa1-71f7-4e2e-9a88-a2ca73bd96b1",
+        "record_index": 29,
+        "code_index": 0,
+        "original_launcher": "\"$HOME/STM32N6ai/course17_voice_object_finder/kws/.venv/bin/python\" -u - <<'PY'",
+        "code_block_sha256": "eb7e7968eec0e735dbc13c4d511020fbfc0081135cfd3b799adeb344cca2032e",
+        "extracted_body_sha256": "573fdcaeedd8d963c16beba964f74cfd2021c365966721843714294b21ab16e1"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "573fdcaeedd8d963c16beba964f74cfd2021c365966721843714294b21ab16e1",
+        "public_bytes": 5064
+      },
+      "status": {
+        "zh": "原對話回報參考資料已保存；固定參考 JSON 已公開。",
+        "en": "The original response records saved references; the reference JSON is already public.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/fixed_reference_20261007.json"
+      ]
+    },
+    {
+      "path": "tools/development-history/install_fixed_comparison.py",
+      "steps": [
+        23
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "27a06cda-9dbe-498a-a67c-f49d4acc96ba",
+        "record_index": 28,
+        "code_index": 0,
+        "original_launcher": "\"$HOME/STM32N6ai/course17_voice_object_finder/kws/.venv/bin/python\" -u - <<'PY'",
+        "code_block_sha256": "3bf68ca8b06c5b85bf5e1bf38c825adb3cb5b39c5ddd85e703179b82ae5aa872",
+        "extracted_body_sha256": "710dacd40c4a6aeb8f8e85796f7e5478f7152c24413746520596d49a4b689c09"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "710dacd40c4a6aeb8f8e85796f7e5478f7152c24413746520596d49a4b689c09",
+        "public_bytes": 7300
+      },
+      "status": {
+        "zh": "對應固定五類比較流程；重設後取得兩條路徑的實際 CMP 輸出。",
+        "en": "Part of the fixed five-class comparison flow; actual CMP output for both paths was obtained after reset.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md",
+        "firmware/Src/finder_kws.c"
+      ]
+    },
+    {
+      "path": "tools/development-history/compare_live_windows.py",
+      "steps": [
+        23,
+        24
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+        "record_index": 25,
+        "code_index": 2,
+        "original_launcher": "\"$HOME/STM32N6ai/course17_voice_object_finder/kws/.venv/bin/python\" -u - <<'PY'",
+        "code_block_sha256": "014abcb38729df084687708132314fbcf4f39b3fbb44ecd5d4e109399490dd39",
+        "extracted_body_sha256": "8f69279ed0480ad3c0e135724cbdb6e8fd14b7c81aef63c9635411d63e6b73d3"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "serial device path",
+            "environment": "N6_SERIAL_PORT",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "5217662ec779dba1e6b8c5bfca1e3920dcc432ac302461b5a6a7c682c8c5de2e",
+        "public_bytes": 8811
+      },
+      "status": {
+        "zh": "四例 INT8 特徵差異皆為 0；輸出最大差異依序為 0、0、3、1。",
+        "en": "All four INT8 inputs match; maximum output differences are 0, 0, 3, and 1.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/live_comparison_20261007.json",
+        "docs/evidence/development-history/live_serial_events_20261007.log"
+      ]
+    },
+    {
+      "path": "tools/development-history/collect_live_dataset.py",
+      "steps": [
+        26
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+        "record_index": 19,
+        "code_index": 2,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "6ee80181e32a4e2e2328bc00c51ff7e10f82077a5312971a12a0f8193cde74ff",
+        "extracted_body_sha256": "1d1a916b27cfd53f37822264f3e158f3c5b820d3c762a7b83af1b1a1e10e6348"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "serial device path",
+            "environment": "N6_SERIAL_PORT",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "8d633f1047e837e2d2ccc7f0d07217731a7f3b7fee97dca8b350ba58749e93a4",
+        "public_bytes": 6955
+      },
+      "status": {
+        "zh": "原對話有逐段保存與收集完成回報，公開清單保留 48 段結果。",
+        "en": "The original response records per-clip saves and completion; the public manifest contains all 48 entries.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/live_dataset_manifest_20261008.json"
+      ]
+    },
+    {
+      "path": "tools/development-history/check_live_dataset.py",
+      "steps": [
+        26,
+        27
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "0f7b9fe7-b025-4e9d-a17c-78ca0d4f51c0",
+        "record_index": 18,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "4772605d6b9d15c1be198a0ff5349f63149cd7dab43a48c0afbcdaef4e43984e",
+        "extracted_body_sha256": "44586d43713d9cf28d2aefc5bd0a74d40603486e99845b1bf8d09550b21b39eb"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "44586d43713d9cf28d2aefc5bd0a74d40603486e99845b1bf8d09550b21b39eb",
+        "public_bytes": 3560
+      },
+      "status": {
+        "zh": "對應從現場收集轉入重訓前的資料檢查；原始檔與清單分別保存。",
+        "en": "The data inspection preceding retraining; sources and the collection manifest are retained separately.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/live_dataset_manifest_20261008.json",
+        "kws/training_snapshot/train_kws_groupcv.py"
+      ]
+    },
+    {
+      "path": "tools/development-history/generate_groupcv_model.py",
+      "steps": [
+        17,
+        28
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "63e4876c-40cc-4256-a404-f25caaf062d1",
+        "record_index": 15,
+        "code_index": 0,
+        "original_launcher": "\"$HOME/STM32N6ai/course17_voice_object_finder/kws/.venv/bin/python\" -u - <<'PY'",
+        "code_block_sha256": "9eac1fd4c0729f139bec4e54f6192ebc4a1fd79f66f730d9aad80ec90b0d2e59",
+        "extracted_body_sha256": "ee3d2481918a04f74a35ca65e7b8226e86616acff8b85e97d868561eb9487a27"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "ee3d2481918a04f74a35ca65e7b8226e86616acff8b85e97d868561eb9487a27",
+        "public_bytes": 5192
+      },
+      "status": {
+        "zh": "產碼本身完成；原檢查因正式輸出與工具工作目錄同名檔重複而中止，後續由下一份程式核對。",
+        "en": "Generation completed; the original check stopped on duplicate names in formal output and tool work directories. The following inspection resolved that check.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/codegen_20261008/codegen.log",
+        "docs/evidence/development-history/codegen_20261008/command.json",
+        "docs/original-history-review.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/inspect_groupcv_codegen.py",
+      "steps": [
+        17,
+        28
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "80355233-b432-45be-aa40-c87f7c09fd4c",
+        "record_index": 14,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "f944406c3cbe9becb6b6be047218b44fcdff894e0604b7ce2855c7f2a8b3baf3",
+        "extracted_body_sha256": "4246f27b97d3469fcbe2e562375facdda2721cd7309175b0f4841142d858511c"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "4246f27b97d3469fcbe2e562375facdda2721cd7309175b0f4841142d858511c",
+        "public_bytes": 2275
+      },
+      "status": {
+        "zh": "修正前一步的檔案搜尋範圍；既有 Neural-ART 產碼結果有效。",
+        "en": "Corrected the preceding file-search scope; the existing Neural-ART output was valid.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/codegen_20261008/kws_network_generate_report.txt",
+        "docs/original-history-review.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/install_build_groupcv.py",
+      "steps": [
+        17,
+        22,
+        28,
+        29
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+        "record_index": 13,
+        "code_index": 0,
+        "original_launcher": "\"$HOME/STM32N6ai/course17_voice_object_finder/kws/.venv/bin/python\" -u - <<'PY'",
+        "code_block_sha256": "f5a029275133f35c1b8dd6f39b397181d9e0d66075bf7c401891f4a0026db6f2",
+        "extracted_body_sha256": "e23494ffd2d2d5d7f6a52dc60f096f4375970ab2e760abf10601d8492639497b"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "e23494ffd2d2d5d7f6a52dc60f096f4375970ab2e760abf10601d8492639497b",
+        "public_bytes": 10047
+      },
+      "status": {
+        "zh": "對應已公開的定版建置日誌與映像清單；輸入零點更新為 7。",
+        "en": "Corresponds to the published final build log and image manifest; input zero point became 7.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/deployment_20261008/build.log",
+        "docs/evidence/development-history/deployment_20261008/flash_manifest.json"
+      ]
+    },
+    {
+      "path": "tools/development-history/flash_groupcv.py",
+      "steps": [
+        29
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+        "record_index": 13,
+        "code_index": 1,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "a9079d2b85b1525edb147447064315babb2ba7e589760db06215cd1e308ddb4b",
+        "extracted_body_sha256": "cf497ac4b6e46c7ec3c02e2ff1a031b8893d348b866102f8b65192e3ded05d7e"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "ST-LINK probe selector",
+            "environment": "N6_PROBE_SERIAL",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "af4b72e6128df052b6e9de33d3a649259eae76f04b70a2188e934c9a4af16bf9",
+        "public_bytes": 2722
+      },
+      "status": {
+        "zh": "應用與 KWS 權重均有寫入驗證成功日誌；其餘三份映像沿用既有內容。",
+        "en": "Application and KWS-weight writes both have successful verification logs; the other three images retained existing contents.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/deployment_20261008/flash_verified.json",
+        "docs/evidence/development-history/deployment_20261008/flash_finder_signed.bin.log",
+        "docs/evidence/development-history/deployment_20261008/flash_kws_weights.bin.log"
+      ]
+    },
+    {
+      "path": "tools/development-history/record_voice_groupcv.py",
+      "steps": [
+        30
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+        "record_index": 13,
+        "code_index": 2,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "59477fc8842cf0e8add27e5cc814b4fdca9860d85c2ac169b3482a23e0f84777",
+        "extracted_body_sha256": "0e3d74d15765e7259c3ee694d48578bc22405717035e2b69da9ac68a8ca3330a"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "serial device path",
+            "environment": "N6_SERIAL_PORT",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "08b500375bd4f14dd505d843d6ef5ae125cdcfed3b668a3621016267c5f77965",
+        "public_bytes": 3440
+      },
+      "status": {
+        "zh": "三種命令各兩次正確接受；該輪視覺紀錄為 found=0，影片另呈現整合展示。",
+        "en": "Each of three commands was correctly accepted twice. Vision lines in that session have found=0; the video presents the integrated demonstration separately.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/voice_groupcv_20261008.log",
+        "docs/results.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/record_voice_diagnostics.py",
+      "steps": [
+        24,
+        25
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "42f886ad-aea6-4048-82db-6578464c59ff",
+        "record_index": 0,
+        "code_index": 2,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "89541f7e49723f9118d456f646f9a9d484305f25b72e125ad7f93003785a039c",
+        "extracted_body_sha256": "1189d26aca40809381efe1e3032da780512e09c7d4d54d22ce1dd94a22efb83e"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "serial device path",
+            "environment": "N6_SERIAL_PORT",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "25e79466b508a9c762ffc006eb569951cb88dc7f7ecb868915dd6b3dc9904cba",
+        "public_bytes": 3885
+      },
+      "status": {
+        "zh": "開發歷程保留六次僅接受兩次的診斷，後續擴充現場資料。",
+        "en": "The development history retains the two-of-six acceptance session that led to further live-data collection.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/install_live_comparison.py",
+      "steps": [
+        20,
+        24,
+        25
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+        "record_index": 25,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "d6a878cb36c3020a5ffc86b797021fd568e570058987518514fc07f5f2ed8976",
+        "extracted_body_sha256": "9f1826832aba61fca25dbeb11c4fb06678077da02cf282cd0721b666ec7b8421"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "9f1826832aba61fca25dbeb11c4fb06678077da02cf282cd0721b666ec7b8421",
+        "public_bytes": 6075
+      },
+      "status": {
+        "zh": "接入後的四例資料呈現數值一致性與安靜誤判，供後續資料迭代。",
+        "en": "The resulting four-case records expose numerical consistency and a silence error for subsequent data iteration.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/live_comparison_20261007.json"
+      ]
+    },
+    {
+      "path": "tools/development-history/build_flash_live_comparison.py",
+      "steps": [
+        22,
+        24
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+        "record_index": 25,
+        "code_index": 1,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "4c0c9250ce9c67f6cb523cbeadb5a5406016e16f8275b163a8ff24d1b797bcc2",
+        "extracted_body_sha256": "d0e1ca9275be5dfb408fa23011e5cb14328893512c033353fb2b62107d5b8ab9"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "ST-LINK probe selector",
+            "environment": "N6_PROBE_SERIAL",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "eb4ac7b300d253f79cfad51209748f2e8aa444c47d52f258d5a2557fb1b8bceb",
+        "public_bytes": 4663
+      },
+      "status": {
+        "zh": "對應即時四例比較的韌體部署流程。",
+        "en": "The firmware-deployment flow associated with the four live comparisons.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md",
+        "docs/evidence/development-history/live_comparison_20261007.json"
+      ]
+    },
+    {
+      "path": "tools/development-history/prepare_live_collection.py",
+      "steps": [
+        26
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+        "record_index": 19,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "02bda584fd0cb380487a17de4eff4f664e1838e212419e379712849441b5a7b7",
+        "extracted_body_sha256": "0bdde8edcbf7a66a3739422097a8a40f9388d46ab2beeec3ecd969143c7dc4b8"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "0bdde8edcbf7a66a3739422097a8a40f9388d46ab2beeec3ecd969143c7dc4b8",
+        "public_bytes": 4504
+      },
+      "status": {
+        "zh": "後續收集完成 48 段，32 段開發、16 段保留。",
+        "en": "The subsequent collection completed 48 clips: 32 for development and 16 held out.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "kws/live_collection_plan.json",
+        "docs/evidence/development-history/live_dataset_manifest_20261008.json"
+      ]
+    },
+    {
+      "path": "tools/development-history/build_flash_live_collection.py",
+      "steps": [
+        22,
+        26
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+        "record_index": 19,
+        "code_index": 1,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "0cad7c60de657c1f280d4b546f249917f86f2186abcf9905fa881cf782eb9f1f",
+        "extracted_body_sha256": "7ef41ad25366b3c83b8df4263d3f9d3188e91a465d0421b2f4724a2a66b89b1b"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "ST-LINK probe selector",
+            "environment": "N6_PROBE_SERIAL",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "598e13d008ae24ff9054ec00152b04623528cc1ae05e7ffcb340dd693ba34006",
+        "public_bytes": 4023
+      },
+      "status": {
+        "zh": "對應 48 段現場收集前的板端部署流程。",
+        "en": "The board-deployment flow used for the 48-window live collection.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/live_dataset_manifest_20261008.json",
+        "docs/original-history-review.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/build_flash_fixed_comparison.py",
+      "steps": [
+        22,
+        23
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "27a06cda-9dbe-498a-a67c-f49d4acc96ba",
+        "record_index": 28,
+        "code_index": 1,
+        "original_launcher": "python3 -u - <<'PY'",
+        "code_block_sha256": "92d7f9b1d7e25e015c030414be704c69947eae3137b27198706cba5cbd7b67e1",
+        "extracted_body_sha256": "5acc12d6ece797a4197652136174ee15902779a63183a374b3b3b28ead24f911"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "ST-LINK probe selector",
+            "environment": "N6_PROBE_SERIAL",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "aea375b60dee106a24b21c60fb65a1bcda019a63e378f4e49c3f13d4617bf93c",
+        "public_bytes": 4689
+      },
+      "status": {
+        "zh": "對應固定比較版的建置／寫入步驟；比較結果與工具動作分別保存。",
+        "en": "The historical build/programming step for fixed comparisons; comparison results and tool actions are recorded separately.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/inspect_boot_payload.py",
+      "steps": [
+        22
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "0a3f77c5-9b90-485c-834f-c374ad5a20f9",
+        "record_index": 43,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "60f1e52238c054f9dbc8171d2d4f3f0303577b123f679b133765307de12b3920",
+        "extracted_body_sha256": "939ec2fc775fa2311de55130d1c49f168b1891c25349ed400b809feb8f5b60f0"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "939ec2fc775fa2311de55130d1c49f168b1891c25349ed400b809feb8f5b60f0",
+        "public_bytes": 2230
+      },
+      "status": {
+        "zh": "後續終端輸出確認內容一致，但原有效載荷位於 0x240。",
+        "en": "The subsequent terminal output confirms identical contents with the original payload at 0x240.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md",
+        "docs/toolchain-compatibility.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/realign_and_flash_application.sh",
+      "steps": [
+        22
+      ],
+      "kind": "historical_shell_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "cdb18d09-75fe-494e-a747-a8f6ee985fab",
+        "record_index": 42,
+        "code_index": 0,
+        "original_launcher": "bash (complete shell block retained)",
+        "code_block_sha256": "4aeccfcb0ee7d270913d560940a9cda342b6a149dcea7570eb07803a18543151",
+        "extracted_body_sha256": "4aeccfcb0ee7d270913d560940a9cda342b6a149dcea7570eb07803a18543151"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Retained complete shell code block.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "ST-LINK probe selector",
+            "environment": "N6_PROBE_SERIAL",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "9c4b742833fd9acca17bc44af4225b94807c5000b3299a6f749a4dfb07d7f113",
+        "public_bytes": 2192
+      },
+      "status": {
+        "zh": "對齊與內容檢查通過；當次在唯讀檔案替換提示中斷，後續由下一份流程完成替換。",
+        "en": "Alignment/content checks passed; that execution stopped at the read-only-file replacement prompt. The next flow completed the replacement.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md",
+        "docs/toolchain-compatibility.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/retry_aligned_application_flash.sh",
+      "steps": [
+        22
+      ],
+      "kind": "historical_shell_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "c16b3cbb-d443-4b1a-b40e-cdad4926d09d",
+        "record_index": 40,
+        "code_index": 0,
+        "original_launcher": "bash (complete shell block retained)",
+        "code_block_sha256": "7d5a7c111b062904d428a6ef4b6fecdba4a84a428fb6b5fab07f91cf7ce60a8a",
+        "extracted_body_sha256": "7d5a7c111b062904d428a6ef4b6fecdba4a84a428fb6b5fab07f91cf7ce60a8a"
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Retained complete shell code block.",
+        "transformations": [
+          {
+            "kind": "device_identifier_parameterization",
+            "target": "ST-LINK probe selector",
+            "environment": "N6_PROBE_SERIAL",
+            "occurrences": 1
+          }
+        ],
+        "public_sha256": "b4412c7f73db8b75135e9b3ca04d4cf85572363ae5a84adadeb23aef5bc4cda6",
+        "public_bytes": 1717
+      },
+      "status": {
+        "zh": "下一輪回貼出現 KWS 運行輸出；該輪沒有獨立完整燒錄日誌，與後來定版寫入日誌分列。",
+        "en": "The next response contains running KWS output; it does not include a separate complete programmer log. Later final-version write logs are recorded separately.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/original-history-review.md",
+        "docs/toolchain-compatibility.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_01_prepare_vision.sh",
+      "steps": [
+        2,
+        3
+      ],
+      "kind": "historical_shell_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "9478a112-9055-4427-83be-b101e320b561",
+        "record_index": 73,
+        "code_index": 1,
+        "original_launcher": "bash (complete shell block retained)",
+        "code_block_sha256": "e8ce5e0a691407fada0ab8211409cd1a3d3d0237f8cfaa8b0ec866e7db9713a9",
+        "extracted_body_sha256": "e8ce5e0a691407fada0ab8211409cd1a3d3d0237f8cfaa8b0ec866e7db9713a9",
+        "confirmation_record_id": "d985b968-0769-49e2-9cde-9dae3c72c59e",
+        "confirmation_record_index": 71
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Retained complete shell code block.",
+        "transformations": [],
+        "public_sha256": "e8ce5e0a691407fada0ab8211409cd1a3d3d0237f8cfaa8b0ec866e7db9713a9",
+        "public_bytes": 2079
+      },
+      "status": {
+        "zh": "後續回貼確認取得 3,514,494 B 模型，ST Edge AI 為 4.0.1。",
+        "en": "The subsequent response confirms a 3,514,494 B model input and ST Edge AI 4.0.1.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "sources.txt",
+        "docs/engineering-workflow.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_02_match_vision_runtime.py",
+      "steps": [
+        4
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "d985b968-0769-49e2-9cde-9dae3c72c59e",
+        "record_index": 71,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "3b986e4a5f5ea6ff29f1937363eef33373394ea78dffc9fb246e4d3416a7bd18",
+        "extracted_body_sha256": "a7f51d98401d3dff1277418837acf21694363e0b17f7b648a7ecf5ef63608654",
+        "confirmation_record_id": "19960981-6c34-4b7c-9a15-aae10b9929d5",
+        "confirmation_record_index": 69
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "a7f51d98401d3dff1277418837acf21694363e0b17f7b648a7ecf5ef63608654",
+        "public_bytes": 1815
+      },
+      "status": {
+        "zh": "後續回貼確認 Runtime1201 與兩類區段設定完成。",
+        "en": "The subsequent response confirms Runtime1201 and both section settings.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/toolchain-compatibility.md",
+        "vision/deployment/README.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_03_generate_and_build_vision.sh",
+      "steps": [
+        3,
+        11
+      ],
+      "kind": "historical_shell_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "d985b968-0769-49e2-9cde-9dae3c72c59e",
+        "record_index": 71,
+        "code_index": 1,
+        "original_launcher": "bash (complete shell block retained)",
+        "code_block_sha256": "c6a4c2742315f3843a4b20d87bb9cd19cd3557e355ad64f98504a00093897e2c",
+        "extracted_body_sha256": "c6a4c2742315f3843a4b20d87bb9cd19cd3557e355ad64f98504a00093897e2c",
+        "confirmation_record_id": "19960981-6c34-4b7c-9a15-aae10b9929d5",
+        "confirmation_record_index": 69
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Retained complete shell code block.",
+        "transformations": [],
+        "public_sha256": "c6a4c2742315f3843a4b20d87bb9cd19cd3557e355ad64f98504a00093897e2c",
+        "public_bytes": 2681
+      },
+      "status": {
+        "zh": "vision_20261004_181810 的產碼、ELF 連結與封裝回報成功。",
+        "en": "Generation, ELF linking, and packaging succeeded for vision_20261004_181810.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/engineering-workflow.md",
+        "vision/deployment/README.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_04_prepare_main_firmware.sh",
+      "steps": [
+        2,
+        5
+      ],
+      "kind": "historical_shell_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "ad10313e-9dca-4567-b561-68250f4be422",
+        "record_index": 70,
+        "code_index": 0,
+        "original_launcher": "bash (complete shell block retained)",
+        "code_block_sha256": "a9543882b4069eb010cb64ef57f4614c0552a8422652f603714dcd360c981590",
+        "extracted_body_sha256": "a9543882b4069eb010cb64ef57f4614c0552a8422652f603714dcd360c981590",
+        "confirmation_record_id": "19960981-6c34-4b7c-9a15-aae10b9929d5",
+        "confirmation_record_index": 69
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Retained complete shell code block.",
+        "transformations": [],
+        "public_sha256": "a9543882b4069eb010cb64ef57f4614c0552a8422652f603714dcd360c981590",
+        "public_bytes": 1029
+      },
+      "status": {
+        "zh": "後續回貼確認正式主工程建立及模型複製完成。",
+        "en": "The subsequent response confirms creation of the main project and copying of the model input.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/source-provenance.json",
+        "docs/engineering-workflow.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_05_copy_vision_artifacts.sh",
+      "steps": [
+        3,
+        5
+      ],
+      "kind": "historical_shell_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "8e1eebad-4a70-4340-af64-efb4e0afbf64",
+        "record_index": 68,
+        "code_index": 0,
+        "original_launcher": "bash (complete shell block retained)",
+        "code_block_sha256": "83bdd99094a61648d1c93ce4dd1225279aadc01feaceaed37ceff6d942af0317",
+        "extracted_body_sha256": "83bdd99094a61648d1c93ce4dd1225279aadc01feaceaed37ceff6d942af0317",
+        "confirmation_record_id": "8209a995-571e-4049-8558-cb637579c877",
+        "confirmation_record_index": 67
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Retained complete shell code block.",
+        "transformations": [],
+        "public_sha256": "83bdd99094a61648d1c93ce4dd1225279aadc01feaceaed37ceff6d942af0317",
+        "public_bytes": 885
+      },
+      "status": {
+        "zh": "後續回貼逐項列出六份來源與目的地，複製完成。",
+        "en": "The subsequent response lists all six source/destination pairs and confirms completion.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/engineering-workflow.md",
+        "firmware/mks/ai.mk"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_06_match_main_runtime.py",
+      "steps": [
+        4
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "8209a995-571e-4049-8558-cb637579c877",
+        "record_index": 67,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "b666743a3fa7358903995a41aa92d14ca3185bc9bb23284a3c50b5a7f5d2129f",
+        "extracted_body_sha256": "193f8f11230dddb723a52d115131979ee2b48d313a50b9a577364179da83cad9",
+        "confirmation_record_id": "92f8196e-4e5c-4ac7-a226-de739457ee32",
+        "confirmation_record_index": 66
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "193f8f11230dddb723a52d115131979ee2b48d313a50b9a577364179da83cad9",
+        "public_bytes": 1682
+      },
+      "status": {
+        "zh": "後續回貼確認三個目錄更新與 GCC Runtime1201 配對完成。",
+        "en": "The subsequent response confirms the three directory updates and GCC Runtime1201 pairing.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/mks/ai.mk",
+        "docs/toolchain-compatibility.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_07_update_model_build_list.py",
+      "steps": [
+        5
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "92f8196e-4e5c-4ac7-a226-de739457ee32",
+        "record_index": 66,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "89c91852e69c6948324af3a0a4aeeff27bdf41a30715c9e02084c21114022b92",
+        "extracted_body_sha256": "55a16555844e6e6957ea39747dbcbb2798cf5f09ec582d9ede36bfb26e5e86c4",
+        "confirmation_record_id": "2bdee522-d213-44ab-9d8e-41fcf47212ae",
+        "confirmation_record_index": 65
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "55a16555844e6e6957ea39747dbcbb2798cf5f09ec582d9ede36bfb26e5e86c4",
+        "public_bytes": 1306
+      },
+      "status": {
+        "zh": "後續回貼的 Makefile 列出 network.c 與 stai_network.c。",
+        "en": "The subsequent Makefile output lists network.c and stai_network.c.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/Makefile",
+        "docs/engineering-workflow.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_08_import_postprocessing.py",
+      "steps": [
+        7
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "2bdee522-d213-44ab-9d8e-41fcf47212ae",
+        "record_index": 65,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "e10cbae08210f74acb2cb772ae464bf5541d8615ee688d7c8b52e34556830f22",
+        "extracted_body_sha256": "46295b75f6e5b49e1a680d2d67694effea8054862eb6af970c9700af38221a3a",
+        "confirmation_record_id": "cb7bd1e7-cd98-4297-ae48-34be62a32297",
+        "confirmation_record_index": 64
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "46295b75f6e5b49e1a680d2d67694effea8054862eb6af970c9700af38221a3a",
+        "public_bytes": 2004
+      },
+      "status": {
+        "zh": "後續回貼確認兩個來源目錄與轉接層建置清單完成。",
+        "en": "The subsequent response confirms both source directories and the wrapper build entries.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/mks/ai.mk",
+        "firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_09_configure_postprocessing.py",
+      "steps": [
+        7
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "cb7bd1e7-cd98-4297-ae48-34be62a32297",
+        "record_index": 64,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "6f08f284cccfdf8131dc8d0bc4aaa5a38173f5e55cb215bcd5ebb9599b2e2153",
+        "extracted_body_sha256": "19a4f454ed2c9266822fbc5930fb9157c18a33ebb520921e39a5bb8e8caa9c30",
+        "confirmation_record_id": "0a4d5c05-eb78-4302-a4a9-6a670a281955",
+        "confirmation_record_index": 63
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "19a4f454ed2c9266822fbc5930fb9157c18a33ebb520921e39a5bb8e8caa9c30",
+        "public_bytes": 2062
+      },
+      "status": {
+        "zh": "回貼列出 80 類、1,344 候選、32 個係數、64 遮罩尺寸，以及 0.50／0.40／10 設定。",
+        "en": "The response lists 80 classes, 1,344 candidates, 32 coefficients, mask dimension 64, and 0.50/0.40/10 settings.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/Inc/postprocess_conf.h",
+        "docs/engineering-workflow.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_10_update_main_model_info.py",
+      "steps": [
+        5
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "0a4d5c05-eb78-4302-a4a9-6a670a281955",
+        "record_index": 63,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "9433183a0d9dcb9a984ed502dc8b9d9ab1158d8ada6970be275f7e3028d39fc4",
+        "extracted_body_sha256": "99ee47f667559ea8991ff3921fac5b05f7b69ec3a9dbe5f441f8995697566263",
+        "confirmation_record_id": "ed1bb397-8ee2-48e3-885f-e38a124d2b00",
+        "confirmation_record_index": 62
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "99ee47f667559ea8991ff3921fac5b05f7b69ec3a9dbe5f441f8995697566263",
+        "public_bytes": 1998
+      },
+      "status": {
+        "zh": "後續 main.c 回貼包含 stai_network.h 與 Vision model 列印。",
+        "en": "The subsequent main.c excerpt contains stai_network.h and the Vision model output.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/Src/main.c"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_11_adapt_model_data.py",
+      "steps": [
+        5,
+        7,
+        10
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "ed1bb397-8ee2-48e3-885f-e38a124d2b00",
+        "record_index": 62,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "37a4d503be65a5104774e1210277fba89e253a5054d155b63d5e19bb8295c212",
+        "extracted_body_sha256": "bf443de665b8a4bd7ea4a9f783643e831c6f25d0729c184b8dbca2369af2a7d7",
+        "confirmation_record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+        "confirmation_record_index": 61
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "bf443de665b8a4bd7ea4a9f783643e831c6f25d0729c184b8dbca2369af2a7d7",
+        "public_bytes": 2945
+      },
+      "status": {
+        "zh": "使用者回貼確認四項模型資料接入完成。",
+        "en": "The response confirms completion of the four model-data integration items.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/Src/app.c",
+        "docs/engineering-workflow.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_12_integrate_vision_application.py",
+      "steps": [
+        8,
+        9,
+        10
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+        "record_index": 61,
+        "code_index": 0,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "38c489c1b12225a1d411ff17723a1966c625b7229713c1afd19255058861d307",
+        "extracted_body_sha256": "6497d625d181f7de82611c5cf45c3530e7c0b7253eb970c63576639cf9014c30",
+        "confirmation_record_id": "b6a60f59-3032-441a-a2c4-05e5625d1c8c",
+        "confirmation_record_index": 60
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "6497d625d181f7de82611c5cf45c3530e7c0b7253eb970c63576639cf9014c30",
+        "public_bytes": 16331
+      },
+      "status": {
+        "zh": "後續回貼確認應用與標頭更新，YOLO、USER1 選物與遮罩顯示接入。",
+        "en": "The subsequent response confirms application/header updates and integration of YOLO, USER1 selection, and masks.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/Src/app.c",
+        "firmware/Inc/finder.h",
+        "docs/engineering-workflow.md"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_13_configure_camera_and_memory.py",
+      "steps": [
+        6,
+        11
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+        "record_index": 61,
+        "code_index": 1,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "bf0109be6a7320c52d5cbdcf8e4fd4148d2daa6b8286c65e84b81e5249f3cc95",
+        "extracted_body_sha256": "caf44c6b6ffd5bf2885d6e54e353178ef9ae3933e9aa5af27f5dca9232b69f60",
+        "confirmation_record_id": "b6a60f59-3032-441a-a2c4-05e5625d1c8c",
+        "confirmation_record_index": 60
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "caf44c6b6ffd5bf2885d6e54e353178ef9ae3933e9aa5af27f5dca9232b69f60",
+        "public_bytes": 4214
+      },
+      "status": {
+        "zh": "後續回貼確認 app_cam.c、連結腳本及 Makefile 修改完成。",
+        "en": "The subsequent response confirms app_cam.c, linker-script, and Makefile updates.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "firmware/Src/app_cam.c",
+        "firmware/Gcc/STM32N657xx.ld",
+        "firmware/Makefile"
+      ]
+    },
+    {
+      "path": "tools/development-history/vision_14_build_main_vision.py",
+      "steps": [
+        11,
+        22
+      ],
+      "kind": "historical_python_block",
+      "source": {
+        "collection": "original dual-model development conversation",
+        "snapshot_name": "dual-records.json",
+        "snapshot_sha256": "2fea29933928994d25eda2692dfa6eba7cc36d7b59e110c07562bddee8e09cb3",
+        "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+        "record_index": 61,
+        "code_index": 2,
+        "original_launcher": "python3 - <<'PY'",
+        "code_block_sha256": "58d54a71cda8d2a8428967b12f33b92ed0b840745f2f3762a124b0f2be695abd",
+        "extracted_body_sha256": "583739b868582b69685e8f7d07e6251bb1b04c25bd25cca7ecca15b62c6aeae6",
+        "confirmation_record_id": "b6a60f59-3032-441a-a2c4-05e5625d1c8c",
+        "confirmation_record_index": 60
+      },
+      "publication": {
+        "archive_filename_assigned_by_purpose": true,
+        "extraction": "Removed the original shell-launcher line and closing PY delimiter; retained the complete Python body.",
+        "transformations": [],
+        "public_sha256": "583739b868582b69685e8f7d07e6251bb1b04c25bd25cca7ecca15b62c6aeae6",
+        "public_bytes": 4210
+      },
+      "status": {
+        "zh": "finder_vision_20261004_193031_265404 成功，列出當時四份映像大小與位址；這是加入 KWS 前的視覺階段。",
+        "en": "finder_vision_20261004_193031_265404 succeeded with four image sizes and addresses recorded; this is the vision stage before KWS integration.",
+        "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
+      },
+      "evidence": [
+        "docs/evidence/development-history/vision_image_layout_20261004.txt",
+        "docs/engineering-workflow.md"
+      ]
+    }
+  ]
+}

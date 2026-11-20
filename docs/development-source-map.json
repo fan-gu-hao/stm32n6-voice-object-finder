@@ -1,0 +1,1448 @@
+{
+  "date": "2026-11-21",
+  "scope": "32 development stages of the STM32N6 dual-model voice object finder",
+  "steps": [
+    {
+      "step": 1,
+      "title": "功能與操作",
+      "paths": [
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder.h",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "finder_select_target",
+        "finder_voice_poll",
+        "Display_NetworkOutput",
+        "dp_thread_fct"
+      ],
+      "title_en": "Define the dual-model demonstration and interaction"
+    },
+    {
+      "step": 2,
+      "title": "專案與開發環境",
+      "paths": [
+        {
+          "path": "docs/source-provenance.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "sources.txt",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Makefile",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/mks/ai.mk",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/FreeRTOSConfig.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_01_prepare_vision.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "9478a112-9055-4427-83be-b101e320b561",
+            "record_index": 73,
+            "code_index": 1
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_04_prepare_main_firmware.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ad10313e-9dca-4567-b561-68250f4be422",
+            "record_index": 70,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Establish the application project and pin the environment"
+    },
+    {
+      "step": 3,
+      "title": "YOLO 的 N6 產碼與部署轉換",
+      "paths": [
+        {
+          "path": "vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "vision/deployment/upstream-reference/my_mpools/stm32n6-app2_STM32N6570-DK.mpool",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "vision/deployment/upstream-reference.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_01_prepare_vision.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "9478a112-9055-4427-83be-b101e320b561",
+            "record_index": 73,
+            "code_index": 1
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_03_generate_and_build_vision.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "d985b968-0769-49e2-9cde-9dae3c72c59e",
+            "record_index": 71,
+            "code_index": 1
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_05_copy_vision_artifacts.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "8e1eebad-4a70-4340-af64-efb4e0afbf64",
+            "record_index": 68,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Run YOLO conversion and N6 code generation in this project"
+    },
+    {
+      "step": 4,
+      "title": "執行期版本配對",
+      "paths": [
+        {
+          "path": "firmware/mks/ai.mk",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Lib/AI_Runtime/Inc",
+          "kind": "source_directory",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Lib/AI_Runtime/Lib",
+          "kind": "source_directory",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Lib/AI_Runtime/Npu",
+          "kind": "source_directory",
+          "status": "published"
+        },
+        {
+          "path": "docs/toolchain-compatibility.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_02_match_vision_runtime.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "d985b968-0769-49e2-9cde-9dae3c72c59e",
+            "record_index": 71,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_06_match_main_runtime.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "8209a995-571e-4049-8558-cb637579c877",
+            "record_index": 67,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Match generated models to the inference runtime"
+    },
+    {
+      "step": 5,
+      "title": "替換手部模型工程",
+      "paths": [
+        {
+          "path": "firmware/Makefile",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/mks/ai.mk",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/main.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_04_prepare_main_firmware.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ad10313e-9dca-4567-b561-68250f4be422",
+            "record_index": 70,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_05_copy_vision_artifacts.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "8e1eebad-4a70-4340-af64-efb4e0afbf64",
+            "record_index": 68,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_07_update_model_build_list.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "92f8196e-4e5c-4ac7-a226-de739457ee32",
+            "record_index": 66,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_10_update_main_model_info.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "0a4d5c05-eb78-4302-a4a9-6a670a281955",
+            "record_index": 63,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_11_adapt_model_data.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ed1bb397-8ee2-48e3-885f-e38a124d2b00",
+            "record_index": 62,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "run_yolo",
+        "nn_thread_fct"
+      ],
+      "title_en": "Convert the hand-model application into a YOLO application"
+    },
+    {
+      "step": 6,
+      "title": "攝影機輸入與座標",
+      "paths": [
+        {
+          "path": "firmware/Src/app_cam.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/app_config.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_13_configure_camera_and_memory.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 1
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "CAM_InitCropConfig",
+        "DCMIPP_PipeInitNn",
+        "Display_NetworkOutput"
+      ],
+      "title_en": "Configure camera input and display geometry"
+    },
+    {
+      "step": 7,
+      "title": "視覺後處理移植",
+      "paths": [
+        {
+          "path": "firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/postprocess_conf.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/mks/ai.mk",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_08_import_postprocessing.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "2bdee522-d213-44ab-9d8e-41fcf47212ae",
+            "record_index": 65,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_09_configure_postprocessing.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "cb7bd1e7-cd98-4297-ae48-34be62a32297",
+            "record_index": 64,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_11_adapt_model_data.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ed1bb397-8ee2-48e3-885f-e38a124d2b00",
+            "record_index": 62,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Port vision postprocessing and model-output interfaces"
+    },
+    {
+      "step": 8,
+      "title": "目標搜尋與穩定確認",
+      "paths": [
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_12_integrate_vision_application.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "finder_select_target",
+        "box_iou",
+        "nn_thread_fct"
+      ],
+      "title_en": "Implement target-specific search and stable confirmation"
+    },
+    {
+      "step": 9,
+      "title": "框、遮罩與狀態顯示",
+      "paths": [
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_12_integrate_vision_application.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "Display_NetworkOutput",
+        "dp_thread_fct",
+        "nn_thread_fct"
+      ],
+      "title_en": "Display boxes, segmentation masks, and search state"
+    },
+    {
+      "step": 10,
+      "title": "攝影機中斷交接",
+      "paths": [
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_11_adapt_model_data.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ed1bb397-8ee2-48e3-885f-e38a124d2b00",
+            "record_index": 62,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_12_integrate_vision_application.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "bqueue_get_free",
+        "bqueue_put_ready",
+        "nn_thread_fct"
+      ],
+      "title_en": "Coordinate camera, interrupt, and inference data handoffs"
+    },
+    {
+      "step": 11,
+      "title": "視覺記憶體與映像區段",
+      "paths": [
+        {
+          "path": "firmware/Gcc/STM32N657xx.ld",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Makefile",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/vision_03_generate_and_build_vision.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "d985b968-0769-49e2-9cde-9dae3c72c59e",
+            "record_index": 71,
+            "code_index": 1
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_13_configure_camera_and_memory.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 1
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/vision_14_build_main_vision.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 2
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Reconfigure vision memory and image sections"
+    },
+    {
+      "step": 12,
+      "title": "正式語音資料收集",
+      "paths": [
+        {
+          "path": "kws/collect_n6.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/recording_firmware/FSBL/Src/main.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/recording_tools/n6_receive_wav.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/recording_tools/n6_mic_start_and_record.sh",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "MicRecord",
+        "MicCrc32"
+      ],
+      "title_en": "Build the speech-data collection workflow"
+    },
+    {
+      "step": 13,
+      "title": "切段與資料分組",
+      "paths": [
+        {
+          "path": "kws/prepare_dataset.py",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "speech_regions",
+        "extract_word",
+        "main"
+      ],
+      "title_en": "Convert original recordings into one-second training clips"
+    },
+    {
+      "step": 14,
+      "title": "電腦語音特徵",
+      "paths": [
+        {
+          "path": "kws/training_snapshot/train_kws.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws_tables.h",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "features"
+      ],
+      "title_en": "Implement the PC speech-feature pipeline"
+    },
+    {
+      "step": 15,
+      "title": "自行設計與訓練KWS",
+      "paths": [
+        {
+          "path": "kws/training_history/20261005_baseline/train_kws.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/train_kws.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/train_kws_live_v3.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/training_snapshot/train_kws.py",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "build_model",
+        "augment",
+        "main"
+      ],
+      "title_en": "Design and train the five-class KWS model"
+    },
+    {
+      "step": 16,
+      "title": "KWS量化匯出",
+      "paths": [
+        {
+          "path": "kws/training_snapshot/train_kws_groupcv.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/training_snapshot/train_kws.py",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "export_int8"
+      ],
+      "title_en": "Quantize and export the custom speech model"
+    },
+    {
+      "step": 17,
+      "title": "第二模型產碼與專區",
+      "paths": [
+        {
+          "path": "kws/deployment/kws.mpool",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "kws/deployment/kws_neuralart.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Gcc/STM32N657xx.ld",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/mks/kws.mk",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/codegen_20261008/command.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/codegen_20261008/kws_network_c_info.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/generate_groupcv_model.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "63e4876c-40cc-4256-a404-f25caaf062d1",
+            "record_index": 15,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/inspect_groupcv_codegen.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "80355233-b432-45be-aa40-c87f7c09fd4c",
+            "record_index": 14,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/install_build_groupcv.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+            "record_index": 13,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Give KWS independent generation and RAM/Flash allocation"
+    },
+    {
+      "step": 18,
+      "title": "持續收音與滑動視窗",
+      "paths": [
+        {
+          "path": "firmware/Src/finder_mic.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_mic.h",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "finder_mic_start",
+        "receive_block",
+        "finder_mic_take"
+      ],
+      "title_en": "Integrate the standalone recorder as continuous audio input"
+    },
+    {
+      "step": 19,
+      "title": "C語音前處理",
+      "paths": [
+        {
+          "path": "firmware/Src/finder_kws.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws_tables.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/mks/kws.mk",
+          "kind": "configuration",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "encode_mfcc",
+        "finder_kws_init",
+        "finder_kws_classify"
+      ],
+      "title_en": "Port the Python feature pipeline to C"
+    },
+    {
+      "step": 20,
+      "title": "CPU／DMA／NPU快取一致性",
+      "paths": [
+        {
+          "path": "firmware/Src/finder_mic.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/finder_kws.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/install_live_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "cache_prepare",
+        "receive_block",
+        "kws_begin_input_update",
+        "prepare_input_cache"
+      ],
+      "title_en": "Maintain CPU, DMA, and NPU cache coherence"
+    },
+    {
+      "step": 21,
+      "title": "雙模型排程與狀態",
+      "paths": [
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/FreeRTOSConfig.h",
+          "kind": "source",
+          "status": "published"
+        }
+      ],
+      "symbols": [
+        "nn_thread_fct",
+        "dp_thread_fct",
+        "isp_thread_fct",
+        "finder_select_target",
+        "finder_voice_poll"
+      ],
+      "title_en": "Implement shared-NPU scheduling and cross-task state"
+    },
+    {
+      "step": 22,
+      "title": "整合建置、啟動與封裝除錯",
+      "paths": [
+        {
+          "path": "firmware/Makefile",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/mks/kws.mk",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Gcc/STM32N657xx.ld",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/toolchain-compatibility.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/deployment_20261008/build.log",
+          "kind": "record",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/install_build_groupcv.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+            "record_index": 13,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/build_flash_live_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/build_flash_live_collection.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+            "record_index": 19,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/build_flash_fixed_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27a06cda-9dbe-498a-a67c-f49d4acc96ba",
+            "record_index": 28,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/inspect_boot_payload.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "0a3f77c5-9b90-485c-834f-c374ad5a20f9",
+            "record_index": 43,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/realign_and_flash_application.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "cdb18d09-75fe-494e-a747-a8f6ee985fab",
+            "record_index": 42,
+            "code_index": 0
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/retry_aligned_application_flash.sh",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "c16b3cbb-d443-4b1a-b40e-cdad4926d09d",
+            "record_index": 40,
+            "code_index": 0
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/vision_14_build_main_vision.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27991dd6-f514-40c7-b5b6-23d4890fc6f0",
+            "record_index": 61,
+            "code_index": 2
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Integrate the build and correct startup/image packaging"
+    },
+    {
+      "step": 23,
+      "title": "分層數值比對",
+      "paths": [
+        {
+          "path": "firmware/Src/finder_kws.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws_compare.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws_compare_data.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/fixed_reference_20261007.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/live_comparison_20261007.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/export_fixed_reference.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "bbb21fa1-71f7-4e2e-9a88-a2ca73bd96b1",
+            "record_index": 29,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/install_fixed_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27a06cda-9dbe-498a-a67c-f49d4acc96ba",
+            "record_index": 28,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/compare_live_windows.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 2
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/build_flash_fixed_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "27a06cda-9dbe-498a-a67c-f49d4acc96ba",
+            "record_index": 28,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        }
+      ],
+      "symbols": [
+        "finder_kws_compare",
+        "compare_encode",
+        "finder_kws_live_capture"
+      ],
+      "title_en": "Build layered PC/board numerical comparisons"
+    },
+    {
+      "step": 24,
+      "title": "即時視窗診斷與重訓",
+      "paths": [
+        {
+          "path": "firmware/Src/finder_kws.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "kws/train_kws.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/live_comparison_20261007.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/compare_live_windows.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 2
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/record_voice_diagnostics.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "42f886ad-aea6-4048-82db-6578464c59ff",
+            "record_index": 0,
+            "code_index": 2
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/install_live_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/build_flash_live_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        }
+      ],
+      "symbols": [
+        "live_send",
+        "finder_kws_live_capture",
+        "finder_voice_poll"
+      ],
+      "title_en": "Diagnose live misclassifications and missed commands"
+    },
+    {
+      "step": 25,
+      "title": "語音命令接受規則",
+      "paths": [
+        {
+          "path": "firmware/Src/app.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/record_voice_diagnostics.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "42f886ad-aea6-4048-82db-6578464c59ff",
+            "record_index": 0,
+            "code_index": 2
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/install_live_comparison.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "ab0bd7d0-00c1-42f5-95c6-a0370d2a36c0",
+            "record_index": 25,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "finder_voice_poll"
+      ],
+      "title_en": "Implement the voice-command acceptance state machine"
+    },
+    {
+      "step": 26,
+      "title": "48段現場資料與227開發池",
+      "paths": [
+        {
+          "path": "kws/live_collection_plan.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "kws/training_snapshot/train_kws_groupcv.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/live_dataset_manifest_20261008.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Src/finder_kws.c",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/collect_live_dataset.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+            "record_index": 19,
+            "code_index": 2
+          },
+          "status": "archived_with_documented_parameterization"
+        },
+        {
+          "path": "tools/development-history/check_live_dataset.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "0f7b9fe7-b025-4e9d-a17c-78ca0d4f51c0",
+            "record_index": 18,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/prepare_live_collection.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+            "record_index": 19,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/build_flash_live_collection.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "883add4f-43f4-40ac-b530-4f2e76998b5e",
+            "record_index": 19,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        }
+      ],
+      "symbols": [
+        "load_development",
+        "finder_kws_live_capture"
+      ],
+      "title_en": "Expand live data and reorganize development/holdout sets"
+    },
+    {
+      "step": 27,
+      "title": "資料洩漏防護與分組五折",
+      "paths": [
+        {
+          "path": "kws/training_snapshot/train_kws_groupcv.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/kws-groupcv.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/check_live_dataset.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "0f7b9fe7-b025-4e9d-a17c-78ca0d4f51c0",
+            "record_index": 18,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "pcm_sha",
+        "load_development",
+        "make_splits",
+        "make_training",
+        "fit_model",
+        "main"
+      ],
+      "title_en": "Implement leakage-resistant grouped validation and final training"
+    },
+    {
+      "step": 28,
+      "title": "定版評估與同步產物",
+      "paths": [
+        {
+          "path": "kws/training_snapshot/train_kws_groupcv.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/kws-int8-holdout.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws_tables.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/Inc/finder_kws_compare.h",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/codegen_20261008/command.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/generate_groupcv_model.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "63e4876c-40cc-4256-a404-f25caaf062d1",
+            "record_index": 15,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/inspect_groupcv_codegen.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "80355233-b432-45be-aa40-c87f7c09fd4c",
+            "record_index": 14,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/install_build_groupcv.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+            "record_index": 13,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        }
+      ],
+      "symbols": [
+        "export_int8",
+        "metrics"
+      ],
+      "title_en": "Evaluate the final model and synchronize board artifacts"
+    },
+    {
+      "step": 29,
+      "title": "五映像部署與定版寫入",
+      "paths": [
+        {
+          "path": "docs/evidence/development-history/deployment_20261008/flash_manifest.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/deployment_20261008/flash_verified.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/deployment_20261008/flash_finder_signed.bin.log",
+          "kind": "record",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/deployment_20261008/flash_kws_weights.bin.log",
+          "kind": "record",
+          "status": "published"
+        },
+        {
+          "path": "docs/memory-deployment.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/install_build_groupcv.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+            "record_index": 13,
+            "code_index": 0
+          },
+          "status": "archived_original_body"
+        },
+        {
+          "path": "tools/development-history/flash_groupcv.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+            "record_index": 13,
+            "code_index": 1
+          },
+          "status": "archived_with_documented_parameterization"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Organize five deployment images and install the final update"
+    },
+    {
+      "step": 30,
+      "title": "定版板端結果",
+      "paths": [
+        {
+          "path": "docs/evidence/development-history/voice_groupcv_20261008.log",
+          "kind": "record",
+          "status": "published"
+        },
+        {
+          "path": "docs/evidence/development-history/observations.json",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "docs/results.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "tools/development-history/record_voice_groupcv.py",
+          "kind": "historical_host_workflow",
+          "source": {
+            "record_id": "b97eb9bf-1e04-456f-9765-085e9251cf72",
+            "record_index": 13,
+            "code_index": 2
+          },
+          "status": "archived_with_documented_parameterization"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Preserve final board operation and version-specific results"
+    },
+    {
+      "step": 31,
+      "title": "IDE、Git與工程保存",
+      "paths": [
+        {
+          "path": "tools/ide/sync_cubeide_sources.py",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "firmware/STM32CubeIDE/STM32N6570-DK/.project",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/STM32CubeIDE/STM32N6570-DK/.cproject",
+          "kind": "configuration",
+          "status": "published"
+        },
+        {
+          "path": "firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh",
+          "kind": "source",
+          "status": "published"
+        },
+        {
+          "path": "docs/source-provenance.json",
+          "kind": "configuration",
+          "status": "published"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Prepare IDE integration, project preservation, and GitHub publication"
+    },
+    {
+      "step": 32,
+      "title": "實機展示與最後狀態",
+      "paths": [
+        {
+          "path": "README.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "README.en.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "docs/results.md",
+          "kind": "documentation",
+          "status": "published"
+        }
+      ],
+      "symbols": [],
+      "title_en": "Publish the demonstration and track standalone operation"
+    }
+  ],
+  "historical_tool_provenance": "tools/development-history/source-provenance.json",
+  "artifact_scope": {
+    "generated_model_source": "Not included in this public source tree; paired generated artifacts are required for a complete firmware build.",
+    "missing_generated_c_sources": [
+      "firmware/Model/network.c",
+      "firmware/Model/stai_network.c",
+      "firmware/Model/kws/st_ai_output/kws_network.c",
+      "firmware/Model/kws/st_ai_output/stai_kws_network.c"
+    ],
+    "raw_recordings_and_model_weights": "Not included; published training code, configurations, manifests and numerical reports document their use.",
+    "demonstration_video": "https://youtu.be/m7wET9g5u6k",
+    "standalone_power_and_cold_boot": "No independently checked completion record in the reviewed materials."
+  },
+  "scope_zh": "STM32N6 雙模型語音找物專案的 32 個開發步驟",
+  "artifact_scope_zh": {
+    "generated_model_source": "依目前公開範圍另行保留；完整韌體建置仍需配對的模型產碼。",
+    "raw_recordings_and_model_weights": "依目前公開範圍另行保留；已公開訓練程式、配置、清單與數值報告。",
+    "demonstration_video": "https://youtu.be/m7wET9g5u6k",
+    "standalone_power_and_cold_boot": "本次可核對材料中尚無獨立供電與冷啟動的完成紀錄。"
+  }
+}

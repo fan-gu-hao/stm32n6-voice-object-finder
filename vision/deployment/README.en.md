@@ -2,7 +2,9 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-This directory supplies the vision-generation entry point and configuration sources for the dual-model project. The October 4, 2026 development record confirms that the official script was run in this project's `vision/Model/` with ST Edge AI 4.0.1, generating the N6 network, weights and execution commands before building the reference application and integrating it into the main firmware. See [sources.txt](../../sources.txt) for the selected model source and hash.
+This project runs model conversion in `vision/Model/`, using ST Edge AI 4.0.1 to generate the N6 network code, model interface, weights, and execution commands, then matches the runtime and integrates the artifacts into the main firmware. Terminal records from October 4, 2026 retain successful generation, reference-application building, six-artifact handoff, and main-application building.
+
+This page corresponds to [development step 3: vision model conversion](../../docs/development-steps.en.md#step-03), covering generation inputs, tool processing, artifact roles, and firmware handoff. See [toolchain compatibility](../../docs/toolchain-compatibility.en.md) for version differences and [dual-model memory layout](../../docs/memory-deployment.en.md) for addresses and deployment images.
 
 ## Three official reference files
 
@@ -16,7 +18,29 @@ These files are byte-for-byte snapshots from the official instance-segmentation 
 
 These are **pinned official reference snapshots**. No byte-for-byte comparison against the historical local copies is available, so they are not presented as a complete reconstruction of the final local generation directory. Model weights, generated network code and prebuilt images are not included. These files belong to the upstream `Model` directory, listed under **SLA0044** in its component-license index; this directory does not relicense them. See [vision/LICENSE.md](../LICENSE.md) and [third-party notices](../../THIRD_PARTY_NOTICES.en.md).
 
-## Entry point and generated-file handoff
+## Model conversion and artifact handoff in this project
+
+| Stage | Work performed in this project |
+| --- | --- |
+| Prepare generation inputs | Check the local TFLite model, Neural-ART configuration, and memory pools; select ST Edge AI Core `4.0.1-20581`, which also reports STM32CubeAI `12.0.1-RC2` |
+| Convert for N6 deployment | Run the generation script in `vision/Model/` with `--target stm32n6`, the `default` profile, and `--input-data-type uint8` to generate an N6 interface matching camera input; configuration covers model memory allocation, cache maintenance, and the epoch controller |
+| Collect network and data artifacts | Obtain `network.c/.h`, `stai_network.c/.h`, `network_ecblobs.h`, and `network_data.xSPI2.bin`, supplying network execution code, the STAI calling interface, execution commands, and weights |
+| Match the runtime | Move the vision reference from Runtime1200 and the main application from Runtime1100 to `NetworkRuntime1201_CM55_GCC.a`, updating headers, libraries, and NPU support sources together |
+| Integrate into main firmware | Copy the six artifacts into `firmware/Model/`, update build lists and model calls, and connect instance-segmentation postprocessing, camera input, target search, and display data flow |
+| Build and extract images | Link the main application's ELF; extract vision commands from `.flash_section`, retain separate application/weight/command deployment locations, and package the application with its boot header |
+
+After obtaining the model file, board deployment requires conversion, runtime configuration, firmware integration, and image preparation. Artifacts and completion records are retained for each stage.
+
+### Original host workflows executed in this project
+
+The [development-source directory](../../tools/development-history/README.en.md) contains 14 vision workflows covering project setup, model generation, runtime updates, postprocessing migration, camera/memory configuration, and application builds. These entry points expose the original operations and changes:
+
+- [Run generation and the reference build](../../tools/development-history/vision_03_generate_and_build_vision.sh), [pair the vision runtime](../../tools/development-history/vision_02_match_vision_runtime.py).
+- [Copy six model artifacts](../../tools/development-history/vision_05_copy_vision_artifacts.sh), [pair the application runtime](../../tools/development-history/vision_06_match_main_runtime.py).
+- [Import postprocessing](../../tools/development-history/vision_08_import_postprocessing.py), [integrate search logic and interrupt interfaces](../../tools/development-history/vision_12_integrate_vision_application.py).
+- [Configure camera and memory](../../tools/development-history/vision_13_configure_camera_and_memory.py), [build the application and images](../../tools/development-history/vision_14_build_main_vision.py).
+
+These files preserve complete terminal code blocks from development. Per-file purposes, execution status, and original/public hashes are in the [provenance record](../../tools/development-history/source-provenance.json). Frozen firmware remains in `firmware/`, with historical workflows retained separately to show the implementation process.
 
 With the model, tools and original reference-project directory structure in place, the historical entry point from `vision/Model/` was:
 
@@ -35,6 +59,29 @@ The original script resolves `stedgeai` and `arm-none-eabi-objcopy` through `PAT
 The main firmware received six model artifacts: `network.c`, `network.h`, `network_ecblobs.h`, `stai_network.c`, `stai_network.h` and `network_data.xSPI2.bin`. This version of the official script does not include `network.h` in its copy list; the complete handoff must therefore check that header separately.
 
 The official reference project's documented tool version and GCC runtime differed from the newer generator used here. This project paired the headers, libraries and NPU support sources in both the reference application and main firmware with GCC Runtime1201. [Toolchain compatibility](../../docs/toolchain-compatibility.en.md) identifies the official files, version differences, corrections and saved build/deployment evidence.
+
+### Recorded completion on October 4, 2026
+
+| Output stage | Retained results |
+| --- | --- |
+| `vision_20261004_181810` | Terminal output confirms successful model generation, reference-application ELF linking, and boot-image packaging: application SRAM 352,320 B, vision commands 230,528 B, PSRAM 2,404,512 B |
+| Six-artifact handoff | Terminal output lists the network code, headers, STAI interface, commands, and weights copied from `vision/Model/STM32N6570-DK/` into `firmware/Model/` |
+| `finder_vision_20261004_193031_265404` | Successful main-application build: application SRAM 351,240 B, vision commands 230,528 B, PSRAM 8,949,920 B. The 3,474,865 B vision-weight image is placed at `0x70380000`; vision commands are placed at `0x71380000` |
+
+These builds correspond to the reference application and the ported vision application, both before KWS integration. The [original-history review](../../docs/original-history-review.en.md) records their execution order, and the [image-layout excerpt](../../docs/evidence/development-history/vision_image_layout_20261004.txt) retains the main vision application's image sizes and addresses. Later dual-model usage and deployment results are documented in [memory layout](../../docs/memory-deployment.en.md) and [results](../../docs/results.en.md).
+
+### Source record for the October 4 generation input
+
+[sources.txt](../../sources.txt) was created after obtaining the model by running `sha256sum` on the local file. It identifies the pinned source and content hash for that generation input:
+
+| Field | Retained value |
+| --- | --- |
+| Model file | `yolov8n_256_quant_pc_ii_seg_coco-st.tflite` |
+| Source revision | `stm32-hotspot/ultralytics` commit `176ecaa749b79a3f53ce077d2b14412fa45e81a0` |
+| Local path | `vision/Model/yolov8n_256_quant_pc_ii_seg_coco-st.tflite` |
+| SHA-256 | `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6` |
+
+The original retrieval procedure also checked the Git blob hash; the user's terminal output confirms a model size of 3,514,494 B. Subsequent generation, artifact copying, and main-application building correspond to the execution results above. Source records, generated artifacts, and deployment images are tracked separately to make this conversion and integration workflow traceable.
 
 ## Candidate pools versus the final dual-model layout
 

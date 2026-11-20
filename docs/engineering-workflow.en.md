@@ -4,6 +4,8 @@
 
 This project builds a Keyword Spotting (KWS) and YOLOv8 instance-segmentation system on STM32N6570-DK. Its workflow covers data collection, MFCC preprocessing, custom-model training and INT8 quantization, N6 code generation, PC/board numerical comparisons, and audio, vision, and display integration under FreeRTOS.
 
+The [complete 32-step development workflow](development-steps.en.md) follows implementation from requirements through the hardware demonstration. The [step-to-source inventory](development-source-map.json) maps each step to code, configuration, and records. This page retains chronological context and model, interface, and deployment details; host-side comparison, data-collection, and deployment programs are preserved as [historical workflow sources](../tools/development-history/README.en.md).
+
 Vision continuously processes the camera image; the voice commands cup, bottle, and phone change the search target. Both models use the NPU sequentially in one inference task, with separate display and ISP tasks. The [implementation and evidence index](development-coverage.en.md) maps each step to code, configuration, and results.
 
 See [dual-model memory and deployment](memory-deployment.en.md) for the full runtime/storage address map, and [toolchain compatibility](toolchain-compatibility.en.md) for pinned upstream versions, actual build commands, and packaging changes.

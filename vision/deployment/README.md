@@ -2,7 +2,9 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-本目錄補齊正式雙模型工程的視覺產碼入口與設定來源。2026-10-04 的開發紀錄確認：在本案 `vision/Model/` 執行官方腳本，使用 ST Edge AI 4.0.1 重新產生 N6 網路、權重與執行指令，再完成參考工程建置及正式韌體移植。模型來源與雜湊見 [sources.txt](../../sources.txt)。
+本案在 `vision/Model/` 執行模型轉換，使用 ST Edge AI 4.0.1 產生 N6 網路程式、模型介面、權重與執行指令，再完成執行期配對及正式韌體移植。2026-10-04 的終端紀錄保存了產碼、參考工程建置、六項產物交接及正式主工程建置的實際成功輸出。
+
+本頁對應[完整開發步驟第3步：視覺模型轉換](../../docs/development-steps.md#step-03)，說明產碼輸入、工具處理、產物用途及韌體交接；工具版本差異見[工具鏈相容性](../../docs/toolchain-compatibility.md)，位址與映像配置見[雙模型記憶體配置](../../docs/memory-deployment.md)。
 
 ## 三項官方參考原檔
 
@@ -16,7 +18,29 @@
 
 這是**固定官方來源的參考快照**。目前沒有本機歷史腳本與這三檔的逐位元組比對紀錄，因此將其定位為上游參考，而非定版工作目錄的完整還原。它們也不包含模型權重、生成程式或預建映像。這三檔在官方來源中屬於 `Model`，元件授權索引列為 **SLA0044**；本目錄不改變其授權。參見 [vision/LICENSE.md](../LICENSE.md) 及[第三方來源聲明](../../THIRD_PARTY_NOTICES.md)。
 
-## 本案使用的入口與產物交接
+## 本案模型轉換與產物交接
+
+| 階段 | 本案實際處理 |
+| --- | --- |
+| 準備產碼輸入 | 核對本地 TFLite 模型、Neural-ART 設定及記憶體池；選用 ST Edge AI Core `4.0.1-20581`，工具同時回報 STM32CubeAI `12.0.1-RC2` |
+| 轉為 N6 部署產物 | 在 `vision/Model/` 執行產碼腳本，以 `--target stm32n6`、`default` 設定及 `--input-data-type uint8` 產生配合相機輸入的 N6 模型介面；設定涵蓋模型記憶體配置、快取維護與執行階段控制器 |
+| 整理網路與資料 | 取得 `network.c/.h`、`stai_network.c/.h`、`network_ecblobs.h` 與 `network_data.xSPI2.bin`，分別提供網路執行程式、STAI 呼叫介面、執行指令與權重 |
+| 配對執行期 | 視覺參考工程由 Runtime1200、正式主工程由 Runtime1100 配對至 `NetworkRuntime1201_CM55_GCC.a`，同步更新標頭、函式庫及 NPU 支援來源 |
+| 接入正式韌體 | 將六項產物複製至 `firmware/Model/`，修改建置清單及模型呼叫，接入實例分割後處理、相機輸入、目標搜尋與顯示資料流 |
+| 建置與映像輸出 | 完成正式主工程 ELF 連結；從 `.flash_section` 分離視覺指令，保留應用、權重及指令各自的部署位置，再進行開機標頭封裝 |
+
+模型檔取得之後，還需完成上述轉換、執行期配置、韌體整合及映像準備，才能進入板端部署。各步驟的產物和完成紀錄分別保存。
+
+### 本案實際執行的主機流程原碼
+
+開發時的 14 份視覺主機流程已收錄於[開發原碼目錄](../../tools/development-history/README.md)，包括工程建立、模型產碼、執行期更新、後處理移植、相機／記憶體配置與正式建置。可直接從下列入口閱讀本案的操作與修改：
+
+- [執行產碼與參考工程建置](../../tools/development-history/vision_03_generate_and_build_vision.sh)、[視覺執行期配對](../../tools/development-history/vision_02_match_vision_runtime.py)。
+- [六項模型產物複製](../../tools/development-history/vision_05_copy_vision_artifacts.sh)、[正式韌體執行期配對](../../tools/development-history/vision_06_match_main_runtime.py)。
+- [後處理來源移植](../../tools/development-history/vision_08_import_postprocessing.py)、[搜尋應用與中斷介面整合](../../tools/development-history/vision_12_integrate_vision_application.py)。
+- [相機與記憶體配置修改](../../tools/development-history/vision_13_configure_camera_and_memory.py)、[正式主工程建置與映像輸出](../../tools/development-history/vision_14_build_main_vision.py)。
+
+這些檔案保存當時完整的終端機程式區塊；逐檔用途、完成狀態與原始／公開雜湊見[來源紀錄](../../tools/development-history/source-provenance.json)。定版韌體保留在 `firmware/`，歷史流程另行保存以呈現實作過程。
 
 在具備模型、工具及原參考工程目錄結構的 `vision/Model/` 中，歷史產碼入口為：
 
@@ -35,6 +59,29 @@ stedgeai generate --model yolov8n_256_quant_pc_ii_seg_coco-st.tflite --target st
 正式工程移植六項模型產物：`network.c`、`network.h`、`network_ecblobs.h`、`stai_network.c`、`stai_network.h` 與 `network_data.xSPI2.bin`。其中官方這版腳本的複製清單沒有 `network.h`，所以完整產物交接仍須核對該標頭，不能只依腳本列出的複製項目推定齊全。
 
 原官方參考工程的工具說明／GCC 函式庫與本案實際使用的新版產碼存在版本差異；本案將參考工程與正式底座的標頭、函式庫及 NPU 支援來源配對到 GCC Runtime1201。具體官方檔案、版本差異、修正與成功建置／部署證據見[工具鏈相容性](../../docs/toolchain-compatibility.md)。
+
+### 2026-10-04 的實際完成紀錄
+
+| 輸出階段 | 當時保存的結果 |
+| --- | --- |
+| `vision_20261004_181810` | 終端輸出確認模型產碼完成、參考工程 ELF 連結及開機映像封裝成功；應用 SRAM 352,320 B、視覺指令230,528 B、PSRAM 2,404,512 B |
+| 六項產物交接 | 終端逐項列出從 `vision/Model/STM32N6570-DK/` 複製到 `firmware/Model/` 的網路程式、標頭、STAI 介面、指令與權重 |
+| `finder_vision_20261004_193031_265404` | 正式主工程建置成功；應用 SRAM 351,240 B、視覺指令230,528 B、PSRAM 8,949,920 B。視覺權重映像3,474,865 B，置於 `0x70380000`；視覺指令置於 `0x71380000` |
+
+這兩次建置分別對應參考工程與移植後的視覺主工程，當時尚未加入 KWS。[原始歷程覆核](../../docs/original-history-review.md)記錄執行順序，[映像配置節錄](../../docs/evidence/development-history/vision_image_layout_20261004.txt)保存正式視覺版的映像大小與位址。後續雙模型的完整用量與部署結果見[記憶體配置](../../docs/memory-deployment.md)及[結果](../../docs/results.md)。
+
+### 10月4日產碼輸入來源紀錄
+
+[sources.txt](../../sources.txt)是在當時取得模型後，以 `sha256sum` 讀取本地檔案建立的來源紀錄。它定位該次產碼輸入的固定來源與內容雜湊：
+
+| 欄位 | 保存內容 |
+| --- | --- |
+| 模型檔 | `yolov8n_256_quant_pc_ii_seg_coco-st.tflite` |
+| 來源版本 | `stm32-hotspot/ultralytics` 提交 `176ecaa749b79a3f53ce077d2b14412fa45e81a0` |
+| 本地路徑 | `vision/Model/yolov8n_256_quant_pc_ii_seg_coco-st.tflite` |
+| SHA-256 | `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6` |
+
+原始取得流程另以 Git 物件雜湊核對檔案；使用者終端回貼確認模型大小為3,514,494 B。之後的產碼完成、產物複製與正式主工程建置由上表的執行輸出對應。來源紀錄、生成產物與部署映像各自保存，方便追溯這條轉換與整合流程。
 
 ## 記憶體池與最終雙模型配置的分工
 

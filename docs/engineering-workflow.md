@@ -4,6 +4,8 @@
 
 本專案在 STM32N6570-DK 上建立關鍵字辨識（Keyword Spotting，KWS）與 YOLOv8 實例分割的雙模型系統。工程流程涵蓋資料蒐集、梅爾頻率倒譜係數（MFCC）前處理、客製模型訓練與 INT8 量化、N6 模型產碼、電腦／板端數值對照，以及 FreeRTOS 下的音訊、視覺與顯示整合。
 
+從功能定義到實機展示的逐項實作見[完整 32 步開發流程](development-steps.md)；每一步直接對應的程式、配置與紀錄見[原始碼對照清單](development-source-map.json)。本頁保留各階段的時間順序與模型、介面及部署細節；開發時執行的主機比對、資料收集和部署程式見[歷史流程原始碼](../tools/development-history/README.md)。
+
 視覺持續辨識攝影機畫面；語音命令 cup、bottle、phone 改變搜尋目標。兩個模型在同一推論工作中依序使用神經網路處理器（NPU），顯示與影像訊號處理（ISP）由另外兩個工作協作。[實作與證據索引](development-coverage.md)列出各步驟對應的程式、設定與結果。
 
 記憶體配置與燒錄位置的完整對照見[雙模型記憶體與部署](memory-deployment.md)；官方範例版本、實際建置指令及封裝修正見[工具鏈相容性](toolchain-compatibility.md)。

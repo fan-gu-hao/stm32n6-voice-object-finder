@@ -6,6 +6,8 @@
 
 整體步驟見[工程流程](engineering-workflow.md)；記憶體配置與燒錄位置見[雙模型記憶體與部署](memory-deployment.md)；版本配對、實際建置指令及封裝修正見[工具鏈相容性](toolchain-compatibility.md)。
 
+[完整 32 步開發路線](development-steps.md)按功能定義、視覺部署、語音資料與模型、即時整合、除錯迭代及工程交付排列；[步驟與原始碼對照](development-source-map.json)提供每一步的程式、配置和結果入口。本頁進一步說明關鍵函式與資料交接。
+
 ## 1. 從錄音到可訓練資料
 
 錄音流程把板上樣本變成有完整性檢查、來源資訊及分組依據的訓練資料。中斷負責收樣，主迴圈與電腦工具處理傳輸、驗證及保存，避免把串列傳送放進收音中斷。
@@ -108,6 +110,24 @@ KWS 活化值以絕對位址配置，產碼報告記錄 17,440 位元組，因�
 
 [原始產碼與部署證據](evidence/development-history/README.md)保存 ST 工具內部 ONNX 階段、量化中繼資料、11 個硬體及 1 個 CPU Softmax 執行階段、記憶體配置與既有寫入驗證。KWS 控制程式連入應用，沒有獨立 KWS 執行階段控制器指令包。[IDE 同步工具](../tools/ide/README.md)另呈現來源路徑核對、備份、設定變更競態檢查與原子更新。
 
+## 7. 主機端比對、資料收集與部署程式
+
+開發時在終端機執行的 Python 流程另整理於 [tools/development-history](../tools/development-history/README.md)。這些程式保留當時的資料讀寫、診斷模式安裝、建置及燒錄處理，與定版韌體分開存放。每份程式的來源、當時執行結果、公開版調整與雜湊列於該目錄。
+
+| 對應步驟 | 主機程式 | 閱讀重點 |
+| --- | --- | --- |
+| 2–5：視覺工程建立與模型部署 | [建立視覺工程](../tools/development-history/vision_01_prepare_vision.sh)、[本案產碼與建置](../tools/development-history/vision_03_generate_and_build_vision.sh)、[六項產物移植](../tools/development-history/vision_05_copy_vision_artifacts.sh)、[正式執行期配對](../tools/development-history/vision_06_match_main_runtime.py) | 固定模型與來源版本，實際執行產碼，配對執行期並把網路程式、介面、權重和指令接入正式工程 |
+| 6–11：視覺應用與記憶體移植 | [後處理移植](../tools/development-history/vision_08_import_postprocessing.py)、[應用與中斷交接](../tools/development-history/vision_12_integrate_vision_application.py)、[相機與記憶體配置](../tools/development-history/vision_13_configure_camera_and_memory.py)、[正式建置與映像輸出](../tools/development-history/vision_14_build_main_vision.py) | 保留當時修改搜尋應用、相機裁切、中斷號誌、連結區段及建置封裝的完整流程；定版來源在前述韌體檔案 |
+| 22：啟動映像偏移檢查與修正 | [有效載荷檢查](../tools/development-history/inspect_boot_payload.py)、[重新對齊與寫入](../tools/development-history/realign_and_flash_application.sh)、[唯讀替換後續處理](../tools/development-history/retry_aligned_application_flash.sh) | 比較原始程式及封裝內容，定位 `0x240`／`0x400` 差異，重新封裝並逐位元組核對，再處理映像替換與部署 |
+| 23：固定輸入與音訊比對 | [匯出固定參考](../tools/development-history/export_fixed_reference.py)、[安裝板端比較介面](../tools/development-history/install_fixed_comparison.py)、[建置與部署比較版](../tools/development-history/build_flash_fixed_comparison.py) | 同一模型與係數產生五類參考，建立固定 PCM／INT8 特徵／電腦輸出，供板端兩條路徑比較 |
+| 23–24：即時三路比較 | [安裝即時擷取](../tools/development-history/install_live_comparison.py)、[建置與部署](../tools/development-history/build_flash_live_comparison.py)、[接收與電腦重算](../tools/development-history/compare_live_windows.py) | 接收同窗 PCM、637 個實際特徵及五個輸出，核對長度、偏移與 CRC32，再比較板端與兩條電腦推論路徑 |
+| 24–25：現場診斷 | [錄製命令診斷](../tools/development-history/record_voice_diagnostics.py) | 將帶情境提示的操作與串列紀錄保存在同一輪測試，追查命令接受、漏接及安靜時段 |
+| 26：現場資料擴充 | [準備收集模式](../tools/development-history/prepare_live_collection.py)、[建置與部署收集版](../tools/development-history/build_flash_live_collection.py)、[收集資料](../tools/development-history/collect_live_dataset.py)、[檢查資料](../tools/development-history/check_live_dataset.py) | 執行 48 段計畫、核對資料完整性、保存標籤與用途，區分 32 段開發及 16 段保留音訊 |
+| 28：定版模型產碼與同步 | [模型產碼](../tools/development-history/generate_groupcv_model.py)、[產物核對](../tools/development-history/inspect_groupcv_codegen.py)、[安裝及建置](../tools/development-history/install_build_groupcv.py) | 從訓練輸出銜接 N6 產碼，核對正式輸出，備份並同步模型、係數及量化參數，關閉開發模式後建置封裝 |
+| 29–30：定版部署與操作紀錄 | [寫入及驗證](../tools/development-history/flash_groupcv.py)、[錄製定版操作](../tools/development-history/record_voice_groupcv.py) | 核對映像雜湊與封裝標頭，更新應用及 KWS 權重，保存寫入驗證、版本指標及語音接受紀錄 |
+
+原始產碼流程曾在工具完成後，因遞迴搜尋同名輸出而中止檔案檢查；後續的 `inspect_groupcv_codegen.py` 將核對限定於正式輸出。兩份程式共同保存這項問題的定位與修正，執行狀態見[歷史工具說明](../tools/development-history/README.md)。
+
 ## 驗證範圍
 
 上述函式說明對應原始碼的實作；數值、訓練與板上操作的實測範圍見[結果與版本對照](results.md)。語音錯誤路徑目前屬原始碼層級的錯誤隔離設計，尚未做故障注入驗證，也未實作自動復原；其範圍不包含初始化斷言失敗，或保證共享硬體故障後繼續運作。記憶體數據為前述靜態配置與連結紀錄，並非執行期間的全系統記憶體峰值量測。
@@ -116,6 +136,6 @@ KWS 活化值以絕對位址配置，產碼報告記錄 17,440 位元組，因�
 
 本專案的實作涵蓋語音資料流程、自行訓練與量化的 KWS、兩模型的 N6 產碼與記憶體配置、C 前處理與數值比對、模型介面與建置整合、連續收音、快取一致性、跨工作資料與狀態協調，以及部署工具；上文各入口直接連到對應程式。
 
-平台基礎使用 ST 範例、HAL／BSP、CMSIS-DSP、FreeRTOS、攝影機中介軟體與 STAI／ATON。`main.c` 的時脈、NPU／AXISRAM、CPU 快取、外部記憶體、GPU2D、存取屬性、UART 與作業系統初始化，以及三個靜態工作與優先級，沿用官方框架；本案在此基礎上完成模型與應用整合。視覺模型採用 ST 已量化的 YOLOv8，NMS 與遮罩重建使用官方後處理，本案負責介面適配、目標選擇及顯示整合。
+平台基礎使用 ST 範例、HAL／BSP、CMSIS-DSP、FreeRTOS、攝影機中介軟體與 STAI／ATON。`main.c` 的時脈、NPU／AXISRAM、CPU 快取、外部記憶體、GPU2D、存取屬性、UART 與作業系統初始化，以及三個靜態工作與優先級，沿用官方框架；本案在此基礎上完成模型與應用整合。視覺的 N6 產碼、執行期配對、模型介面、目標選擇與顯示整合均在本案完成；產碼輸入的來源版本及產物交接見[視覺轉換紀錄](../vision/deployment/README.md)。NMS 與遮罩重建保留 ST 後處理來源。
 
 生成係數與模型產碼另標為產物，其配置、匯出與一致性檢查屬於部署流程。來源分工見[公開內容盤點](publication-review.md)；各元件原有版權與授權仍然適用，見[第三方來源與公開範圍](../THIRD_PARTY_NOTICES.md)。
