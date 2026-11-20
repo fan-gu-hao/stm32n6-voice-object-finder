@@ -113,7 +113,8 @@ C_DEFS += $(foreach SENSOR, $(SENSOR_LIST), -DUSE_$(SENSOR)_SENSOR)
 C_DEFS += -DSTM32N6570_DK_REV
 C_DEFS += -DHAS_ROTATION_SUPPORT=1
 
-# We only support single model
+# 兩個模型依序共用 NPU；此值限制同時執行數量。
+# YOLO and KWS share one sequential NPU execution slot.
 C_DEFS += -DTX_MAX_PARALLEL_NETWORKS=1
 
 # C includes

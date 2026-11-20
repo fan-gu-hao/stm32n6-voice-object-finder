@@ -33,6 +33,16 @@ Model comparisons, voice acceptance, and vision records are presented against th
 
 A turn-by-turn review of both original development conversations and their attachments on 2026-11-20 adds recording startup, vision generation, image alignment, fixed five-class comparisons, and model iteration. The [review](original-history-review.en.md) distinguishes actual terminal output, proposed steps, and steps without reported results. Published material is an engineering summary with necessary de-identified output excerpts; private conversation transcripts and early source archives are not uploaded to this repository. The existing 48-item inventory still describes the original file review, not the complete conversation attachment set.
 
+## Publication coverage review and additions
+
+The review baseline is commit `cc42386d9dba5ee3896b9b1547de3fc125046b6b`. Of the 48 items in the existing source inventory, all 45 mapped repository files are present; the other three explicitly reference pinned STM32CubeN6 SDK sources. All 40 public-version SHA-256 values in the existing provenance records also match. Recorded source/public differences include path parameterization, device-identifier removal, and log excerpts. The [publication audit](evidence/publication_audit_20261120.json) records item-level results. This covers the inventoried custom application, data/training pipeline, and recording dependencies; it is not a line-by-line re-audit of third-party SDK code.
+
+A static review of the full GCC/LCD source graph expanded 11 build files into 132 C/assembly sources: 128 are present, while four are the externally supplied YOLO/KWS generated sources. Missing model headers and include directories belong to those same external dependencies. Application/GCC support sources, all six finder headers, Runtime1201, and the NemaGFX library are present.
+
+This update adds the previously missing dedicated [vision-generation script/configuration reference](../vision/deployment/README.en.md): three unmodified files from a pinned official commit, with hashes, sources, and licensing. Upstream reference snapshots are distinguished from historical local artifacts. Bilingual [dual-model memory/deployment](memory-deployment.en.md) and [official-toolchain compatibility](toolchain-compatibility.en.md) pages accompany prominent homepage allocation tables and correction summaries.
+
+Existing firmware and training behavior are unchanged. The Makefile only clarifies the comment about one model executing at a time, preserving sequential NPU sharing between both models. This update did not retrain, generate models, or program hardware.
+
 ## Materials required for a complete build
 
 The public repository provides sources, configuration, and engineering records. A complete build additionally requires matching vision/KWS generated code and weights, the corresponding runtime, and required SDK dependencies. Raw recordings and prebuilt flash images are not included. Final deployment pointers, image roles, addresses, and available hashes are preserved in the documentation and evidence.

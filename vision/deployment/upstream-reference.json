@@ -1,0 +1,38 @@
+{
+  "recorded_at": "2026-11-20",
+  "source_repository": "STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation",
+  "source_commit": "42f7d645f1ed61967a922defa4aa97b95d390b16",
+  "scope": "Byte-for-byte snapshots fetched from the pinned official upstream. They document the generation entry point and candidate memory pools; they are not a recovered byte-for-byte snapshot of the user local Model directory or final generated allocation.",
+  "files": [
+    {
+      "path": "upstream-reference/generate-n6-model_STM32N6570-DK.sh",
+      "source_url": "https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/generate-n6-model_STM32N6570-DK.sh",
+      "git_blob_sha": "d17a36537a88d90e8176246bba46c9c688e330ea",
+      "sha256": "0eae4b87cbcb20e6871ffdb0d08363998e2f46ffae3b477900ea92e1a801eec4",
+      "bytes": 634,
+      "transformations": []
+    },
+    {
+      "path": "upstream-reference/user_neuralart_STM32N6570-DK.json",
+      "source_url": "https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/user_neuralart_STM32N6570-DK.json",
+      "git_blob_sha": "6f70a488dabd98be750faa992c6c1ad5721a0a0b",
+      "sha256": "59692268b1e3e5aeb0d3c26765b23ee646c86a01e747b5b5278c0427e55e328a",
+      "bytes": 343,
+      "transformations": []
+    },
+    {
+      "path": "upstream-reference/my_mpools/stm32n6-app2_STM32N6570-DK.mpool",
+      "source_url": "https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/Model/my_mpools/stm32n6-app2_STM32N6570-DK.mpool",
+      "git_blob_sha": "5538e529e6e2a58f2f8df0c69a82305acf88e9e9",
+      "sha256": "c603833d3b62c042eaf18b294e9f85b6b476b1739da95078e46141f71eef49d8",
+      "bytes": 3965,
+      "transformations": []
+    }
+  ],
+  "license_index": {
+    "upstream_url": "https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation/blob/42f7d645f1ed61967a922defa4aa97b95d390b16/LICENSE.md",
+    "repository_path": "vision/LICENSE.md",
+    "git_blob_sha": "8ba2ccc2447ee6735a966f6be0add8ac79e2b7bb",
+    "note": "Existing repository copy matches the pinned official component-license index. No blanket relicensing is applied to these reference files."
+  }
+}

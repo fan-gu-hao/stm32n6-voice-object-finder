@@ -2,6 +2,8 @@
 
 [繁體中文](architecture.md) | [English](architecture.en.md)
 
+See [dual-model memory and deployment](memory-deployment.en.md) for the full runtime/storage address map, and [toolchain compatibility](toolchain-compatibility.en.md) for pinned upstream versions, actual build commands, and packaging changes.
+
 This description is based on the local frozen-version records. Model, output, and log paths below describe the complete local project; not all of those files are included in the public repository.
 
 | Path | Role |

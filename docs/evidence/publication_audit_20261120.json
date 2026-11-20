@@ -1,0 +1,480 @@
+{
+  "audit_date": "2026-11-20",
+  "repository": "fan-gu-hao/stm32n6-voice-object-finder",
+  "baseline_commit": "cc42386d9dba5ee3896b9b1547de3fc125046b6b",
+  "inventory_path": "docs/evidence/development-history/review_inventory.json",
+  "inventory_scope": 48,
+  "mapped_repository_files": 45,
+  "mapped_repository_files_present": 45,
+  "external_source_references": 3,
+  "recorded_public_sha256_checks": 40,
+  "recorded_public_sha256_matches": 40,
+  "received_source_blob_identical_count": 27,
+  "interpretation": "Differences from received source bytes include previously documented path/device generalization and log excerpts. They are not classified as missing code. The existing provenance record supplies the expected public hashes for the 40 mapped entries checked here.",
+  "source_coverage": [
+    "Five-second recording firmware and CubeIDE source snapshot",
+    "Recording start/receive tools and classified data collection",
+    "Dataset segmentation and original-recording grouping",
+    "Original baseline KWS training source",
+    "IDE source-link synchronization tool",
+    "KWS generation configuration, reports, evaluation inputs and deployment evidence"
+  ],
+  "supplement_added": {
+    "directory": "vision/deployment/",
+    "purpose": "Publish the missing vision-generation reference entry point and configuration sources. Three byte-identical files are retrieved from pinned official upstream, with bilingual explanation and provenance.",
+    "source_commit": "42f7d645f1ed61967a922defa4aa97b95d390b16",
+    "historical_local_identity_claimed": false
+  },
+  "scope_limits": [
+    "This is a check of the 48-item source-material inventory, not a line-by-line review of all third-party SDK files.",
+    "Generated network code, model weights, original recordings and prebuilt images retain their documented publication exclusions.",
+    "No model generation, training, firmware build, flashing or new board test was performed in this documentation audit."
+  ],
+  "files": [
+    {
+      "path": "kws/recording_firmware/LICENSE.md",
+      "git_blob_sha": "a8b35c2394cdb4c73a0e100150c26cb5d5aba555",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
+      "sha256": "8c8afcbfe28619c1f3570e56f3742e393b0f511e8166442e99443c412dbfb7be",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Inc/main.h",
+      "git_blob_sha": "a387e5ddf8d72d130e242bbce66b70de235c051e",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "c960d7366c7709f717ce06ebd4b0443bdd876805f69fdcb627e440690c7d204d",
+      "sha256": "c960d7366c7709f717ce06ebd4b0443bdd876805f69fdcb627e440690c7d204d",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Inc/stm32n6570_discovery_conf.h",
+      "git_blob_sha": "cfce8ebfd8dea6f36636e87db4a6abaa90c94e3b",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "37fbfafebe5e5df0fc2ba04a91ff581f0e98ed134d6f16251d23d1705caf97fd",
+      "sha256": "37fbfafebe5e5df0fc2ba04a91ff581f0e98ed134d6f16251d23d1705caf97fd",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Inc/stm32n6xx_hal_conf.h",
+      "git_blob_sha": "630d09089b3c4332754e5bb89e8f93335d6ea2d6",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "20a15eed507e5e56fbe37d04777b2a8800194eba4efc38376544444f97289ba8",
+      "sha256": "20a15eed507e5e56fbe37d04777b2a8800194eba4efc38376544444f97289ba8",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Inc/stm32n6xx_it.h",
+      "git_blob_sha": "b2e7809d3ad6e223d4aebd452be1e8bb2cfc791e",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "32212f25068331bd7d409eee75d5b52d732ac438ad9c65ba170c4301a18087d8",
+      "sha256": "32212f25068331bd7d409eee75d5b52d732ac438ad9c65ba170c4301a18087d8",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Src/main.c",
+      "git_blob_sha": "fe2e600552798f5665f5e07e5b74a265281378ac",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "ffaa5b0b499ae320ae1a1856e3fd43f427ea7ac91ebfd446627a641dc8c9743d",
+      "sha256": "ffaa5b0b499ae320ae1a1856e3fd43f427ea7ac91ebfd446627a641dc8c9743d",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Src/stm32n6xx_hal_msp.c",
+      "git_blob_sha": "7c24cf0a2d164f99995ad04c90e9164091740a15",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "4124bc4ae208d8345c00747a30103a98fdf5cc73e35f7f3a665f8ed3be2d0176",
+      "sha256": "4124bc4ae208d8345c00747a30103a98fdf5cc73e35f7f3a665f8ed3be2d0176",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Src/stm32n6xx_it.c",
+      "git_blob_sha": "73bb0ebd88a263ea1203c1f30dc94ba8b3276df1",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "cd108da3dd795e23e1eabd45741cf7a485452bb13f85645bd2de2934961cd3c8",
+      "sha256": "cd108da3dd795e23e1eabd45741cf7a485452bb13f85645bd2de2934961cd3c8",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/FSBL/Src/system_stm32n6xx_fsbl.c",
+      "git_blob_sha": "cb109f733ef2fafa3038044229c85a621ba2e874",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "f4c8d4f53b534f7352dee0fa4642b5bc23e859263f9d38cdb58495c629492975",
+      "sha256": "f4c8d4f53b534f7352dee0fa4642b5bc23e859263f9d38cdb58495c629492975",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/MDF_AudioRecorder.ioc",
+      "git_blob_sha": "ab338da16726e158b476f2307ca3efcd66903c93",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "570b2e5320f2d54aa4669bc2002e75dfad5c250f8375d8fbdd2575e4ac1e3967",
+      "sha256": "570b2e5320f2d54aa4669bc2002e75dfad5c250f8375d8fbdd2575e4ac1e3967",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/UPSTREAM_README.md",
+      "git_blob_sha": "335f068cb7576b9ba95340de0b6da20aacda4993",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "6536a99cc7e307cb54a13e78f2a51e8b4460d883b23070be714490fc4a00c07b",
+      "sha256": "6536a99cc7e307cb54a13e78f2a51e8b4460d883b23070be714490fc4a00c07b",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/.project",
+      "git_blob_sha": "863f778f6f92771d30f13afd21a623585d64d656",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "b99ada1f28b6719b15222a1a7ca83c3c6e89a29b6fe91382ac1affa908c1dd7e",
+      "sha256": "b99ada1f28b6719b15222a1a7ca83c3c6e89a29b6fe91382ac1affa908c1dd7e",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/FSBL/.cproject",
+      "git_blob_sha": "d5e64073c7ba375691f50c334da609bff0a4e521",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "835de9725563e6b8faf13321a7e0bdfee12392ed3a638c8556e88770b7cca4d9",
+      "sha256": "835de9725563e6b8faf13321a7e0bdfee12392ed3a638c8556e88770b7cca4d9",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/FSBL/.project",
+      "git_blob_sha": "32ff71341645c712b6bb78097295d1703bf4b43c",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "7682f21acca736737713bc24431c643d8423eb00adf98cca601e53a8441d0c1d",
+      "sha256": "7682f21acca736737713bc24431c643d8423eb00adf98cca601e53a8441d0c1d",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/Startup/startup_stm32n657x0hxq_fsbl.s",
+      "git_blob_sha": "96b850ad60ad02a5bb7a8563b5c9ae83bc244bdc",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "01ea33a933ebe4a47d8693eb767833ff1235c87d5f2d90b6c1ef120327fc750f",
+      "sha256": "01ea33a933ebe4a47d8693eb767833ff1235c87d5f2d90b6c1ef120327fc750f",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/User/syscalls.c",
+      "git_blob_sha": "f3462a0c32018cecfe81208296272672e9bed1b1",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "f772e8cdb32eb5216a3be61596216fcfee47e93202e644bea879f745c4db77b1",
+      "sha256": "f772e8cdb32eb5216a3be61596216fcfee47e93202e644bea879f745c4db77b1",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/FSBL/Application/User/sysmem.c",
+      "git_blob_sha": "6122419d575f219514985c06bb1e81dc4de304a0",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "ca25d4ef17f7fb7b281008f3373bd280b662e60b5f0738e484ebe0192c3d1e8d",
+      "sha256": "ca25d4ef17f7fb7b281008f3373bd280b662e60b5f0738e484ebe0192c3d1e8d",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_firmware/STM32CubeIDE/FSBL/STM32N657X0HXQ_AXISRAM2_fsbl.ld",
+      "git_blob_sha": "3f05aa7603baf2be42dc3f048d29ee8dae80b76b",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "4cd8c52485d5b1c84ac0306d2421123ed8b767d2df5b138bb128e31484c6524b",
+      "sha256": "4cd8c52485d5b1c84ac0306d2421123ed8b767d2df5b138bb128e31484c6524b",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_tools/n6_mic_start_and_record.sh",
+      "git_blob_sha": "d77e112badc8bbc056e92ce3dc5599c3ad2f227a",
+      "source_blob_identical": false,
+      "recorded_public_sha256": null,
+      "sha256": "5b988eac15aa1169f9ed33a0478a168040a400428e474c91a713734530c90cff",
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/recording_tools/n6_receive_wav.py",
+      "git_blob_sha": "c6fe12cf90585e00428aa3db57ec0e1e3aa98178",
+      "source_blob_identical": false,
+      "recorded_public_sha256": null,
+      "sha256": "8ca36207ded5ab4247731dddd2fb8a8563cdb1b30dfd89af02ea04e236009eb1",
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/collect_n6.py",
+      "git_blob_sha": "bb67eb6cc5e034067da66cec53b459d80d493f5c",
+      "source_blob_identical": false,
+      "recorded_public_sha256": null,
+      "sha256": "49e643720923d39e139753c51b7b867eed1f990794f9a7641307302b75f5d3b9",
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/fixed_reference_20261007.json",
+      "git_blob_sha": "3324f07a73ef1ddd48ecb13f26c8b2d2c8ff3bce",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "ee6abcf9914f85eafc47bc0d8d76893c731bc92e6b75e6d9694eb831a73124cc",
+      "sha256": "ee6abcf9914f85eafc47bc0d8d76893c731bc92e6b75e6d9694eb831a73124cc",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/live_comparison_20261007.json",
+      "git_blob_sha": "dcad9834a04c06507b6e4efafa1ba7cab7de4940",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "abf0ca0a634076f3517f08492c0b9ad2fbda7c42795ba1835b548c293390a6e1",
+      "sha256": "abf0ca0a634076f3517f08492c0b9ad2fbda7c42795ba1835b548c293390a6e1",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/live_serial_events_20261007.log",
+      "git_blob_sha": "2da5047678e22326a1b3db27e6a5857e25315dbc",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "f194b4beaeab19eda89f5cb55c9e96e1127c667e80cc188802dfefe9576fde64",
+      "sha256": "f194b4beaeab19eda89f5cb55c9e96e1127c667e80cc188802dfefe9576fde64",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/live_dataset_manifest_20261008.json",
+      "git_blob_sha": "d7f9ba6df944cacc013abe39187bda2b4b771e6b",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "fb07bcacfb27ebabcd5dc9a34a305908565f8935c48b550770ceeb174f7c5cda",
+      "sha256": "fb07bcacfb27ebabcd5dc9a34a305908565f8935c48b550770ceeb174f7c5cda",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/prepare_dataset.py",
+      "git_blob_sha": "9c0beeaa31d6d87c37b5eeaff8bfd0a860374b57",
+      "source_blob_identical": false,
+      "recorded_public_sha256": null,
+      "sha256": "5be107b6b6c945a2ee8e175d76829dd4c569a2b98c172b380cc3539026642fd7",
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/training_history/20261005_baseline/train_kws.py",
+      "git_blob_sha": "1154d0e9e22760fb06163800ba87d499557743f5",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "8d68ffccd2566085664e33c23228b74018848e62d1c1576e8f1d761240f8c980",
+      "sha256": "8d68ffccd2566085664e33c23228b74018848e62d1c1576e8f1d761240f8c980",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/finder_vision_20261004.log",
+      "git_blob_sha": "0f3ac340785e808794b12ed1d33e597015d8d9ad",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+      "sha256": "e282fb5497a590dffe3e07c45011380be95a3cbdf38243d8c6543ae7fc907048",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/voice_groupcv_20261008.log",
+      "git_blob_sha": "c504aa6d0212bbe0d886382a76d97304fae3a443",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+      "sha256": "2fdbf1c7cfadc49a3c39965a442e0146550029725f42a9b87704695edf8bf3a2",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/config.json",
+      "git_blob_sha": "c7f76218f9c5b29522f137d4023e5d00d243c7fd",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "97d4c39beaf934366e2d51687b55a2ed891ca9d47d364d4b275377ee8414448a",
+      "sha256": "97d4c39beaf934366e2d51687b55a2ed891ca9d47d364d4b275377ee8414448a",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "kws/deployment/kws_neuralart.json",
+      "git_blob_sha": "c9c7d7eb9f0d1b63e8f14863d578a234d839c72f",
+      "source_blob_identical": true,
+      "recorded_public_sha256": null,
+      "sha256": "c1079e05e26904fae2f3c3c507d8d578013b45a69808c0d9015908fbb699aae3",
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/STEdgeAI_LICENSE.txt",
+      "git_blob_sha": "fd02cbd7eeb5be15bf59c5785ccddfddbb441aa3",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "9942019b4bb0d3eaceceb7110148015bc5ea051259d57b48b2c71f9f8e06182b",
+      "sha256": "9942019b4bb0d3eaceceb7110148015bc5ea051259d57b48b2c71f9f8e06182b",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/kws_int8_OE_3_3_1_Q.json",
+      "git_blob_sha": "0fd5c242101b216838857bbb936ede33d930428c",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "243d2a7fe992bdab97f773aa46c71490670cb9b8abed9f15b507ce161285ddff",
+      "sha256": "243d2a7fe992bdab97f773aa46c71490670cb9b8abed9f15b507ce161285ddff",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/kws_network_c_info.json",
+      "git_blob_sha": "da8215cd2671ebfbbac96c8001ee9a51006d169e",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "9454fc7c8c8ede36a4bc121f27181726d577079ebf284c593da49552a51cd60d",
+      "sha256": "9454fc7c8c8ede36a4bc121f27181726d577079ebf284c593da49552a51cd60d",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/kws_network_generate_report.txt",
+      "git_blob_sha": "22b1d5fd6fd9ebfb7205be23b02cf3635c4c99a4",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "5bd8255196ff6501e8fd16111f206dad2192b613498e53cfdc23f4bb08476425",
+      "sha256": "5bd8255196ff6501e8fd16111f206dad2192b613498e53cfdc23f4bb08476425",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/codegen.log",
+      "git_blob_sha": "cdf85b978a563df534f6cd04881db30baee8e4e7",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "6cde4cd34050b9998f264384a2c58daaf38567410b6bfc632076af5195b52f1b",
+      "sha256": "6cde4cd34050b9998f264384a2c58daaf38567410b6bfc632076af5195b52f1b",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/command.json",
+      "git_blob_sha": "3a0592deacac88031750f860dea64b6413fba620",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "d017f6c5358e71e6d3325bdc40ca0f1650e10763c75f86c5c32fc7e880bd7486",
+      "sha256": "d017f6c5358e71e6d3325bdc40ca0f1650e10763c75f86c5c32fc7e880bd7486",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/model_sha256.txt",
+      "git_blob_sha": "bded5fbbed403c0ac62325a63f436fb66ceddbdb",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "f9c4494fd460beafaf383f421135b3b0a96a3d830f4136df91de3580499d6a93",
+      "sha256": "f9c4494fd460beafaf383f421135b3b0a96a3d830f4136df91de3580499d6a93",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/codegen_20261008/source_model.txt",
+      "git_blob_sha": "84424e91bd561d094965bc09c56cf92482339c82",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "89e36656da81bffbc3488431b04dbb7c1aa53a999cd54dfc50bbebc0dfa20a68",
+      "sha256": "89e36656da81bffbc3488431b04dbb7c1aa53a999cd54dfc50bbebc0dfa20a68",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/deployment_20261008/build.log",
+      "git_blob_sha": "f78d1d7dc579c8029ca837687cfade8a2039529d",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "f2fd264a60a8dc13ce0f9cabec04aeb5ca915f4d995bd57d638c1b983d96ac30",
+      "sha256": "f2fd264a60a8dc13ce0f9cabec04aeb5ca915f4d995bd57d638c1b983d96ac30",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/deployment_20261008/flash_finder_signed.bin.log",
+      "git_blob_sha": "f8ae0916c9fb1c6c90fd0bd538be29659d1cea6a",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "e2db1d3b7f4101b0e2a77515beb471be4a514adb4fef50ce61bc7a4170b47843",
+      "sha256": "e2db1d3b7f4101b0e2a77515beb471be4a514adb4fef50ce61bc7a4170b47843",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/deployment_20261008/flash_kws_weights.bin.log",
+      "git_blob_sha": "34e879d18532ec69a21f9db858a7b944e6d597ee",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "e3fcc7b0fb6c807ceebd2c76046261786fa597792dc50974da36ce6c348a4af1",
+      "sha256": "e3fcc7b0fb6c807ceebd2c76046261786fa597792dc50974da36ce6c348a4af1",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/deployment_20261008/flash_manifest.json",
+      "git_blob_sha": "4b602cffe5fd4b3041db7253832ad691b2cfe505",
+      "source_blob_identical": false,
+      "recorded_public_sha256": "37f1c178b94294060afb320732dcee62511a6b4bfaf0e426e6c47fc278734452",
+      "sha256": "37f1c178b94294060afb320732dcee62511a6b4bfaf0e426e6c47fc278734452",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "docs/evidence/development-history/deployment_20261008/flash_verified.json",
+      "git_blob_sha": "1aeb5ff935640ffbb355d6f5c37f7c9ac321d446",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "8f215db1dc43e5051f1507d3b1dd6f49fd7442d80a599d9bbe7c0e3e6c2e97fb",
+      "sha256": "8f215db1dc43e5051f1507d3b1dd6f49fd7442d80a599d9bbe7c0e3e6c2e97fb",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    },
+    {
+      "path": "tools/ide/sync_cubeide_sources.py",
+      "git_blob_sha": "e24601263075e6228205204d47456ba4e4946852",
+      "source_blob_identical": true,
+      "recorded_public_sha256": "fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c",
+      "sha256": "fa385d29546b60dfc4faf946492245af6ccb012889ae893afc7ba8ff8ffb934c",
+      "matches_recorded_public_sha256": true,
+      "exists_at_baseline": true
+    }
+  ],
+  "external_sources": [
+    {
+      "repository": "STMicroelectronics/STM32CubeN6",
+      "path": "Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/EWARM/startup_stm32n657xx_fsbl.s",
+      "ref": "1fc803683e03b0ce78e64523441d31acd0db2829",
+      "status": "Referenced SDK source rather than duplicated in this repository."
+    },
+    {
+      "repository": "STMicroelectronics/STM32CubeN6",
+      "path": "Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder/MDK-ARM/startup_stm32n657xx_fsbl.c",
+      "ref": "1fc803683e03b0ce78e64523441d31acd0db2829",
+      "status": "Referenced SDK source rather than duplicated in this repository."
+    },
+    {
+      "repository": "STMicroelectronics/STM32CubeN6",
+      "path": "README.md",
+      "ref": "1fc803683e03b0ce78e64523441d31acd0db2829",
+      "status": "Referenced SDK source rather than duplicated in this repository."
+    }
+  ],
+  "gcc_source_graph_review": {
+    "method": "Static expansion of the selected GCC/LTDC build and configured camera-sensor source lists; no compiler, training, generation or board programming was run.",
+    "makefiles_examined": 11,
+    "resolved_c_and_assembly_sources": 132,
+    "present_sources": 128,
+    "external_generated_sources": [
+      "firmware/Model/network.c",
+      "firmware/Model/stai_network.c",
+      "firmware/Model/kws/st_ai_output/kws_network.c",
+      "firmware/Model/kws/st_ai_output/stai_kws_network.c"
+    ],
+    "external_generated_headers": [
+      "stai_network.h",
+      "stai_kws_network.h"
+    ],
+    "missing_include_directories": [
+      "firmware/Model",
+      "firmware/Model/kws/st_ai_output"
+    ],
+    "application_and_gcc_support_sources_present": 13,
+    "finder_headers_present": 6,
+    "runtime1201_gcc_library_present": true,
+    "nemagfx_library_present": true,
+    "unexplained_custom_source_omissions": []
+  }
+}

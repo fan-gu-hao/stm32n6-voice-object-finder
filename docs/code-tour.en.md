@@ -2,6 +2,8 @@
 
 [繁體中文](code-tour.md) | [English](code-tour.en.md)
 
+See [dual-model memory and deployment](memory-deployment.en.md) for the full runtime/storage address map, and [toolchain compatibility](toolchain-compatibility.en.md) for pinned upstream versions, actual build commands, and packaging changes.
+
 This tour follows the construction of the dual-model object finder: recording tools, data and training, the board frontend, dual-model integration, memory layout, and deployment. See the [engineering workflow](engineering-workflow.en.md) for the overall sequence.
 
 ## 1. From recording to training data

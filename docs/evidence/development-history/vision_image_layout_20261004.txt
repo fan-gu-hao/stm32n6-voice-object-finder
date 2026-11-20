@@ -1,0 +1,26 @@
+2026-10-04 正式視覺主工程：建置與映像準備輸出節錄
+2026-10-04 formal vision application: build and image preparation excerpt
+
+來源：使用者在「雙模型」原始對話貼回的終端輸出。
+Source: terminal output posted by the user in the original dual-model conversation.
+Conversation node: b6a60f59-3032-441a-a2c4-05e5625d1c8c
+Stage: finder_vision_20261004_193031_265404
+
+此階段尚未整合 KWS；以下應用映像大小不是最終雙模型應用大小。
+KWS had not been integrated at this stage. The application size below is not
+the final dual-model application size.
+ai_fsbl.hex 的數字是 HEX 檔案長度，不能用來推算 Flash 位址範圍。
+The ai_fsbl.hex number is the HEX file length, not a Flash address range.
+
+--- 原始輸出 / Original output ---
+ai_fsbl.hex：176541 位元組；位址 HEX 檔案內含位址
+finder_signed.bin：302592 位元組；位址 0x70100000
+vision_weights.bin：3474865 位元組；位址 0x70380000
+vision_commands.bin：230528 位元組；位址 0x71380000
+
+本輪完成編譯與映像準備；下一步是燒錄這個視覺版。
+--- 節錄結束 / End of excerpt ---
+
+只保留相關映像清單及階段說明；未收錄私人路徑或其他對話內容。
+Only the relevant image list and stage statement are retained; private paths
+and unrelated conversation content are omitted.

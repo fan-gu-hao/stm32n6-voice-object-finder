@@ -2,13 +2,48 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
-**Technologies: Embedded AI · C / Python · FreeRTOS tasks · NPU · Neural-ART · Keyword Spotting (KWS) · YOLOv8 Instance Segmentation · INT8 Quantization · MFCC · CMSIS-DSP · MDF / GPDMA · Cache Coherence · DCMIPP / LCD · UART / CRC32 · GDB · Memory Layout and Firmware Deployment.**
+**Technologies: Embedded AI · C / Python · FreeRTOS tasks · NPU · Neural-ART · Keyword Spotting (KWS) · YOLOv8 Instance Segmentation · INT8 Quantization · MFCC · CMSIS-DSP · MDF / GPDMA · Cache Coherence · DCMIPP / LCD · UART / CRC32 · GDB · Linker Scripts · Model Memory Pools · Weight/Command Partitioning · Toolchain Version Alignment · Firmware Deployment.**
 
 An end-to-end dual-model system built on the **STM32N6570-DK**, from requirements, models, and dataset preparation through firmware integration, debugging, and deployment. Say `cup`, `bottle`, or `phone` to select a target with a custom-trained speech model. A continuously running YOLOv8 instance-segmentation model searches for that object, while the LCD displays search status, bounding boxes, and masks. The USER1 button also changes the target.
 
 The project adapts ST's hand dual-model example as its FreeRTOS firmware base, regenerates N6 code for ST's prequantized YOLOv8 model, pairs its runtime, and ports postprocessing before building a custom five-class speech dataset and KWS model. Its engineering focus is integrating **data, two models, audio and camera peripherals, a shared NPU, memory, and application state** into one MCU firmware system.
 
 **Recorded results:** **224/227 (98.68%)** across five INT8 development-validation folds; **15/16 (93.75%)** for both float and INT8 evaluation of the final model on 16 held-out clips; and **6/6 voice commands correctly accepted** in the final board session. Earlier fixed samples covering all five classes and four live windows also underwent board/PC numerical comparisons. These comparisons and command-acceptance records each have a specific version and test scope. [Results and version scope](docs/results.en.md)
+
+## Engineering focus: dual-model memory layout and deployment
+
+**Hosting both models requires coordinated application link addresses, model workspaces, weights, and execution commands.** This project aligns the hand-example base with the YOLO memory requirements, reserves a dedicated KWS region, and manages CPU/DMA/NPU caches and data lifetimes.
+
+| Runtime purpose | Location and reserved capacity | Recorded allocation |
+| --- | --- | --- |
+| Application, FreeRTOS, drivers, and CPU control code for both models | Internal SRAM, starting at `0x34000400`, **1,023 KiB** | Final linked usage **535,544 B**; the region ends at `0x34100000`, before the vision workspace |
+| YOLO activations and input/output tensors | Internal SRAM/NPU RAM model pools, plus the external RAM pool starting at `0x90000000` | Allocated by vision code generation and tracked separately from application-linker totals |
+| Camera, LCD, postprocessing, and mask snapshots | External PSRAM, starting at `0x91000000`, **15.75 MiB** | Linked-section usage **8,949,920 B**; the region ends at the KWS reservation |
+| KWS activations and input/output tensors | External PSRAM, starting at `0x91FC0000`, **256 KiB** | Generated allocation **17,440 B**, accessed through absolute addresses |
+
+| Nonvolatile content | External Flash location | Allocation role |
+| --- | --- | --- |
+| Packaged application boot image | `0x70100000` | Storage address; the application is linked for execution in the internal SRAM listed above |
+| YOLO weights | `0x70380000` | Actual image boundaries are checked against KWS; the recorded vision weight image is **3,474,865 B** |
+| KWS weights | `0x70700000`, **64 KiB** reserved | Generated weight allocation **11,409 B** |
+| YOLO epoch-controller commands (EC blob) | `0x71380000`, **2 MiB** reserved | Separate command-section usage **230,528 B** |
+
+**Implemented allocation changes:** reduce application SRAM from 1,535 to 1,023 KiB; reserve the final 256 KiB of the 16 MiB PSRAM window for KWS; extract application and vision commands separately from one ELF to avoid binary expansion across address gaps. KWS control code is linked into the application, without a separate KWS EC blob.
+
+Reserved capacity, linked usage, and generated allocation are distinct measurements. The linker reports 0 B for KWS because generated code uses absolute addresses. The upstream vision Flash pool capacity is also not the actual weight-image length: this version checks the recorded image boundary against KWS, and regenerated models require another boundary check. **[Full address map, allocation responsibilities, and image boundaries](docs/memory-deployment.en.md)** provides the details and evidence.
+
+## Official-example and toolchain compatibility work
+
+This project integrates two official examples and regenerates models with ST Edge AI 4.0.1. The following version alignment and image-packaging changes are tied to the official commits used during development.
+
+| Official source and baseline | Project integration change | Recorded outcome |
+| --- | --- | --- |
+| ST instance-segmentation example `42f7d645…`: README specifies **ST Edge AI 4.0.0**, Makefile links **Runtime1200**, and the generation script invokes `stedgeai` from the system path | Generate with **4.0.1**, pair **Runtime1201**, and update headers, libraries, and NPU support sources together | Vision generation, reference-project linking, and migration into the application completed |
+| ST hand dual-model example `6c313001…`: README specifies **3.0.0** and the GCC build links **Runtime1100** | Align the application base to **Runtime1201**, shared by YOLO and KWS | Integrated dual-model GCC build completed |
+| The ST segmentation CubeIDE `ModelZoo` configuration defines vision-command/postprocessing sections, while the standalone Makefile omits those definitions | Add Flash/PSRAM section macros to the application Makefile and extract application and vision commands separately | Commands and large postprocessing buffers occupy their intended regions without binary expansion across address gaps |
+| The same ST segmentation commit documents **`--align` for CubeProgrammer 2.21 or later**, while its Makefile packaging rule omits alignment | Add alignment in the project packaging flow; verify the payload offset changes from **`0x240` to `0x400`** with identical program content | Subsequent final-version records confirm successful application/KWS-weight verification and six correct board voice acceptances with corresponding targets |
+
+Runtime pairing is a cross-version integration task; packaging has a specific README/Makefile discrepancy within the same upstream commit. **[Official source files, build commands, changes, and success records](docs/toolchain-compatibility.en.md)** documents both and identifies the GCC build path actually used.
 
 ## How the system works
 
@@ -136,19 +171,22 @@ The system reuses the startup, static-task, and camera framework from ST's dual-
 
 Code: [Inference, display, and state machines](firmware/Src/app.c) · [Camera crop](firmware/Src/app_cam.c) · [CPU/NPU cache ordering](firmware/Src/finder_kws.c)
 
-## Memory, build, and delivery
+## Build and engineering delivery
 
-| Allocation | Location and purpose |
-| --- | --- |
-| Reserved KWS activation region | `0x91FC0000`, 256 KiB, separated from application/display PSRAM |
-| Reserved KWS weight region | `0x70700000`, 64 KiB |
-| Vision command region | `0x71380000`, 2 MiB, extracted separately from the ELF `.flash_section` |
+From a complete project root containing the matching generated models, weights, runtime, and SDK, the existing build entry point is:
 
-These are reserved capacities; actual model allocations are checked separately in generation reports. Build fragments integrate MDF, CMSIS-DSP, both models, and the runtime, with consistent compilation settings for FFT and frontend objects. Delivery is split into five images: **FSBL, application, vision weights, KWS weights, and vision commands**, with addresses, versions, and source/image hashes. Final deployment logs retain successful verification of the application written to `0x70100000` and KWS weights to `0x70700000`. Images use no-key header packaging.
+```bash
+bash firmware/STM32CubeIDE/STM32N6570-DK/cubeide_make.sh \
+  build_finder_ide/Project.elf \
+  build_finder_ide/Project.bin \
+  build_finder_ide/vision_commands.bin
+```
 
-Deployment debugging included a version whose writes verified successfully but produced no display or serial output. Comparing the raw application with the packaged image confirmed identical program bytes at an incorrect offset of `0x240`. After adding the alignment option, the required `0x400` offset was verified before completing deployment and runtime checks. This work separated compilation, packaging, write verification, and actual startup checks.
+The entry point checks GCC 14.3.1, supports `GCC_PATH`, and invokes Make using project-relative paths. It produces the application ELF, unpackaged application binary, and separate vision commands. Image packaging and programming follow the [build guide](docs/build.en.md) and [deployment layout](docs/memory-deployment.en.md).
 
-The IDE source synchronization tool checks existing links, previews changes, makes backups, detects concurrent changes by hash, and performs atomic replacement. The build entry supports `GCC_PATH` and checks GCC 14.3.1, separating IDE source browsing from the actual Makefile compilation list.
+The full deployment set contains five images: **FSBL, application, vision weights, KWS weights, and vision commands**. FSBL uses addresses embedded in its HEX file; the other images have assigned locations. Sources, model versions, and image hashes are retained. The final update records verify the application and KWS-weight writes; the other images retain their existing contents.
+
+The IDE source-sync tool checks links, previews changes, backs up files, detects hash races, and replaces configuration atomically. A [vision-generation source and configuration entry](vision/deployment/README.en.md) now complements the existing [KWS deployment configuration](kws/deployment/README.en.md), making both deployment paths traceable.
 
 Code: [Linker script](firmware/Gcc/STM32N657xx.ld) · [Makefile](firmware/Makefile) · [KWS build](firmware/mks/kws.mk) · [IDE synchronization](tools/ide/README.en.md) · [Deployment evidence](docs/evidence/development-history/README.en.md)
 
@@ -167,6 +205,8 @@ The demonstration video is pending. Standalone power and cold boot of this dual-
 
 ## Documentation, build, and sources
 
+- [Dual-model memory and deployment](docs/memory-deployment.en.md): RAM/Flash addresses, sections, model pools, image boundaries, and cache handoffs.
+- [Official-toolchain compatibility](docs/toolchain-compatibility.en.md): pinned upstream versions, original settings, integration changes, and deployment evidence.
 - [Work and evidence from setup to freeze](docs/development-coverage.en.md): implementation index covering this project’s requirements, data, models, integration, and deployment.
 - [Original development history](docs/original-history-review.en.md): vision generation and framework migration, recorder startup, fixed-sample comparisons, and debugging iterations.
 - [Code tour](docs/code-tour.en.md) and [architecture](docs/architecture.en.md): functions, execution flow, and configuration.

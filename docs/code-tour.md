@@ -2,6 +2,8 @@
 
 [繁體中文](code-tour.md) | [English](code-tour.en.md)
 
+記憶體配置與燒錄位置的完整對照見[雙模型記憶體與部署](memory-deployment.md)；官方範例版本、實際建置指令及封裝修正見[工具鏈相容性](toolchain-compatibility.md)。
+
 這份導讀依雙模型找物系統的建立順序，涵蓋收音工具、資料與訓練、板端前處理、兩模型整合、記憶體配置及部署。整體步驟見[工程流程](engineering-workflow.md)。
 
 ## 1. 從錄音到可訓練資料
