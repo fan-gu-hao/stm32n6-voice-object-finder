@@ -14,7 +14,6 @@
 - 在 STM32N6570-DK 上執行語音與影像推論；板上數位麥克風、攝影機及液晶螢幕（LCD）形成完整操作介面。
 - 說出杯子（`cup`）、瓶子（`bottle`）或手機（`phone`），由語音模型選定搜尋目標。攝影機與 YOLOv8 實例分割持續運作，搜尋目前指定的物件。
 - LCD 顯示目標、搜尋中／已找到狀態、物件框與分割遮罩。
-- USER1 按鍵提供手動切換，與語音共用目標選擇介面。
 
 **實作入口：**[整合應用 app.c](../firmware/Src/app.c) 的 `finder_voice_poll`、`finder_select_target`、`nn_thread_fct`、`dp_thread_fct`；[系統架構](architecture.md)。
 
@@ -99,7 +98,7 @@
 - 從每輪結果篩選目前目標；同類別有多個物件時，選最高信心框。
 - 要求連續 **兩個影格**命中，且框交併比（IoU）至少 **0.30**，才發布已找到（FOUND）。
 - 切換目標時清除上一目標的找到狀態及連續命中累積。
-- 在加入語音前，先以 USER1 操作正式視覺搜尋功能，保存視覺版板端紀錄。
+- 在加入語音前，先完成正式視覺搜尋功能，保存視覺版板端紀錄。
 
 **實作入口：**[app.c](../firmware/Src/app.c) 的 `finder_select_target`、`box_iou`、`FINDER_CONFIRM_FRAMES` 及 `nn_thread_fct`；[視覺版操作紀錄](evidence/development-history/finder_vision_20261004.log)。
 
@@ -249,9 +248,8 @@
 
 - 初始化一次推論執行環境，讓 YOLO 與 KWS 各自保留上下文及輸入輸出。
 - 在同一 `nn_thread_fct` 中依序輪詢 KWS、執行 YOLO，共用 NPU；顯示與影像訊號處理（ISP）由另外兩個 FreeRTOS 工作協作。
-- 語音與按鍵共用目標切換介面。每次切換更新世代編號，推論完成後再次核對，捨棄屬於舊目標的結果。
-- USER1 使用上升緣判斷及 **200 ms** 去彈跳，並與繪圖工作協調操作。
-- 語音執行期間的收音／分類錯誤停用語音並顯示錯誤，保留視覺與手動操作程式路徑；此錯誤隔離設計尚無另行故障注入測試。
+- 語音透過目標切換介面更新搜尋類別。每次切換更新世代編號，推論完成後再次核對，捨棄屬於舊目標的結果。
+- 語音執行期間的收音／分類錯誤停用語音並顯示錯誤，保留視覺運作路徑；此錯誤隔離設計尚無另行故障注入測試。
 
 **實作入口：**[app.c](../firmware/Src/app.c) 的 `nn_thread_fct`、`dp_thread_fct`、`isp_thread_fct`、`finder_select_target`、`finder_voice_poll`；[工作與狀態架構](architecture.md)。
 

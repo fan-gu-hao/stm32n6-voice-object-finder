@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | 前置收音依賴 | 在 course15 建立 N6 收音韌體與主機接收工具 | course17 的資料蒐集沿用這套錄音入口；本庫後來納入實際依賴的收音來源與工具 |
 | 2026-10-04：視覺產碼 | 新建 course17，固定官方分割範例與 ST 量化 YOLO 來源；在本案 `vision/` 重新產碼、配對 Runtime1201、編譯及封裝 | `vision_20261004_181810` 是本案自己的視覺產碼／參考工程建置結果 |
-| 2026-10-04：正式主工程 | 以官方手部雙模型範例為 `firmware/` 底座，移入 YOLO 產碼，改接後處理、中央裁切、目標選擇、記憶體與工作間交接；完成視覺版建置與板端紀錄 | `finder_vision_20261004_193031_265404` 是正式主工程的視覺版；當時先用 USER1 選目標，還不是語音控制 |
+| 2026-10-04：正式主工程 | 以官方手部雙模型範例為 `firmware/` 底座，移入 YOLO 產碼，改接後處理、中央裁切、目標選擇、記憶體與工作間交接；完成視覺版建置與板端紀錄 | `finder_vision_20261004_193031_265404` 是正式主工程的視覺版；此階段尚未整合語音控制 |
 | 2026-10-05：資料與初版 KWS | 完成五分類錄音、切段、來源分組、MFCC、模型訓練與 INT8 匯出 | 保留初版訓練程式；與後來分組定版分開 |
 | 2026-10-06：語音核心與收音整合 | KWS 產碼、C 特徵與模型介面、專用記憶體、CMSIS-DSP 建置，接入連續 MDF／DMA 收音及語音接受狀態 | 從可建置核心進展到即時雙模型；編譯成功不等於辨識驗證完成 |
 | 2026-10-06 至 10-07：部署與數值除錯 | 排查黑畫面及核心錯誤，核對映像有效負載偏移並修復 `0x400` 對齊；再以固定特徵、同一 PCM 與現場視窗比較電腦／板端結果 | 保留映像封裝失敗、特徵與輸出比較，以及 silence 誤判為 phone 的結果，沒有將它們當成成功驗收 |
@@ -98,7 +98,7 @@ KWS 的完整路線是 Keras／SavedModel → INT8 TFLite → ST Edge AI 內部 
 | --- | --- | --- |
 | 雙模型排程 | 單一推論工作依序輪詢 KWS 與執行 YOLO，共用 NPU；顯示與 ISP 為另外的工作 | [nn_thread_fct／dp_thread_fct／isp_thread_fct](../firmware/Src/app.c) |
 | 攝影機與顯示協作 | DCMIPP 顯示與推論管線、雙輸入緩衝、計數號誌、顯示互斥鎖、遮罩快照及快取維護 | [app.c](../firmware/Src/app.c)、[app_cam.c](../firmware/Src/app_cam.c) |
-| 目標與狀態一致性 | 接受語音或按鍵後切換類別；用目標世代編號捨棄推論途中切換前的舊結果；連續框 IoU 確認後顯示 FOUND | [finder_select_target 與推論結果發布](../firmware/Src/app.c) |
+| 目標與狀態一致性 | 接受語音後切換類別；用目標世代編號捨棄推論途中切換前的舊結果；連續框 IoU 確認後顯示 FOUND | [finder_select_target 與推論結果發布](../firmware/Src/app.c) |
 | 開機整合 | 沿用 ST 時脈、NPU、CPU 快取、外部記憶體、UART、顯示與 FreeRTOS 啟動，改接本案模型 | [main.c](../firmware/Src/main.c) |
 | 記憶體區隔 | 應用 SRAM、顯示與後處理 PSRAM、獨立視覺指令區；保留 KWS RAM 0x91FC0000／256 KiB、權重 Flash 0x70700000／64 KiB | [連結腳本](../firmware/Gcc/STM32N657xx.ld)、[KWS 記憶體池](../kws/deployment/kws.mpool) |
 | 建置整合 | 納入兩模型、HAL MDF、CMSIS-DSP 與執行環境；統一 FFT 相關編譯設定；將 .flash_section 分開輸出 | [Makefile](../firmware/Makefile)、[kws.mk](../firmware/mks/kws.mk)、[ai.mk](../firmware/mks/ai.mk) |

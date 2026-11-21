@@ -16,7 +16,7 @@ This is an **MCU-class edge-AI dual-model object finder** deployed on the **STM3
   <a href="https://youtu.be/m7wET9g5u6k"><strong>▶ Watch the full hardware demonstration</strong></a>
 </p>
 
-Say `cup`, `bottle`, or `phone` to select a search target. Camera capture and vision inference continue running, while the LCD overlays search status, bounding boxes, and segmentation masks. The USER1 button also changes the target. The Cortex-M55 handles peripherals, audio features, postprocessing, and task scheduling; the two models use the shared NPU sequentially.
+Say `cup`, `bottle`, or `phone` to select a search target. Camera capture and vision inference continue running, while the LCD overlays search status, bounding boxes, and segmentation masks. The Cortex-M55 handles peripherals, audio features, postprocessing, and task scheduling; the two models use the shared NPU sequentially.
 
 Boot handoff is part of the deployment: the chip's Boot ROM starts the first-stage bootloader (FSBL), which loads the main application from external Flash into internal SRAM and transfers control to its startup code. The application starts FreeRTOS, completes initialization, and creates the inference, display, and image-signal-processing tasks.
 
@@ -25,6 +25,8 @@ Boot handoff is part of the deployment: the chip's Boot ROM starts the first-sta
 **Technologies: Embedded AI · MCU · Cortex-M55 · Boot ROM / FSBL Handoff · C / Python · FreeRTOS tasks · NPU · Neural-ART · Keyword Spotting (KWS) · YOLOv8 Instance Segmentation · INT8 Quantization · MFCC · CMSIS-DSP · MDF / GPDMA · Cache Coherence · DCMIPP / LCD · UART / CRC32 · GDB · Linker Scripts · Model Memory Pools · Weight/Command Partitioning · Toolchain Version Alignment · Firmware Deployment.**
 
 **On this page:** [System responsibilities](#system-flow) · [Boot handoff](#boot-flow) · [Memory layout](#memory-layout) · [Model deployment](#model-deployment) · [Speech training](#kws-training) · [Numerical debugging](#numerical-debugging) · [Toolchain and packaging](#toolchain-packaging) · [Results](#results) · [All 32 steps](#development-route)
+
+**Key documents:** [Engineering workflow](docs/engineering-workflow.en.md) · [32-step guide](docs/development-steps.en.md) · [System architecture](docs/architecture.en.md) · [Memory layout](docs/memory-deployment.en.md) · [Code tour](docs/code-tour.en.md) · [Complete documentation](#documentation)
 
 ## Engineering work implemented in this project
 
@@ -48,7 +50,6 @@ flowchart TD
     MIC["On-board digital microphone"] --> AUDIO["MDF / DMA, ring buffer, MFCC"]
     AUDIO --> KWS["Speech KWS model"]
     KWS --> TARGET["Command acceptance and target"]
-    BUTTON["USER1 button"] --> TARGET
     CAM["Camera and DCMIPP"] --> YOLO["YOLOv8 segmentation model"]
     YOLO --> MATCH["Postprocessing, target filter, frame confirmation"]
     TARGET --> MATCH
@@ -75,7 +76,7 @@ flowchart TD
 | Acceptance and re-arming | **Two consecutive qualifying windows**, at least **1,200 ms** between accepted commands, then **two quiet windows** before re-arming |
 | Vision postprocessing | Confidence threshold **0.50**, non-maximum-suppression (NMS) IoU threshold **0.40**, and at most **10** results |
 | Target confirmation | Map COCO cup=41, bottle=39, and cell phone=67; select the highest-confidence box for the target class and require **two consecutive frames with box IoU at least 0.30** before reporting FOUND |
-| Target changes and stale results | Voice and button share the selection interface; update a target generation and reset hit accumulation, then discard old-target inference results. The button uses rising-edge detection and **200 ms** debounce |
+| Target changes and stale results | After accepting a voice command, update the search target and its generation, reset hit accumulation, and discard inference results belonging to the previous target |
 
 <a id="boot-flow"></a>
 
@@ -251,7 +252,7 @@ On the Cortex-M55, inference, display, and image signal processing (ISP) run as 
 | Camera crop and LCD coordinates differ | Take a central square from the display field of view as the 256×256 model input, then map boxes and masks back to the corresponding LCD region |
 | Repeated or unstable voice acceptance | Combine amplitude, score, score margin, two consecutive windows, a minimum interval, and re-arming after quiet windows |
 | Transient bounding-box changes | Select the highest-confidence result of the target class and require two consecutive frames with box intersection over union (IoU) of at least 0.30 before displaying FOUND |
-| Voice path returns a runtime error | Disable voice and display an error while retaining vision and USER1 selection paths; the button uses rising-edge detection and a 200 ms debounce interval |
+| Voice path returns a runtime error | Disable voice and display an error while keeping vision running |
 
 These implementations coordinate continuous audio, both models, search state, and display data, explicitly handling interrupt context, data ownership, and result validity. The scope and verification status of voice-error handling are documented in the [architecture](docs/architecture.en.md) and [implementation map](docs/development-coverage.en.md).
 
@@ -340,7 +341,7 @@ All 32 steps are retained below in development order. System design, decision th
 
 | Step | Work completed |
 | --- | --- |
-| **01 Define functions and operation** | Voice selects cup, bottle, or phone; vision searches continuously, the LCD displays status and masks, and USER1 provides manual selection. |
+| **01 Define functions and operation** | Voice selects cup, bottle, or phone; vision searches continuously and the LCD displays status and masks. |
 | **02 Establish the project and pin versions** | Organize application firmware, the vision reference, and KWS development; pin model, source commits, and tool versions with provenance records. |
 
 <a id="route-vision"></a>
@@ -415,6 +416,64 @@ All 32 steps are retained below in development order. System design, decision th
 | **31 Prepare IDE, Git, and the public project** | Synchronize IDE sources/build entry points, retain source versions, commits, and hashes, and organize public sources, dependencies, and licenses. |
 | **32 Complete the hardware demonstration video** | The completed video is featured at the top of the homepage. Standalone power and cold boot have no verified record and remain separate from the video and existing board tests. |
 
+<a id="documentation"></a>
+
+## Project documentation
+
+All 22 bilingual project-documentation pairs are listed below by purpose. Each document provides a language switch at the top; the main technical explanation remains on this homepage.
+
+### Development workflow and system design
+
+| Document | Contents |
+| --- | --- |
+| [Engineering workflow](docs/engineering-workflow.en.md) | The complete data, model, numerical porting, system-integration, and deployment workflow. |
+| [All 32 development steps](docs/development-steps.en.md) | Implementation, artifacts, results, and code entry points for every step. |
+| [System architecture](docs/architecture.en.md) | How audio, images, both models, real-time tasks, and application state cooperate. |
+| [Dual-model memory and deployment](docs/memory-deployment.en.md) | RAM/Flash, model pools, linker sections, weight boundaries, and the five-image layout. |
+| [Code tour](docs/code-tour.en.md) | Read the recording, frontend, inference, and integration implementation by module and function. |
+| [Implementation and evidence index](docs/development-coverage.en.md) | Map engineering work to source code, configuration, and recorded results. |
+
+### Models, data, and development tools
+
+| Document | Contents |
+| --- | --- |
+| [Vision model generation](vision/deployment/README.en.md) | YOLO generation input, six transferred artifacts, tool settings, and application integration. |
+| [KWS generation configuration](kws/deployment/README.en.md) | KWS network naming, memory pools, and Neural-ART generation settings. |
+| [Standalone recording firmware](kws/recording_firmware/README.en.md) | Board sources for five-second recordings, DMA capture, and serial transfer. |
+| [Recording and serial tools](kws/recording_tools/README.en.md) | RAM startup, handshakes, CRC32 checks, audio reception, and WAV storage. |
+| [Training history](kws/training_history/README.en.md) | Evolution and results from the baseline through live-data retraining to grouped validation. |
+| [Final training snapshot](kws/training_snapshot/README.en.md) | Final feature, model-training, quantization, and grouped-validation sources. |
+| [33 original host-side workflows](tools/development-history/README.en.md) | Vision migration, packaging fixes, numerical comparisons, data collection, and deployment programs. |
+
+### Builds, debugging, and delivery
+
+| Document | Contents |
+| --- | --- |
+| [Build and dependencies](docs/build.en.md) | Tool versions, build commands, output artifacts, and full-rebuild dependencies. |
+| [Toolchain compatibility and packaging fixes](docs/toolchain-compatibility.en.md) | Pinned upstream differences, runtime pairing, section settings, and boot-image packaging corrections. |
+| [IDE source synchronization](tools/ide/README.en.md) | Synchronize CubeIDE source/header links with preview, backup, and verification. |
+| [Original development history](docs/original-history-review.en.md) | Diagnosis and fixes for startup failures, numerical mismatches, live errors, and model iteration. |
+
+### Results, evidence, and publication scope
+
+| Document | Contents |
+| --- | --- |
+| [Results and version scope](docs/results.en.md) | Grouped validation, holdout evaluation, numerical comparisons, board operation, and video. |
+| [Evaluation report index](docs/evidence/README.en.md) | Five-fold and holdout reports with source and hash information. |
+| [Original development evidence](docs/evidence/development-history/README.en.md) | Generation, memory, build, programming, numerical comparison, and operation records. |
+| [Publication inventory](docs/publication-review.en.md) | Published materials, engineering contributions, source attribution, and rebuild dependencies. |
+| [Third-party sources and notices](THIRD_PARTY_NOTICES.en.md) | Upstream components and models, original licenses, and publication scope. |
+
+### Versions and provenance
+
+| Record type | Direct links |
+| --- | --- |
+| Step and source-version mapping | [32-step source map](docs/development-source-map.json) · [Upstream repositories and commits](docs/source-provenance.json) |
+| Vision model provenance | [Model source and hashes](sources.txt) · [Generation-setting provenance](vision/deployment/upstream-reference.json) |
+| Development-tool provenance | [Recording-tool provenance](docs/recording-tools-provenance.json) · [Origins and hashes of the 33 historical programs](tools/development-history/source-provenance.json) |
+| Model and development evidence | [Training, configuration, and evaluation hashes](docs/evidence/provenance.json) · [Development-evidence provenance](docs/evidence/development-history/source_provenance.json) |
+| Publication checks | [Source materials and public locations](docs/evidence/development-history/review_inventory.json) · [Publication audit](docs/evidence/publication_audit_20261120.json) |
+
 ## Source code and evidence index
 
 These entries provide source-level inspection and evidence lookup; the technical explanation above can be read continuously on this page.
@@ -474,20 +533,6 @@ These entries provide source-level inspection and evidence lookup; the technical
 See the [32-step development guide](docs/development-steps.en.md) for each step's full explanation. The existing [engineering workflow](docs/engineering-workflow.en.md) and [implementation index](docs/development-coverage.en.md) retain their mappings to code, configuration, and results.
 
 Reserved capacity, linked usage, and generated allocation are distinct measurements. The linker reports 0 B for KWS because generated code uses absolute addresses. The upstream vision Flash pool capacity is also not the actual weight-image length: this version checks the recorded image boundary against KWS, and regenerated models require another boundary check. **[Full address map, allocation responsibilities, and image boundaries](docs/memory-deployment.en.md)** provides the details and evidence.
-
-</details>
-
-<details>
-<summary>Expand the complete documentation and source index</summary>
-
-- [Dual-model memory and deployment](docs/memory-deployment.en.md): RAM/Flash addresses, sections, model pools, image boundaries, and cache handoffs.
-- [Official-toolchain compatibility](docs/toolchain-compatibility.en.md): pinned upstream versions, original settings, integration changes, and deployment evidence.
-- [Work and evidence from setup to freeze](docs/development-coverage.en.md): implementation index covering this project’s requirements, data, models, integration, and deployment.
-- [Original development history](docs/original-history-review.en.md): vision generation and framework migration, recorder startup, fixed-sample comparisons, and debugging iterations.
-- [Code tour](docs/code-tour.en.md) and [architecture](docs/architecture.en.md): functions, execution flow, and configuration.
-- [Engineering workflow](docs/engineering-workflow.en.md) and [original evidence](docs/evidence/development-history/README.en.md): model, data, deployment, and measurement records.
-- [Build and external dependencies](docs/build.en.md): GCC 14.3.1, ST Edge AI 4.0.1, Neural-ART 1.1.3-275, CubeIDE 2.2.0, and dependencies.
-- [Publication inventory](docs/publication-review.en.md) and [third-party sources](THIRD_PARTY_NOTICES.en.md): retained materials and licensing.
 
 </details>
 

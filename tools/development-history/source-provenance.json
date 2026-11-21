@@ -1158,8 +1158,8 @@
         "public_bytes": 16331
       },
       "status": {
-        "zh": "後續回貼確認應用與標頭更新，YOLO、USER1 選物與遮罩顯示接入。",
-        "en": "The subsequent response confirms application/header updates and integration of YOLO, USER1 selection, and masks.",
+        "zh": "後續回貼確認應用與標頭更新，YOLO 推論與遮罩顯示接入。",
+        "en": "The subsequent response confirms application/header updates and integration of YOLO inference and masks.",
         "checked_now": "AST parsing or bash -n, and source/hash matching only; not executed during publication."
       },
       "evidence": [

@@ -8,7 +8,7 @@ This index covers platform and recording tools, vision-model generation, speech 
 
 | Work | Implementation | Code and configuration |
 | --- | --- | --- |
-| System behavior | Voice commands cup/bottle/phone or USER1 select a target; vision runs continuously and the LCD shows search state, boxes, and masks | [app.c](../firmware/Src/app.c), [architecture](architecture.en.md) |
+| System behavior | Voice commands cup/bottle/phone select a target; vision runs continuously and the LCD shows search state, boxes, and masks | [app.c](../firmware/Src/app.c), [architecture](architecture.en.md) |
 | Tools and runtime | GCC 14.3.1, ST Edge AI 4.0.1, Neural-ART 1.1.3-275, HAL 1.3.0, and FreeRTOS 10.6.2; configure model, MDF, and CMSIS-DSP build dependencies | [Build notes](build.en.md), [ai.mk](../firmware/mks/ai.mk), [kws.mk](../firmware/mks/kws.mk) |
 | Application framework | Integrate KWS/YOLO, target state, and display data into ST's dual-model FreeRTOS/camera framework | [Provenance](source-provenance.json), [app.c](../firmware/Src/app.c) |
 | Vision-model source | Select the ST quantized instance-segmentation model with a pinned source/SHA-256 and integrate its N6-generated/runtime interface | [sources.txt](../sources.txt), [model interfaces](engineering-workflow.en.md) |
@@ -55,10 +55,10 @@ Five-fold results support development and epoch selection; the held-out test use
 | Shared NPU | Poll KWS and run YOLO sequentially within one inference task, with separate display/ISP tasks | `nn_thread_fct` / `dp_thread_fct` / `isp_thread_fct` |
 | Camera-input adaptation | Replace upstream hand-model aspect-ratio handling with a central square scaled to the model input | [app_cam.c](../firmware/Src/app_cam.c) |
 | Camera interrupt queue adaptation | Correct interrupt-context semaphore acquisition and required task switching in the upstream queue with `xSemaphoreTakeFromISR` and `portYIELD_FROM_ISR` | [Camera input queue](../firmware/Src/app.c), [original history](original-history-review.en.md) |
-| Target selection/voice acceptance | Three objects, amplitude/score/margin, consecutive windows, command interval, quiet re-arming, and USER1 operation | `finder_voice_poll`, `finder_select_target` |
+| Target selection/voice acceptance | Three objects, amplitude/score/margin, consecutive windows, command interval, and quiet re-arming | `finder_voice_poll`, `finder_select_target` |
 | Cross-task consistency | Target generations reject stale results after switching; consecutive-frame box IoU, mask snapshots, and display mutex | [app.c](../firmware/Src/app.c) |
 | Memory/build | Application SRAM, display/postprocessing PSRAM, vision command region, dedicated KWS RAM/Flash; link MDF, DSP, and both models | [Linker script](../firmware/Gcc/STM32N657xx.ld), [build fragment](../firmware/mks/kws.mk) |
-| Diagnostics/degraded behavior | Startup/inference errors, voice/search state, capture statistics, and manual-selection paths | [app.c](../firmware/Src/app.c), [finder_mic.c](../firmware/Src/finder_mic.c) |
+| Diagnostics/degraded behavior | Startup/inference errors, voice/search state, and capture statistics | [app.c](../firmware/Src/app.c), [finder_mic.c](../firmware/Src/finder_mic.c) |
 
 Vision runs continuously while voice changes the target. Three tasks interleave, and one inference task runs the two models sequentially on the NPU. This project integrates the models, adapts camera input, manages targets, and implements cross-task data handoffs. Low-level clocks, AXISRAM, GPU2D, RIF, UART, and FreeRTOS startup largely reuse the ST framework.
 
@@ -78,8 +78,7 @@ The following details describe buffer, peripheral, feature, and state handoffs. 
 | Camera/model buffers | Invalidate the camera buffer's cache, copy into the model input, clean cache, then return the camera buffer, separating next-frame capture from model-input lifetime | [nn_thread_fct](../firmware/Src/app.c) |
 | Model/display mask isolation | Copy postprocessing masks into a result snapshot; the display task takes a drawing snapshot under lock, then draws outside it | `nn_thread_fct`, `dp_thread_fct` |
 | Crop/display coordinates | Take a central square from the same display field of view, map boxes/masks back into the LCD square, and handle mask boundaries/transparency | [app_cam.c](../firmware/Src/app_cam.c), [Display_NetworkOutput](../firmware/Src/app.c) |
-| Voice-error isolation | Runtime capture/classification errors disable voice and display an error while retaining vision/button paths; automatic recovery and initialization assertion failures are outside this handling scope | `finder_voice_poll`, `nn_thread_fct`, `dp_thread_fct` |
-| Manual fallback/debounce | USER1 rising edge and 200 ms interval, sharing the target-selection interface with voice | `dp_thread_fct`, `finder_select_target` |
+| Voice-error isolation | Runtime capture/classification errors disable voice and display an error while retaining vision; automatic recovery and initialization assertion failures are outside this handling scope | `finder_voice_poll`, `nn_thread_fct`, `dp_thread_fct` |
 | DSP compilation consistency | Use the same compilation settings for FFT and frontend objects to match this version's CMSIS-DSP path | [kws.mk](../firmware/mks/kws.mk) |
 
 This project connects model headers and startup information in `main.c`, corrects interrupt-context camera-queue semaphore handling in the application, and integrates audio/vision models with new data/state handoffs. The three tasks, static allocation, and camera queues use the ST framework; `FreeRTOSConfig.h` retains the ST base contents.

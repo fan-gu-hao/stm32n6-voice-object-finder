@@ -85,8 +85,8 @@ nn_thread_fct, dp_thread_fct, and isp_thread_fct handle inference, display, and 
 | box_iou / FINDER_CONFIRM_FRAMES | Select the highest-confidence result of the requested class; require two consecutive frames with box IoU of at least 0.30 before reporting FOUND |
 | result_mask / drawing_mask | Copy model output into a result snapshot; the display task takes a second drawing snapshot under the mutex, then draws outside the lock to avoid overwrite by later postprocessing |
 | DCMIPP_PipeInitNn / Display_NetworkOutput | Take a central square from the LCD field of view and map boxes/masks back to the same square; render transparent overlays from non-maximum suppression (NMS) and mask-reconstruction results |
-| dp_thread_fct | USER1 rising-edge detection and a 200 ms debounce interval share the speech target-selection interface; clean cache after drawing and swap foreground buffers |
-| voice_error path in finder_voice_poll | Disable speech and show an error when capture/classification returns a runtime error, retaining code paths for vision and button operation |
+| dp_thread_fct | Draw search state, bounding boxes, and masks; clean cache after drawing and swap foreground buffers |
+| voice_error path in finder_voice_poll | Disable speech and show an error when capture/classification returns a runtime error, retaining the vision code path |
 
 ## 6. Startup, memory, code generation, and build
 

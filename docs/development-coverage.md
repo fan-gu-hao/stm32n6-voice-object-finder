@@ -8,7 +8,7 @@
 
 | 工作 | 實作內容 | 程式與設定 |
 | --- | --- | --- |
-| 系統行為 | 語音 cup／bottle／phone 或 USER1 選擇目標；視覺持續執行，LCD 顯示搜尋狀態、框與遮罩 | [app.c](../firmware/Src/app.c)、[架構](architecture.md) |
+| 系統行為 | 語音 cup／bottle／phone 選擇目標；視覺持續執行，LCD 顯示搜尋狀態、框與遮罩 | [app.c](../firmware/Src/app.c)、[架構](architecture.md) |
 | 工具與執行期 | GCC 14.3.1、ST Edge AI 4.0.1、Neural-ART 1.1.3-275、HAL 1.3.0、FreeRTOS 10.6.2；配置模型、MDF 與 CMSIS-DSP 建置相依 | [建置說明](build.md)、[ai.mk](../firmware/mks/ai.mk)、[kws.mk](../firmware/mks/kws.mk) |
 | 應用框架 | 接入 KWS／YOLO、目標狀態與顯示資料，整合於 ST 雙模型 FreeRTOS 與相機框架 | [來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
 | 視覺模型來源 | 選用來源與 SHA-256 已固定的 ST 量化實例分割模型，整合其 N6 產碼與執行期介面 | [sources.txt](../sources.txt)、[模型介面](engineering-workflow.md) |
@@ -55,10 +55,10 @@
 | 模型共用 NPU | 在同一推論工作依序輪詢 KWS 與執行 YOLO，顯示及 ISP 由其他工作協作 | `nn_thread_fct`／`dp_thread_fct`／`isp_thread_fct` |
 | 相機輸入適配 | 把上游手部模型的寬高比處理改為中央正方形區域，再縮放到模型輸入 | [app_cam.c](../firmware/Src/app_cam.c) |
 | 相機中斷佇列適配 | 修正上游佇列在中斷情境的號誌取得及必要的工作切換，使用 `xSemaphoreTakeFromISR` 與 `portYIELD_FROM_ISR` | [相機輸入佇列](../firmware/Src/app.c)、[原始歷程](original-history-review.md) |
-| 目標選擇與語音接受 | 三種物件、音量／分數／分差、連續視窗、命令間隔、安靜後重啟用、USER1 操作 | `finder_voice_poll`、`finder_select_target` |
+| 目標選擇與語音接受 | 三種物件、音量／分數／分差、連續視窗、命令間隔、安靜後重啟用 | `finder_voice_poll`、`finder_select_target` |
 | 跨工作一致性 | 目標世代防止切換後發布舊結果、框的連續幀 IoU、遮罩快照與顯示互斥 | [app.c](../firmware/Src/app.c) |
 | 記憶體與建置 | 應用 SRAM、顯示／後處理 PSRAM、視覺指令區、KWS 專用 RAM／Flash；MDF、DSP、兩模型共同連結 | [連結腳本](../firmware/Gcc/STM32N657xx.ld)、[建置清單](../firmware/mks/kws.mk) |
-| 診斷與降級行為 | 啟動／推論錯誤、語音與搜尋狀態、收音統計、手動切換路徑 | [app.c](../firmware/Src/app.c)、[finder_mic.c](../firmware/Src/finder_mic.c) |
+| 診斷與降級行為 | 啟動／推論錯誤、語音與搜尋狀態、收音統計 | [app.c](../firmware/Src/app.c)、[finder_mic.c](../firmware/Src/finder_mic.c) |
 
 視覺持續執行，語音改變搜尋目標。三個工作交錯執行，兩模型由同一推論工作依序使用 NPU。本案完成模型接入、相機輸入適配、目標管理及跨工作資料交接；底層時脈、AXISRAM、GPU2D、RIF、UART 與 FreeRTOS 啟動主要沿用 ST 框架。
 
@@ -78,8 +78,7 @@
 | 相機與模型緩衝 | 相機緩衝快取失效後，先複製到模型輸入並清理快取，再歸還相機緩衝，分開下一幀擷取與模型輸入的生命週期 | [nn_thread_fct](../firmware/Src/app.c) |
 | 模型／顯示遮罩隔離 | 後處理遮罩先複製成結果快照，顯示工作在鎖內再取繪圖快照，之後於鎖外畫圖 | `nn_thread_fct`、`dp_thread_fct` |
 | 裁切與畫面座標 | 同一顯示視野內取中央方形，框與遮罩映射回 LCD 方形區域，處理遮罩邊界與透明疊圖 | [app_cam.c](../firmware/Src/app_cam.c)、[Display_NetworkOutput](../firmware/Src/app.c) |
-| 語音錯誤隔離 | 執行期間收音／分類回傳錯誤時，停用語音並顯示錯誤，保留視覺工作與按鍵操作路徑；自動復原及初始化斷言失敗不在此處理範圍 | `finder_voice_poll`、`nn_thread_fct`、`dp_thread_fct` |
-| 手動備援與去彈跳 | USER1 上升緣與 200 ms 間隔，與語音共用目標選擇介面 | `dp_thread_fct`、`finder_select_target` |
+| 語音錯誤隔離 | 執行期間收音／分類回傳錯誤時，停用語音並顯示錯誤，保留視覺工作；自動復原及初始化斷言失敗不在此處理範圍 | `finder_voice_poll`、`nn_thread_fct`、`dp_thread_fct` |
 | DSP 編譯一致性 | FFT 物件與前處理物件採相同編譯設定，配合此版 CMSIS-DSP 路徑 | [kws.mk](../firmware/mks/kws.mk) |
 
 本案在 `main.c` 接上模型標頭與啟動資訊，在應用程式修正相機佇列的中斷情境號誌操作，並加入音訊／視覺模型及新的資料、狀態交接。三工作、靜態配置與相機佇列以 ST 框架為基礎；`FreeRTOSConfig.h` 保持 ST 基底內容。

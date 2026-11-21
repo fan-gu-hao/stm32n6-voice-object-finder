@@ -85,8 +85,8 @@ nn_thread_fct、dp_thread_fct、isp_thread_fct 分別處理推論、顯示及影
 | box_iou／FINDER_CONFIRM_FRAMES | 從指定類別挑最高信心結果，連續兩幀且框交併比至少 0.30，才判定找到（FOUND） |
 | result_mask／drawing_mask | 模型輸出先複製為結果快照；顯示工作於互斥鎖內再複製繪圖快照，於鎖外繪製，避免下一輪後處理覆寫 |
 | DCMIPP_PipeInitNn／Display_NetworkOutput | 從 LCD 顯示視野取中央正方形輸入，將框與遮罩映回同一方形區域；以非極大值抑制（NMS）與遮罩重建結果完成透明疊圖 |
-| dp_thread_fct | USER1 上升緣與 200 ms 間隔去彈跳，與語音共用目標選擇介面；繪圖後清理快取並交換前景緩衝 |
-| finder_voice_poll 的 voice_error 路徑 | 執行期間收音／分類回傳錯誤時停用語音並顯示錯誤，保留視覺與按鍵繼續執行的程式路徑 |
+| dp_thread_fct | 繪製搜尋狀態、物件框與遮罩，繪圖後清理快取並交換前景緩衝 |
+| finder_voice_poll 的 voice_error 路徑 | 執行期間收音／分類回傳錯誤時停用語音並顯示錯誤，保留視覺繼續執行的程式路徑 |
 
 ## 6. 啟動、記憶體、產碼與建置
 

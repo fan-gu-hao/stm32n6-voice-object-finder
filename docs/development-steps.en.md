@@ -14,7 +14,6 @@ Alongside firmware and training sources, the [development host workflows](../too
 - Run speech and image inference on the STM32N6570-DK, using the board's digital microphone, camera, and LCD as the operating interface.
 - Say `cup`, `bottle`, or `phone` to select a search target through the speech model. Camera capture and YOLOv8 instance segmentation run continuously and search for the selected object.
 - Display the target, searching/found state, bounding box, and segmentation mask on the LCD.
-- Retain the USER1 button for manual selection through the same target-selection interface used by voice.
 
 **Implementation:** `finder_voice_poll`, `finder_select_target`, `nn_thread_fct`, and `dp_thread_fct` in [app.c](../firmware/Src/app.c); [system architecture](architecture.en.md).
 
@@ -99,7 +98,7 @@ Alongside firmware and training sources, the [development host workflows](../too
 - Filter each inference result for the selected target and choose the highest-confidence box when multiple objects of that class are present.
 - Require hits in **two consecutive frames** with box IoU of at least **0.30** before publishing FOUND.
 - Clear the previous target's found state and accumulated hits whenever the target changes.
-- Before adding speech, operate the application through USER1 and retain board records for the vision version.
+- Complete the vision-search functionality and retain board records for the vision version before adding speech.
 
 **Implementation:** `finder_select_target`, `box_iou`, `FINDER_CONFIRM_FRAMES`, and `nn_thread_fct` in [app.c](../firmware/Src/app.c); [vision-version operation log](evidence/development-history/finder_vision_20261004.log).
 
@@ -249,9 +248,8 @@ Alongside firmware and training sources, the [development host workflows](../too
 
 - Initialize the inference runtime once while keeping separate YOLO and KWS contexts and input/output buffers.
 - Poll KWS and run YOLO sequentially within `nn_thread_fct` on the shared NPU. Display and image signal processing (ISP) use two other cooperating FreeRTOS tasks.
-- Share one target-selection interface between voice and button input. Increment a target-generation number on each change and recheck it after inference to discard results for an old target.
-- Handle USER1 with rising-edge detection and **200 ms** debounce, coordinated with the display task.
-- Runtime speech capture/classification errors disable voice and display an error while retaining the vision and manual-control code paths. This isolation design has not undergone a separate fault-injection test.
+- Update the search class through the voice target-selection interface. Increment a target-generation number on each change and recheck it after inference to discard results for an old target.
+- Runtime speech capture/classification errors disable voice and display an error while retaining the vision code path. This isolation design has not undergone a separate fault-injection test.
 
 **Implementation:** `nn_thread_fct`, `dp_thread_fct`, `isp_thread_fct`, `finder_select_target`, and `finder_voice_poll` in [app.c](../firmware/Src/app.c); [task/state architecture](architecture.en.md).
 

@@ -16,7 +16,7 @@
   <a href="https://youtu.be/m7wET9g5u6k"><strong>▶ 點此觀看完整實機展示影片</strong></a>
 </p>
 
-說出杯子（`cup`）、水瓶（`bottle`）或手機（`phone`）的英文名稱，語音模型便選定搜尋目標；攝影機與視覺辨識持續運作，液晶螢幕（LCD）疊加搜尋狀態、物件框與分割遮罩，USER1 按鍵也能切換目標。Cortex-M55 負責周邊控制、音訊特徵、後處理與工作排程，兩個模型依序使用共享 NPU。
+說出杯子（`cup`）、水瓶（`bottle`）或手機（`phone`）的英文名稱，語音模型便選定搜尋目標；攝影機與視覺辨識持續運作，液晶螢幕（LCD）疊加搜尋狀態、物件框與分割遮罩。Cortex-M55 負責周邊控制、音訊特徵、後處理與工作排程，兩個模型依序使用共享 NPU。
 
 系統的開機交接也納入部署：晶片內建開機程式（Boot ROM）啟動第一階段開機載入程式（FSBL），再由 FSBL 將外部快閃記憶體（Flash）中的主應用載入內部 SRAM，交接至應用啟動流程。主應用啟動 FreeRTOS，完成初始化後，建立推論、顯示與影像訊號處理工作。
 
@@ -25,6 +25,8 @@
 **技術關鍵字：嵌入式人工智慧（Embedded AI）・微控制器（MCU）・Cortex-M55・開機交接（Boot ROM／FSBL）・C／Python・FreeRTOS 多工作・神經網路加速器（NPU）・Neural-ART・關鍵字辨識（KWS）・YOLOv8 實例分割・INT8 量化・梅爾頻率倒譜係數（MFCC）・CMSIS-DSP・MDF／GPDMA・快取一致性・DCMIPP／LCD・UART／CRC32・GDB・連結腳本（Linker script）・模型記憶體池（Memory pool）・權重與指令分區・工具鏈版本對齊・韌體部署。**
 
 **本頁導覽：**[系統分工](#system-flow) · [開機交接](#boot-flow) · [記憶體配置](#memory-layout) · [模型部署](#model-deployment) · [語音訓練](#kws-training) · [數值除錯](#numerical-debugging) · [工具鏈與封裝](#toolchain-packaging) · [成果](#results) · [完整 32 步](#development-route)
+
+**重要文件：**[工程流程（Workflow）](docs/engineering-workflow.md) · [32 步詳解](docs/development-steps.md) · [系統架構](docs/architecture.md) · [記憶體配置](docs/memory-deployment.md) · [程式導讀](docs/code-tour.md) · [完整文件導覽](#documentation)
 
 ## 本專案完成的工程實作
 
@@ -48,7 +50,6 @@ flowchart TD
     MIC["板上數位麥克風"] --> AUDIO["MDF／DMA、環形緩衝、MFCC"]
     AUDIO --> KWS["語音 KWS 模型"]
     KWS --> TARGET["命令接受與搜尋目標"]
-    BUTTON["USER1 按鍵"] --> TARGET
     CAM["攝影機與 DCMIPP"] --> YOLO["YOLOv8 實例分割模型"]
     YOLO --> MATCH["後處理、目標篩選、連續幀確認"]
     TARGET --> MATCH
@@ -75,7 +76,7 @@ flowchart TD
 | 接受與重新啟用 | **連續兩個視窗**符合，兩次命令接受間隔至少 **1,200 ms**；接受後等待**兩個安靜視窗**才重新啟用 |
 | 視覺後處理 | 信心門檻 **0.50**、非極大值抑制（NMS）的交併比門檻 **0.40**，最多保留 **10** 個結果 |
 | 指定物件確認 | 對應 COCO 的 cup=41、bottle=39、cell phone=67；選取目標類別最高信心框，要求**連續兩幀且框交併比至少 0.30**才顯示找到（FOUND） |
-| 目標切換與舊結果 | 語音與按鍵共用切換介面；更新目標世代並清除命中累積，推論完成後捨棄舊目標的結果。按鍵使用上升緣與 **200 ms** 去彈跳 |
+| 目標切換與舊結果 | 接受語音命令後更新搜尋目標與世代編號，清除命中累積；推論完成後捨棄屬於舊目標的結果 |
 
 <a id="boot-flow"></a>
 
@@ -251,7 +252,7 @@ KWS 另用獨立網路名稱與模型池產碼，將自己的程式及介面連�
 | 相機裁切與 LCD 位置不一致 | 從顯示視野取中央正方形作為 256×256 模型輸入，再將框與遮罩映射回 LCD 對應區域 |
 | 語音重複接受或不穩定 | 綜合音量、分數、分差、連續兩窗、最短間隔及安靜後重新啟用條件 |
 | 物件框短暫跳動 | 篩選指定類別的最高信心結果，連續兩幀且框交併比（IoU）至少 0.30 才顯示找到（FOUND） |
-| 語音通路執行期間回傳錯誤 | 停用語音並顯示錯誤，保留視覺及 USER1 手動切換路徑；按鍵具上升緣與 200 ms 去彈跳處理 |
+| 語音通路執行期間回傳錯誤 | 停用語音並顯示錯誤，保留視覺工作繼續執行 |
 
 上述實作將連續音訊、兩個模型、搜尋狀態與顯示資料串成協作流程，並明確處理中斷情境、資料所有權與結果有效期。語音錯誤處理的適用範圍與驗證狀態見[系統架構](docs/architecture.md)及[實作索引](docs/development-coverage.md)。
 
@@ -340,7 +341,7 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 
 | 步驟 | 完成內容 |
 | --- | --- |
-| **01 定義功能與操作** | 語音指定 cup、bottle、phone；視覺持續尋物、LCD 顯示狀態與遮罩，USER1 提供手動切換。 |
+| **01 定義功能與操作** | 語音指定 cup、bottle、phone；視覺持續尋物、LCD 顯示狀態與遮罩。 |
 | **02 建立正式專案並固定版本** | 組織正式韌體、視覺參考與 KWS 開發目錄，固定模型、來源提交與工具版本，保存追溯資料。 |
 
 <a id="route-vision"></a>
@@ -415,6 +416,64 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 | **31 整理 IDE、Git 與公開工程** | 同步 IDE 來源與建置入口，保存來源版本、提交與雜湊，整理公開原始碼、依賴及授權。 |
 | **32 完成實機展示影片** | 實機影片已完成並置於首頁；獨立供電與冷啟動尚無已核對紀錄，與影片及既有板測分開呈現。 |
 
+<a id="documentation"></a>
+
+## 專案文件導覽
+
+以下列出本專案全部 22 組中英文說明文件，依閱讀目的分類。每份文件頁首都可切換語言；上方首頁正文保留完整技術介紹。
+
+### 開發流程與系統設計
+
+| 文件 | 內容 |
+| --- | --- |
+| [工程流程（Workflow）](docs/engineering-workflow.md) | 資料、模型、數值移植、系統整合與部署的完整流程。 |
+| [完整 32 步開發詳解](docs/development-steps.md) | 每一步的做法、產物、結果與程式入口。 |
+| [系統架構](docs/architecture.md) | 音訊、影像、雙模型、即時工作與應用狀態如何協作。 |
+| [雙模型記憶體與部署](docs/memory-deployment.md) | RAM／Flash、模型池、連結區段、權重邊界與五份映像配置。 |
+| [程式導讀](docs/code-tour.md) | 依模組與函式閱讀收音、前處理、模型推論及系統整合實作。 |
+| [實作與證據索引](docs/development-coverage.md) | 將工程項目對應到原始碼、設定及結果紀錄。 |
+
+### 模型、資料與開發工具
+
+| 文件 | 內容 |
+| --- | --- |
+| [視覺模型產碼](vision/deployment/README.md) | YOLO 產碼輸入、六份產物、工具設定與移植交接。 |
+| [語音模型產碼配置](kws/deployment/README.md) | KWS 網路名稱、記憶體池及 Neural-ART 產碼設定。 |
+| [獨立錄音韌體](kws/recording_firmware/README.md) | 五秒錄音、DMA 收樣與串列傳輸的板端原始碼。 |
+| [收音與串列工具](kws/recording_tools/README.md) | RAM 啟動、交握、CRC32 檢查、音訊接收與 WAV 保存。 |
+| [訓練版本演進](kws/training_history/README.md) | 初版、現場補訓與分組交叉驗證的演進及各版結果。 |
+| [定版訓練快照](kws/training_snapshot/README.md) | 定版特徵處理、模型訓練、量化與分組驗證程式。 |
+| [33 份原始開發流程](tools/development-history/README.md) | 視覺移植、封裝修正、數值比對、資料收集及部署程式。 |
+
+### 建置、除錯與工程交付
+
+| 文件 | 內容 |
+| --- | --- |
+| [建置與外部依賴](docs/build.md) | 工具版本、建置指令、輸出產物與完整重建的依賴。 |
+| [工具鏈相容性與封裝修正](docs/toolchain-compatibility.md) | 官方範例版本差異、執行期配對、區段設定與開機封裝修正。 |
+| [IDE 來源同步](tools/ide/README.md) | 同步 CubeIDE 來源檔與標頭瀏覽連結，包含預覽、備份與核對。 |
+| [原始開發歷程](docs/original-history-review.md) | 啟動失敗、數值比對、現場誤判及模型迭代的診斷與修正。 |
+
+### 成果、原始證據與公開範圍
+
+| 文件 | 內容 |
+| --- | --- |
+| [成果與版本範圍](docs/results.md) | 分組驗證、保留評估、數值比較、板端操作與影片。 |
+| [評估報告索引](docs/evidence/README.md) | 五折、保留評估與報告來源／雜湊。 |
+| [開發原始證據](docs/evidence/development-history/README.md) | 產碼、記憶體、建置、寫入、數值比較及操作日誌。 |
+| [公開材料盤點](docs/publication-review.md) | 已公開材料、工程貢獻、來源歸屬及重建依賴。 |
+| [第三方來源與授權](THIRD_PARTY_NOTICES.md) | 官方元件與模型來源、原授權及公開範圍。 |
+
+### 版本與追溯資料
+
+| 資料類型 | 直接連結 |
+| --- | --- |
+| 步驟與來源版本 | [32 步程式對照](docs/development-source-map.json) · [上游儲存庫與提交版本](docs/source-provenance.json) |
+| 視覺模型來源 | [模型來源與雜湊](sources.txt) · [產碼設定來源](vision/deployment/upstream-reference.json) |
+| 開發工具來源 | [收音工具來源](docs/recording-tools-provenance.json) · [33 份歷史程式來源與雜湊](tools/development-history/source-provenance.json) |
+| 模型與開發證據 | [訓練、配置與評估雜湊](docs/evidence/provenance.json) · [開發證據來源](docs/evidence/development-history/source_provenance.json) |
+| 公開材料核對 | [來源材料與公開位置](docs/evidence/development-history/review_inventory.json) · [公開材料核對結果](docs/evidence/publication_audit_20261120.json) |
+
 ## 原始碼與佐證索引
 
 以下入口供查閱原始碼與核對紀錄；本頁前面的技術說明可直接連續閱讀。
@@ -474,20 +533,6 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 每步的完整說明見[32 步開發詳解](docs/development-steps.md)；既有[工程流程](docs/engineering-workflow.md)與[實作索引](docs/development-coverage.md)保留各項程式、配置與結果的對照。
 
 保留容量、連結器用量與模型產碼配置量各有不同意義。KWS 區域在連結器顯示 0 B，是因為產碼採絕對位址配置。視覺上游 Flash 模型池的容量也不等於權重實際長度；本版依已記錄產物邊界核對與 KWS 的間隔，重新產碼時仍須核對。**[完整位址配置、分配責任與映像邊界](docs/memory-deployment.md)**列出細節與原始依據。
-
-</details>
-
-<details>
-<summary>展開完整文件與來源索引</summary>
-
-- [雙模型記憶體與部署配置](docs/memory-deployment.md)：RAM／Flash 位址、區段、模型池、映像邊界與快取交接。
-- [官方工具鏈相容性](docs/toolchain-compatibility.md)：固定官方版本、原始設定、修正方式與成功部署紀錄。
-- [從起步到定版的工作與證據對照](docs/development-coverage.md)：本專案需求、資料、模型、整合與部署的實作索引。
-- [原始開發歷程](docs/original-history-review.md)：視覺產碼與框架移植、收音啟動、固定樣本比較及除錯迭代的整理。
-- [程式導讀](docs/code-tour.md)與[系統架構](docs/architecture.md)：函式、執行流程與配置。
-- [工程流程](docs/engineering-workflow.md)與[原始證據](docs/evidence/development-history/README.md)：模型、資料、部署及實測紀錄。
-- [建置與外部依賴](docs/build.md)：GCC 14.3.1、ST Edge AI 4.0.1、Neural-ART 1.1.3-275、CubeIDE 2.2.0 及相依項目。
-- [公開材料盤點](docs/publication-review.md)與[第三方來源](THIRD_PARTY_NOTICES.md)：保存範圍與授權。
 
 </details>
 
