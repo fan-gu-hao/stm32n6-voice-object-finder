@@ -2,6 +2,20 @@
 
 [繁體中文](toolchain-compatibility.md) | [English](toolchain-compatibility.en.md)
 
+## Understanding the version numbers: 1100, 1200, and 1201
+
+The Runtime shorthand on this page identifies ST's **Network Runtime library**. Generated model code depends on this library; the required functions are linked into the firmware during the build to support on-board inference.
+
+| Shorthand | Library version | Role in this project |
+| --- | --- | --- |
+| `Runtime1100` | **11.0.0** | Original version in the official dual-model hand framework |
+| `Runtime1200` | **12.0.0** | Original version in the official vision reference application |
+| `Runtime1201` | **12.0.1** | Version used by this project's integrated GCC build |
+
+For example, `NetworkRuntime1201_CM55_GCC.a` means a **version 12.0.1 Network Runtime library for Cortex-M55, provided as a static library (`.a`) for the GCC toolchain**. The current [version header](../firmware/Lib/AI_Runtime/Inc/core_datatypes.h) explicitly defines 12/0/1, and the [link settings](../firmware/mks/ai.mk) select this library.
+
+Newly generated model code may require newer interfaces or behavior. This project therefore updates the library, headers, and NPU support sources together to keep the generated code and firmware compatible. **ST Edge AI Core 4.0.1 identifies the code-generation tool; Network Runtime 12.0.1 identifies the library.** Neural-ART support components have their own version records, listed separately below.
+
 This project brings two official applications built around different tool versions into one GCC 14.3.1, ST Edge AI 4.0.1, and Runtime1201 build. The work includes identifying generation/runtime version differences, transferring memory-section settings, extracting separate images, and diagnosing a packaging problem that prevented startup despite successful Flash verification.
 
 ## Pinned sources and version alignment

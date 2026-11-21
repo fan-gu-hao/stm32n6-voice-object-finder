@@ -2,6 +2,8 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](../../docs/toolchain-compatibility.en.md).
+
 This directory supplies the host-side implementations for vision generation and main-firmware migration, packaging alignment, fixed numerical comparisons, live-data collection, KWS generation, installation/builds, and deployment. The 33 scripts are complete Python or shell blocks from the original development conversation. They were originally pasted into a terminal, with here-documents for Python; filenames were assigned by purpose for publication and were not pre-existing filenames on the development computer.
 
 These are stage-specific workflow snapshots that read historical models, frontend coefficients, directories, and version pointers. Some modify firmware source, switch diagnostic modes, build, or directly program the board; the table identifies those actions and their historical context. The final application is in [`firmware/`](../../firmware/); see the [build guide](../../docs/build.en.md) for its current build entry.

@@ -2,6 +2,8 @@
 
 [繁體中文](development-coverage.md) | [English](development-coverage.en.md)
 
+> **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](toolchain-compatibility.md)。
+
 本索引對照從平台與收音工具、視覺模型產碼、語音資料與 KWS 訓練，到兩模型數值移植、系統整合、燒錄與定版的工作。各階段列出實際程式、配置與結果；部分工作交錯進行，章節依工程主題編排。完整流程見[工程流程](engineering-workflow.md)，版本演進、問題排查與執行結果見[原始開發歷程覆核](original-history-review.md)。
 
 ## 0. 系統目標、平台與模型介面

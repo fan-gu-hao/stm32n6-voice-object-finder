@@ -4,6 +4,16 @@
 
 本專案是一套部署在 **STM32N6570-DK** 上的 **微控制器（MCU）級的邊緣人工智慧（Edge AI）雙模型找物系統**。板上的 STM32N657 微控制器整合 **Arm Cortex-M55 處理器與 Neural-ART 神經網路加速器（NPU）**，在同一套 FreeRTOS 韌體中執行自行訓練的關鍵字辨識模型（KWS）與 YOLOv8 實例分割模型；語音前處理、模型推論、搜尋判定及畫面顯示都由開發板完成。
 
+## [雙模型記憶體配置與部署](docs/memory-deployment.md)
+
+**本專案的核心工程：在同一顆微控制器上，配置主應用、兩個模型、影像緩衝、權重與執行指令。** 將模型記憶體池、韌體連結腳本與燒錄位址一起規劃，讓語音與視覺模型共用 NPU，並保有各自的工作區。
+
+- **工作區分配：**應用 SRAM 邊界、影像與顯示緩衝，以及 KWS 專用的 **256 KiB 保留工作區**。
+- **權重與指令存放：**兩模型權重的實際內容邊界、視覺執行指令分區，以及分開輸出映像的方式。
+- **部署與執行交接：**五份部署映像、第一階段開機載入程式（FSBL）載入應用，以及 CPU／DMA／NPU 的快取一致性。
+
+**[閱讀完整記憶體配置表、燒錄位置與實作依據 →](docs/memory-deployment.md)**
+
 <h1 align="center">實機展示</h1>
 
 <p align="center">
@@ -27,6 +37,8 @@
 **本頁導覽：**[系統分工](#system-flow) · [開機交接](#boot-flow) · [記憶體配置](#memory-layout) · [模型部署](#model-deployment) · [語音訓練](#kws-training) · [數值除錯](#numerical-debugging) · [工具鏈與封裝](#toolchain-packaging) · [成果](#results) · [完整 32 步](#development-route)
 
 **重要文件：**[工程流程（Workflow）](docs/engineering-workflow.md) · [32 步詳解](docs/development-steps.md) · [系統架構](docs/architecture.md) · [記憶體配置](docs/memory-deployment.md) · [程式導讀](docs/code-tour.md) · [完整文件導覽](#documentation)
+
+> **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](docs/toolchain-compatibility.md)。
 
 ## 本專案完成的工程實作
 

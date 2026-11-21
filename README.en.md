@@ -4,6 +4,16 @@
 
 This is an **MCU-class edge-AI dual-model object finder** deployed on the **STM32N6570-DK**. Its STM32N657 microcontroller integrates an **Arm Cortex-M55 CPU and a Neural-ART neural processing unit (NPU)**. A custom-trained keyword-spotting (KWS) model and a YOLOv8 instance-segmentation model run within one FreeRTOS firmware application; speech preprocessing, inference, search decisions, and display updates all execute on the board.
 
+## [Dual-model memory layout and deployment](docs/memory-deployment.en.md)
+
+**Core engineering: allocating the main application, two models, image buffers, weights, and execution commands on one microcontroller.** Model memory pools, firmware linker scripts, and Flash addresses are coordinated so the voice and vision models share the NPU while retaining their own workspaces.
+
+- **Workspace allocation:** application SRAM boundaries, image/display buffers, and a dedicated **256 KiB reserved workspace** for KWS.
+- **Weight and command storage:** actual weight-content boundaries for both models, a separate vision-command region, and separate image extraction.
+- **Deployment and execution handoffs:** five deployment images, application loading by the first-stage bootloader (FSBL), and CPU/DMA/NPU cache coherence.
+
+**[Read the full memory map, programming addresses, and implementation evidence →](docs/memory-deployment.en.md)**
+
 <h1 align="center">Hardware Demonstration</h1>
 
 <p align="center">
@@ -27,6 +37,8 @@ Boot handoff is part of the deployment: the chip's Boot ROM starts the first-sta
 **On this page:** [System responsibilities](#system-flow) · [Boot handoff](#boot-flow) · [Memory layout](#memory-layout) · [Model deployment](#model-deployment) · [Speech training](#kws-training) · [Numerical debugging](#numerical-debugging) · [Toolchain and packaging](#toolchain-packaging) · [Results](#results) · [All 32 steps](#development-route)
 
 **Key documents:** [Engineering workflow](docs/engineering-workflow.en.md) · [32-step guide](docs/development-steps.en.md) · [System architecture](docs/architecture.en.md) · [Memory layout](docs/memory-deployment.en.md) · [Code tour](docs/code-tour.en.md) · [Complete documentation](#documentation)
+
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](docs/toolchain-compatibility.en.md).
 
 ## Engineering work implemented in this project
 

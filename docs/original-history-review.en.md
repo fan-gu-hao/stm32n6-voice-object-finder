@@ -2,6 +2,8 @@
 
 [繁體中文](original-history-review.md) | [English](original-history-review.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](toolchain-compatibility.en.md).
+
 This page records the 2026-11-20 review of the original development conversations and attachments. It reconstructs the implementation and debugging work between audio capture, training, deployment, and the final dual-model revision. It complements the [engineering workflow](engineering-workflow.en.md), [code tour](code-tour.en.md), and [results](results.en.md), presenting each stage's problems, diagnostic methods, changes, and outcomes.
 
 ## Materials and evidence levels

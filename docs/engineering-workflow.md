@@ -2,6 +2,8 @@
 
 [繁體中文](engineering-workflow.md) | [English](engineering-workflow.en.md)
 
+> **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](toolchain-compatibility.md)。
+
 本專案在 STM32N6570-DK 上建立關鍵字辨識（Keyword Spotting，KWS）與 YOLOv8 實例分割的雙模型系統。工程流程涵蓋資料蒐集、梅爾頻率倒譜係數（MFCC）前處理、客製模型訓練與 INT8 量化、N6 模型產碼、電腦／板端數值對照，以及 FreeRTOS 下的音訊、視覺與顯示整合。
 
 從功能定義到實機展示的逐項實作見[完整 32 步開發流程](development-steps.md)；每一步直接對應的程式、配置與紀錄見[原始碼對照清單](development-source-map.json)。本頁保留各階段的開發順序與模型整合、部署細節；開發時執行的主機比對、資料收集和部署程式見[歷史流程原始碼](../tools/development-history/README.md)。

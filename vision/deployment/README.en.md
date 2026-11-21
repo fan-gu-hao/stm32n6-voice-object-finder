@@ -2,6 +2,8 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](../../docs/toolchain-compatibility.en.md).
+
 This project runs model conversion in `vision/Model/`, using ST Edge AI 4.0.1 to generate the N6 network code, model interface, weights, and execution commands, then matches the runtime and integrates the artifacts into the main firmware. Terminal records from October 4, 2026 retain successful generation, reference-application building, six-artifact handoff, and main-application building.
 
 This page corresponds to [development step 3: vision model conversion](../../docs/development-steps.en.md#step-03), covering generation inputs, tool processing, artifact roles, and firmware handoff. See [toolchain compatibility](../../docs/toolchain-compatibility.en.md) for version differences and [dual-model memory layout](../../docs/memory-deployment.en.md) for addresses and deployment images.

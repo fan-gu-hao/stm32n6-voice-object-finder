@@ -2,6 +2,8 @@
 
 [繁體中文](README.md) | [English](README.en.md)
 
+> **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](../../docs/toolchain-compatibility.md)。
+
 本案在 `vision/Model/` 執行模型轉換，使用 ST Edge AI 4.0.1 產生 N6 網路程式、模型介面、權重與執行指令，再完成執行期配對及正式韌體移植。2026-10-04 的終端紀錄保存了產碼、參考工程建置、六項產物交接及正式主工程建置的實際成功輸出。
 
 本頁對應[完整開發步驟第3步：視覺模型轉換](../../docs/development-steps.md#step-03)，說明產碼輸入、工具處理、產物用途及韌體交接；工具版本差異見[工具鏈相容性](../../docs/toolchain-compatibility.md)，位址與映像配置見[雙模型記憶體配置](../../docs/memory-deployment.md)。

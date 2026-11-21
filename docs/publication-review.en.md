@@ -2,6 +2,8 @@
 
 [繁體中文](publication-review.md) | [English](publication-review.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](toolchain-compatibility.en.md).
+
 This repository provides application, data-processing, model-training, firmware-integration, and deployment materials for the STM32N6 dual-model voice object finder. The main application is in `firmware/`; `kws/` contains the speech-data workflow, model training, recording firmware, and host tools; `vision/` retains the instance-segmentation reference sources used for vision deployment. The sections below identify code entry points, source attribution, and materials required for a complete build.
 
 ## What each part provides

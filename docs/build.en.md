@@ -2,6 +2,8 @@
 
 [繁體中文](build.md) | [English](build.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](toolchain-compatibility.en.md).
+
 The environment used was GCC 14.3.1, ST Edge AI 4.0.1, ATON 1.1.3-275, `NetworkRuntime1201_CM55_GCC.a`, HAL 1.3.0, and FreeRTOS 10.6.2, with STM32CubeIDE 2.2.0.
 
 **The project completed upstream-version alignment, memory allocation, and boot-image payload alignment corrections.** [Toolchain compatibility](toolchain-compatibility.en.md) connects pinned official settings and build-path differences to the recorded successful build, programming, and board operation. [Dual-model memory and deployment](memory-deployment.en.md) distinguishes model pools, linked sections, storage addresses, and execution addresses.

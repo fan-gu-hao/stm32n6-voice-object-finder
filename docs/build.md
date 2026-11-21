@@ -2,6 +2,8 @@
 
 [繁體中文](build.md) | [English](build.en.md)
 
+> **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](toolchain-compatibility.md)。
+
 已使用的環境為 GCC 14.3.1、ST Edge AI 4.0.1、ATON 1.1.3-275、`NetworkRuntime1201_CM55_GCC.a`、HAL 1.3.0 與 FreeRTOS 10.6.2。IDE 為 STM32CubeIDE 2.2.0。
 
 **本案已完成官方範例版本對齊、記憶體配置與開機映像對齊修正。** [工具鏈相容性](toolchain-compatibility.md)逐項連到官方固定版本的原始設定、建置差異，以及本案成功建置、寫入與板端操作的紀錄；[雙模型記憶體與部署](memory-deployment.md)區分模型池、連結區段、儲存位址與執行位址。

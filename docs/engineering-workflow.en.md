@@ -2,6 +2,8 @@
 
 [繁體中文](engineering-workflow.md) | [English](engineering-workflow.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](toolchain-compatibility.en.md).
+
 This project builds a Keyword Spotting (KWS) and YOLOv8 instance-segmentation system on STM32N6570-DK. Its workflow covers data collection, MFCC preprocessing, custom-model training and INT8 quantization, N6 code generation, PC/board numerical comparisons, and audio, vision, and display integration under FreeRTOS.
 
 The [complete 32-step development workflow](development-steps.en.md) follows implementation from requirements through the hardware demonstration. The [step-to-source inventory](development-source-map.json) maps each step to code, configuration, and records. This page retains development stages, model integration, and deployment details; host-side comparison, data-collection, and deployment programs are preserved as [historical workflow sources](../tools/development-history/README.en.md).

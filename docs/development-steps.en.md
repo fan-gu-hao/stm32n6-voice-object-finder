@@ -2,6 +2,8 @@
 
 [繁體中文](development-steps.md) | [English](development-steps.en.md) | [Back to the homepage](../README.en.md)
 
+> **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](toolchain-compatibility.en.md).
+
 This project implements an MCU-level embedded AI system combining voice and vision on the STM32N6570-DK. The steps below cover requirements, model deployment, data and training, real-time firmware, memory, numerical debugging, and delivery. Each step links to implementation, configuration, or development records. Numbering follows engineering dependencies; data iteration and debugging overlapped during development.
 
 Alongside firmware and training sources, the [development host workflows](../tools/development-history/README.en.md) preserve packaging diagnostics, fixed comparisons, live collection, generation, deployment, and observation programs from the original operation blocks. Each file records its source, dependencies, and execution status at that stage.
