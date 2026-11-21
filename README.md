@@ -44,6 +44,57 @@
 | **7. 數值比對、現場改善與定版** | **固定特徵／固定 PCM／即時音訊 → 電腦與板端比對 → 補充現場資料 → 分組五折與保留評估 → 同步定版模型及係數**。定位誤判與漏接，設計語音接受規則，將分類分數轉為穩定的目標切換事件。 |
 | **8. 韌體建置、開機部署與展示** | **模型程式＋應用與函式庫 → ELF → 應用／視覺指令 BIN；搭配兩模型權重與 FSBL，組成五份部署映像**。修正封裝對齊、核對燒錄位置與更新內容，完成板端操作、IDE／Git 保存及實機影片。 |
 
+### 模型轉換路線圖：從原始模型到 N6 部署映像
+
+視覺與語音模型各自完成轉換及產碼，再整合進同一份韌體。圖中分開標示**模型格式、量化、產生程式碼，以及編譯後的燒錄產物**。
+
+```mermaid
+flowchart TD
+    subgraph VISION["視覺模型：匯出與逐通道量化"]
+        V0["YOLOv8n-seg 原始模型（PyTorch .pt）"]
+        V1["ONNX 模型（.onnx）"]
+        V2["TensorFlow SavedModel"]
+        V3["校正影像＋逐通道 INT8 量化"]
+        V4["視覺 INT8 TFLite（.tflite）"]
+        V0 -->|"Python／Ultralytics 匯出"| V1
+        V1 -->|"onnx2tf 格式轉換"| V2
+        V2 --> V3 --> V4
+    end
+
+    subgraph SPEECH["語音模型：自行訓練與量化"]
+        K0["五分類 KWS（Python／Keras 訓練）"]
+        K1["TensorFlow SavedModel"]
+        K2["代表性訓練資料＋INT8 量化"]
+        K3["語音 INT8 TFLite（.tflite）"]
+        K4["ST 工具內部 ONNX＋量化資訊"]
+        K0 -->|"匯出模型"| K1
+        K1 --> K2 --> K3
+        K3 -->|"ST Edge AI 內部轉換"| K4
+    end
+
+    V4 --> GEN["N6 產碼：ST Edge AI／Neural-ART"]
+    K4 --> GEN
+    POOL["各模型的記憶體池與產碼設定"] -.-> GEN
+
+    GEN --> CODE["各模型的網路與介面（C／H）"]
+    GEN --> WEIGHTS["YOLO、KWS 權重（各自 BIN）"]
+    GEN -->|"僅視覺模型"| EC["視覺執行指令（network_ecblobs.h）"]
+
+    CODE --> ELF["GCC 編譯與連結（ELF）"]
+    EC --> ELF
+    APP["應用程式＋執行函式庫＋連結腳本"] --> ELF
+    ELF -->|"排除視覺指令區段"| RAW["主應用原始 BIN"]
+    RAW -->|"加入開機標頭、0x400 對齊"| IMAGE["主應用映像（finder_signed.bin）"]
+    ELF -->|"抽取 .flash_section"| COMMAND["視覺指令（vision_commands.bin）"]
+
+    IMAGE --> DEPLOY["五份部署映像：依配置寫入 Flash"]
+    COMMAND --> DEPLOY
+    WEIGHTS --> DEPLOY
+    FSBL["官方開機載入程式（ai_fsbl.hex）"] --> DEPLOY
+```
+
+**兩條 ONNX 路徑的位置不同：**視覺模型先由 PyTorch 匯出 ONNX，再轉換與量化；語音模型則先完成 INT8 TFLite，之後由 ST 工具內部轉成 ONNX 中介表示。兩模型分別產碼，共用工具鏈並連入同一主應用。
+
 視覺權重由產碼直接輸出為 `network_data.xSPI2.bin`；視覺指令 `network_ecblobs.h` 經連結及區段抽取成為 `vision_commands.bin`。KWS 的控制程式連入主應用，權重另存，沒有獨立的語音指令映像。開機時由 FSBL 將主應用從外部 Flash 載入內部 SRAM，再進入雙模型韌體。
 
 **深入閱讀：**[完整工程流程](docs/engineering-workflow.md) · [32 步逐項實作](docs/development-steps.md) · [雙模型記憶體配置與部署](docs/memory-deployment.md)

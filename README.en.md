@@ -44,6 +44,57 @@ Define the voice-driven interaction, establish the project, and pin sources and 
 | **7. Numerical comparison, live improvement, and finalization** | **Fixed features / fixed PCM / live audio → PC–board comparisons → additional live data → grouped five-fold and held-out evaluation → synchronized final model and coefficients**. Diagnose errors and missed commands, then use an acceptance state machine to turn classification scores into stable target changes. |
 | **8. Firmware build, boot deployment, and demonstration** | **Model code + application and libraries → ELF → application / vision-command BIN images; combine with two weight images and the FSBL for five deployment images**. Correct packaging alignment, check programming addresses and update contents, and complete board operation, IDE/Git preservation, and the demonstration video. |
 
+### Model-conversion roadmap: from original models to N6 images
+
+Vision and speech models are converted and generated separately, then integrated into one firmware application. The diagram distinguishes **model formats, quantization, generated code, and compiled deployment artifacts**.
+
+```mermaid
+flowchart TD
+    subgraph VISION["Vision: export and per-channel quantization"]
+        V0["Original YOLOv8n-seg (PyTorch .pt)"]
+        V1["ONNX model (.onnx)"]
+        V2["TensorFlow SavedModel"]
+        V3["Calibration images + per-channel INT8"]
+        V4["Vision INT8 TFLite (.tflite)"]
+        V0 -->|"Python / Ultralytics export"| V1
+        V1 -->|"onnx2tf conversion"| V2
+        V2 --> V3 --> V4
+    end
+
+    subgraph SPEECH["Speech: custom training and quantization"]
+        K0["Five-class KWS (Python / Keras training)"]
+        K1["TensorFlow SavedModel"]
+        K2["Representative training data + INT8"]
+        K3["Speech INT8 TFLite (.tflite)"]
+        K4["ST-internal ONNX + quantization metadata"]
+        K0 -->|"Export model"| K1
+        K1 --> K2 --> K3
+        K3 -->|"ST Edge AI internal conversion"| K4
+    end
+
+    V4 --> GEN["N6 generation: ST Edge AI / Neural-ART"]
+    K4 --> GEN
+    POOL["Per-model memory pools and settings"] -.-> GEN
+
+    GEN --> CODE["Per-model network and interfaces (C/H)"]
+    GEN --> WEIGHTS["YOLO and KWS weights (separate BINs)"]
+    GEN -->|"Vision model only"| EC["Vision commands (network_ecblobs.h)"]
+
+    CODE --> ELF["GCC compilation and linking (ELF)"]
+    EC --> ELF
+    APP["Application + runtime + linker script"] --> ELF
+    ELF -->|"Exclude vision-command section"| RAW["Raw application BIN"]
+    RAW -->|"Add boot header, align to 0x400"| IMAGE["Application image (finder_signed.bin)"]
+    ELF -->|"Extract .flash_section"| COMMAND["Vision commands (vision_commands.bin)"]
+
+    IMAGE --> DEPLOY["Five deployment images: program Flash"]
+    COMMAND --> DEPLOY
+    WEIGHTS --> DEPLOY
+    FSBL["Official bootloader (ai_fsbl.hex)"] --> DEPLOY
+```
+
+**ONNX appears at different points:** vision exports ONNX from PyTorch before conversion and quantization; speech first produces INT8 TFLite, which ST's tools then convert into an internal ONNX representation. The models are generated separately using the same toolchain and linked into one application.
+
 Vision generation directly outputs weights as `network_data.xSPI2.bin`; vision commands in `network_ecblobs.h` become `vision_commands.bin` after linking and section extraction. KWS control code is linked into the main application, with weights stored separately and no independent speech-command image. At boot, the FSBL loads the application from external Flash into internal SRAM before entering the dual-model firmware.
 
 **Further reading:** [Complete engineering workflow](docs/engineering-workflow.en.md) · [All 32 implementation steps](docs/development-steps.en.md) · [Dual-model memory and deployment](docs/memory-deployment.en.md)
