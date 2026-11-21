@@ -35,9 +35,9 @@
 
 | 重點步驟 | 實作流程與產物 |
 | --- | --- |
-| **1. 視覺模型匯出、量化與 N6 產碼** | **Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI／Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令**。親自完成模型匯出、校正、格式轉換與產碼，再配對推論函式庫，將產物接入雙模型韌體。 |
+| **1. 視覺模型匯出、量化與 N6 產碼** | **Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI 內部 ONNX＋量化資訊 → Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令**。親自完成模型匯出、校正、格式轉換與產碼，再配對推論函式庫，將產物接入雙模型韌體。 |
 | **2. 語音資料收集與整理** | **板上麥克風 → 五秒錄音（WAV）→ 按原始錄音分組 → 一秒切段 → MFCC 特徵**。建立杯子、瓶子、手機、其他詞語與底噪五類資料，透過 RAM 啟動工具、UART 與 CRC32 完成收音及傳輸。 |
-| **3. 語音模型訓練、量化與轉換** | **Python／Keras 訓練 → SavedModel → INT8 TFLite → ST 工具內部 ONNX → Neural-ART → N6 模型程式與權重**。自行設計深度可分離卷積 KWS，加入資料增強，匯出前處理係數、尺度與零點。 |
+| **3. 語音模型訓練、量化與轉換** | **Python／Keras 訓練 → SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX＋量化資訊 → Neural-ART → N6 模型程式與權重**。自行設計深度可分離卷積 KWS，加入資料增強，匯出前處理係數、尺度與零點。 |
 | **4. 視覺尋物與顯示整合** | **攝影機中央裁切 → 256×256 RGB → YOLO 推論 → 框解碼／非極大值抑制（NMS）／遮罩 → LCD**。移植後處理、篩選指定物件，以連續兩幀確認結果，並用快照保護顯示資料。 |
 | **5. 連續收音與 C 前處理** | **MDF／GPDMA → 環形緩衝 → 最新一秒音訊 → CMSIS-DSP／MFCC → 637 個 INT8 特徵**。將 Python 特徵流程移植到 C，處理暖機、跨界、覆寫與模型輸入檢查。 |
 | **6. 雙模型排程與記憶體配置** | **兩模型依序共用 NPU，推論、顯示與 ISP 工作協作**。整合模型記憶體池與連結腳本，分配 RAM／Flash、權重及指令區，核對實際邊界，處理 CPU／DMA／NPU 快取及跨工作狀態一致性。 |
@@ -52,13 +52,15 @@
 flowchart TD
     subgraph VISION["視覺模型：匯出與逐通道量化"]
         V0["YOLOv8n-seg 原始模型（PyTorch .pt）"]
-        V1["ONNX 模型（.onnx）"]
+        V1["匯出的 ONNX（框架轉換）"]
         V2["TensorFlow SavedModel"]
         V3["校正影像＋逐通道 INT8 量化"]
         V4["視覺 INT8 TFLite（.tflite）"]
+        V5["ST 內部 ONNX＋量化描述檔（_Q.json）"]
         V0 -->|"Python／Ultralytics 匯出"| V1
         V1 -->|"onnx2tf 格式轉換"| V2
         V2 --> V3 --> V4
+        V4 -->|"ST Edge AI 內部轉換"| V5
     end
 
     subgraph SPEECH["語音模型：自行訓練與量化"]
@@ -66,13 +68,13 @@ flowchart TD
         K1["TensorFlow SavedModel"]
         K2["代表性訓練資料＋INT8 量化"]
         K3["語音 INT8 TFLite（.tflite）"]
-        K4["ST 工具內部 ONNX＋量化資訊"]
+        K4["ST 內部 ONNX＋量化描述檔（_Q.json）"]
         K0 -->|"匯出模型"| K1
         K1 --> K2 --> K3
         K3 -->|"ST Edge AI 內部轉換"| K4
     end
 
-    V4 --> GEN["N6 產碼：ST Edge AI／Neural-ART"]
+    V5 --> GEN["各模型分別經 Neural-ART 產碼"]
     K4 --> GEN
     POOL["各模型的記憶體池與產碼設定"] -.-> GEN
 
@@ -93,7 +95,17 @@ flowchart TD
     FSBL["官方開機載入程式（ai_fsbl.hex）"] --> DEPLOY
 ```
 
-**兩條 ONNX 路徑的位置不同：**視覺模型先由 PyTorch 匯出 ONNX，再轉換與量化；語音模型則先完成 INT8 TFLite，之後由 ST 工具內部轉成 ONNX 中介表示。兩模型分別產碼，共用工具鏈並連入同一主應用。
+**ONNX 在這裡有兩種用途：視覺模型多了一次量化前的框架轉換，兩個模型在量化後都會經過 ST 的內部編譯流程。**
+
+| 階段 | 視覺模型 | 語音模型 |
+| --- | --- | --- |
+| 量化前的框架轉換 | PyTorch 匯出 ONNX，再由 `onnx2tf` 轉成 TensorFlow SavedModel | 已在 Keras／TensorFlow 中訓練，直接匯出 SavedModel |
+| INT8 量化 | 以校正影像進行逐通道量化，輸出 TFLite | 以代表性訓練資料校正，輸出 INT8 TFLite |
+| 量化後的 N6 編譯 | ST Edge AI 將 TFLite 轉為內部 ONNX＋量化描述檔（`_Q.json`），交給 Neural-ART | 同樣由 INT8 TFLite 經 ST 內部 ONNX＋`_Q.json`，交給 Neural-ART |
+
+量化後的內部 ONNX 是編譯中介表示，與視覺前段匯出的 ONNX 用途不同；此步驟不代表重新訓練或再次用資料校正。圖中的共用產碼階段表示**兩個模型各自執行相同工具流程**，各自保有網路、記憶體配置與產物，再連入同一主應用。
+
+核對依據：[視覺模型轉換／部署階段的產碼報告](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/n6_deployment/run_20260909_020310_zj69FR/generated/network_generate_report.txt)、[本案 KWS 匯出與量化程式](kws/training_snapshot/train_kws_groupcv.py)、[本案 KWS 定版產碼日誌](docs/evidence/development-history/codegen_20261008/codegen.log)。兩份產碼紀錄都可見編譯器同時接收 `.onnx` 與 `--json-quant-file`；它們分別記錄視覺部署與 KWS 定版階段。
 
 視覺權重由產碼直接輸出為 `network_data.xSPI2.bin`；視覺指令 `network_ecblobs.h` 經連結及區段抽取成為 `vision_commands.bin`。KWS 的控制程式連入主應用，權重另存，沒有獨立的語音指令映像。開機時由 FSBL 將主應用從外部 Flash 載入內部 SRAM，再進入雙模型韌體。
 
@@ -219,7 +231,7 @@ KWS 區域在連結器顯示 **0 B**，是因為模型產碼以絕對位址使�
 | 模型與產物建立方式 | 本專案設計、訓練並量化的小型深度可分離卷積模型 | 親自完成 YOLOv8n-seg 的 Python／PyTorch 匯出、ONNX／SavedModel 轉換與逐通道 INT8 量化，再產生及整合 N6 網路、介面、權重與指令；[完整轉換流程與紀錄](vision/deployment/README.md) |
 | 輸入 | 一秒 PCM 經 MFCC，形成 `49×13×1 INT8` | `256×256 RGB UINT8` |
 | 輸出 | `cup`、`bottle`、`phone`、`unknown`、`silence` 五類 | `116×1344` 偵測資料與 `64×64×32` 遮罩原型，皆為 INT8 |
-| 部署流程 | Keras 訓練／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX／量化資訊 → Neural-ART 產碼 | Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI／Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令 → 執行期配對、韌體整合與映像部署 |
+| 部署流程 | Keras 訓練／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX／量化資訊 → Neural-ART 產碼 | Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI 內部 ONNX＋量化資訊 → Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令 → 執行期配對、韌體整合與映像部署 |
 | 應用整合 | C 特徵前處理、尺度／零點檢查、命令接受與切換目標 | 後處理介面移植、指定類別篩選、連續幀確認與座標映射 |
 
 視覺部署在本案 `vision/` 中執行 `generate-n6-model_STM32N6570-DK.sh`，完成 N6 產碼、參考工程編譯及映像封裝，再將模型程式、STAI 介面、權重與執行指令移入 `firmware/`。模型來源與工具版本固定保存，移植過程完成以下相容性與配置工作：

@@ -35,9 +35,9 @@ Define the voice-driven interaction, establish the project, and pin sources and 
 
 | Key step | Implementation flow and artifacts |
 | --- | --- |
-| **1. Vision-model export, quantization, and N6 generation** | **Python/PyTorch (`.pt`) → ONNX → TensorFlow SavedModel → per-channel INT8 quantization (TFLite) → ST Edge AI / Neural-ART → N6 network/interfaces (C/H), weights (BIN), and execution commands**. Personally execute model export, calibration, conversion, and generation, then match the inference library and integrate the artifacts into the dual-model firmware. |
+| **1. Vision-model export, quantization, and N6 generation** | **Python/PyTorch (`.pt`) → ONNX → TensorFlow SavedModel → per-channel INT8 quantization (TFLite) → ST Edge AI internal ONNX + quantization metadata → Neural-ART → N6 network/interfaces (C/H), weights (BIN), and execution commands**. Personally execute model export, calibration, conversion, and generation, then match the inference library and integrate the artifacts into the dual-model firmware. |
 | **2. Speech-data collection and preparation** | **On-board microphone → five-second WAV recordings → grouping by source recording → one-second clips → MFCC features**. Build cup, bottle, phone, unknown, and silence classes using RAM-launch tools, UART, and CRC32 for capture and transfer. |
-| **3. Speech-model training, quantization, and conversion** | **Python/Keras training → SavedModel → INT8 TFLite → ST's internal ONNX → Neural-ART → N6 model code and weights**. Design a depthwise-separable KWS model, apply augmentation, and export frontend coefficients, scales, and zero points. |
+| **3. Speech-model training, quantization, and conversion** | **Python/Keras training → SavedModel → INT8 TFLite → ST Edge AI internal ONNX + quantization metadata → Neural-ART → N6 model code and weights**. Design a depthwise-separable KWS model, apply augmentation, and export frontend coefficients, scales, and zero points. |
 | **4. Vision search and display integration** | **Central camera crop → 256×256 RGB → YOLO inference → box decoding / NMS / masks → LCD**. Port postprocessing, select the requested object, confirm it over two consecutive frames, and protect display data with snapshots. |
 | **5. Continuous audio and the C frontend** | **MDF/GPDMA → ring buffer → latest one-second audio → CMSIS-DSP/MFCC → 637 INT8 features**. Port the Python feature pipeline to C, handling warm-up, wraparound, overwrite, and model-input checks. |
 | **6. Dual-model scheduling and memory allocation** | **Two models share the NPU sequentially while inference, display, and ISP tasks cooperate**. Coordinate model pools and linker scripts, allocate RAM/Flash, weights, and command regions, check actual boundaries, and manage CPU/DMA/NPU caches and cross-task state. |
@@ -52,13 +52,15 @@ Vision and speech models are converted and generated separately, then integrated
 flowchart TD
     subgraph VISION["Vision: export and per-channel quantization"]
         V0["Original YOLOv8n-seg (PyTorch .pt)"]
-        V1["ONNX model (.onnx)"]
+        V1["Exported ONNX (framework conversion)"]
         V2["TensorFlow SavedModel"]
         V3["Calibration images + per-channel INT8"]
         V4["Vision INT8 TFLite (.tflite)"]
+        V5["ST-internal ONNX + quantization file (_Q.json)"]
         V0 -->|"Python / Ultralytics export"| V1
         V1 -->|"onnx2tf conversion"| V2
         V2 --> V3 --> V4
+        V4 -->|"ST Edge AI internal conversion"| V5
     end
 
     subgraph SPEECH["Speech: custom training and quantization"]
@@ -66,13 +68,13 @@ flowchart TD
         K1["TensorFlow SavedModel"]
         K2["Representative training data + INT8"]
         K3["Speech INT8 TFLite (.tflite)"]
-        K4["ST-internal ONNX + quantization metadata"]
+        K4["ST-internal ONNX + quantization file (_Q.json)"]
         K0 -->|"Export model"| K1
         K1 --> K2 --> K3
         K3 -->|"ST Edge AI internal conversion"| K4
     end
 
-    V4 --> GEN["N6 generation: ST Edge AI / Neural-ART"]
+    V5 --> GEN["Separate Neural-ART generation per model"]
     K4 --> GEN
     POOL["Per-model memory pools and settings"] -.-> GEN
 
@@ -93,7 +95,17 @@ flowchart TD
     FSBL["Official bootloader (ai_fsbl.hex)"] --> DEPLOY
 ```
 
-**ONNX appears at different points:** vision exports ONNX from PyTorch before conversion and quantization; speech first produces INT8 TFLite, which ST's tools then convert into an internal ONNX representation. The models are generated separately using the same toolchain and linked into one application.
+**ONNX serves two purposes here: vision has an additional framework-conversion step before quantization, while both quantized models pass through ST's internal compilation pipeline.**
+
+| Stage | Vision model | Speech model |
+| --- | --- | --- |
+| Framework conversion before quantization | Export PyTorch to ONNX, then use `onnx2tf` to produce a TensorFlow SavedModel | Already trained in Keras/TensorFlow; export SavedModel directly |
+| INT8 quantization | Use calibration images for per-channel quantization and output TFLite | Calibrate with representative training data and output INT8 TFLite |
+| N6 compilation after quantization | ST Edge AI converts TFLite into internal ONNX plus a quantization description file (`_Q.json`) for Neural-ART | Likewise, pass INT8 TFLite through ST-internal ONNX plus `_Q.json` to Neural-ART |
+
+The internal ONNX after quantization is a compiler intermediate representation, serving a different purpose from the earlier vision export; this step does not mean retraining or another data-calibration pass. The shared generation stage in the diagram means **the same tool flow is run separately for each model**. Each retains its own network, memory settings, and artifacts before integration into one application.
+
+Verification sources: [vision-model conversion/deployment generation report](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/n6_deployment/run_20260909_020310_zj69FR/generated/network_generate_report.txt), [this project's KWS export and quantization code](kws/training_snapshot/train_kws_groupcv.py), and [this project's final KWS generation log](docs/evidence/development-history/codegen_20261008/codegen.log). Both generation records show the compiler receiving `.onnx` together with `--json-quant-file`; they document the vision-deployment and final KWS stages respectively.
 
 Vision generation directly outputs weights as `network_data.xSPI2.bin`; vision commands in `network_ecblobs.h` become `vision_commands.bin` after linking and section extraction. KWS control code is linked into the main application, with weights stored separately and no independent speech-command image. At boot, the FSBL loads the application from external Flash into internal SRAM before entering the dual-model firmware.
 
@@ -219,7 +231,7 @@ The linker reports **0 B** for KWS RAM because generated code uses absolute addr
 | Model and artifact development | Small depthwise-separable convolutional model designed, trained, and quantized for this project | Personally export YOLOv8n-seg from Python/PyTorch through ONNX and SavedModel, calibrate per-channel INT8 quantization, then generate and integrate N6 code, interfaces, weights, and commands; [complete conversion workflow and records](vision/deployment/README.en.md) |
 | Input | One-second PCM converted to `49×13×1 INT8` MFCC | `256×256 RGB UINT8` |
 | Output | Five classes: `cup`, `bottle`, `phone`, `unknown`, `silence` | `116×1344` detection data and `64×64×32` mask prototypes, both INT8 |
-| Deployment path | Keras training / SavedModel → INT8 TFLite → internal ST Edge AI ONNX/quantization information → Neural-ART code generation | Python/PyTorch (`.pt`) → ONNX → TensorFlow SavedModel → per-channel INT8 quantization (TFLite) → ST Edge AI / Neural-ART → N6 network/interfaces (C/H), weights (BIN), and execution commands → runtime alignment, firmware integration, and image deployment |
+| Deployment path | Keras training / SavedModel → INT8 TFLite → internal ST Edge AI ONNX/quantization information → Neural-ART code generation | Python/PyTorch (`.pt`) → ONNX → TensorFlow SavedModel → per-channel INT8 quantization (TFLite) → ST Edge AI internal ONNX + quantization metadata → Neural-ART → N6 network/interfaces (C/H), weights (BIN), and execution commands → runtime alignment, firmware integration, and image deployment |
 | Application integration | C frontend, scale/zero-point checks, command acceptance, and target selection | Postprocessing interface port, target-class filtering, consecutive-frame confirmation, and coordinate mapping |
 
 Vision deployment runs `generate-n6-model_STM32N6570-DK.sh` in this project's `vision/` directory to complete N6 generation, the reference-project build, and image packaging. The generated model, STAI interface, weights, and execution commands are then moved into `firmware/`. Model sources and tool versions are pinned, with the following compatibility and allocation work completed during migration:
