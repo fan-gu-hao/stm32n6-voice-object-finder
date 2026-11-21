@@ -4,13 +4,13 @@
 
 > **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](toolchain-compatibility.en.md).
 
-This page records the 2026-11-20 review of the original development conversations and attachments. It reconstructs the implementation and debugging work between audio capture, training, deployment, and the final dual-model revision. It complements the [engineering workflow](engineering-workflow.en.md), [code tour](code-tour.en.md), and [results](results.en.md), presenting each stage's problems, diagnostic methods, changes, and outcomes.
+This page records the 2026-11-20 review of the original development conversations and attachments. It reconstructs the implementation and debugging work from vision-model preparation, audio capture, and training through deployment and the final dual-model revision. It complements the [engineering workflow](engineering-workflow.en.md), [code tour](code-tour.en.md), and [results](results.en.md), presenting each stage's problems, diagnostic methods, changes, and outcomes.
 
 ## Materials and evidence levels
 
 Each conversation contains 137 captured turn nodes, for 274 nodes before deduplication. They share 135 inherited nodes, giving 139 distinct turns in total. User and assistant messages are counted together within each turn. The available text, code blocks, expanded content, and eight user-supplied text attachments were reviewed.
 
-Two source archives were also safely opened and their key implementations checked. The vision ZIP contains 2,041 files and is an early snapshot of a separate vision project; its model hash begins with 312ea458, unlike this dual-model project's 331673. The other RAR contains 8,249 entries, including 7,722 regular files, and holds the upstream Runtime1100 hand framework. These materials establish provenance and revisions, with the earlier vision work and the formal dual-model project recorded separately. Archive review focused on versions and key implementations; a line-by-line review of all third-party libraries was outside its scope.
+Two source archives were also safely opened and their key implementations checked. The vision ZIP contains 2,041 files from the vision-preparation stage, with a model hash beginning 312ea458; a later generation-input record in the dual-model project begins 331673. The other RAR contains 8,249 entries, including 7,722 regular files, and holds the upstream Runtime1100 hand framework. These records preserve the revisions used across vision preparation and dual-model integration. Archive review focused on versions and key implementations; a line-by-line review of all third-party libraries was outside its scope.
 
 The 12 distinctly named historical assistant-provided attachments were also retrieved and read: two integration ZIPs and ten source files. Nine standalone text files match code embedded in the conversations byte for byte; the ZIPs and an early PC recording program supply content that was not fully embedded. Both ZIPs explicitly require further compilation or board checks, so they are recorded as early proposals with completion status separate from the final KWS object-finder revision. The attachments were read only; none of their programs were executed during this review.
 
@@ -24,6 +24,19 @@ Four evidence levels are kept separate:
 - **Evidence gap:** missing output, archive contents not yet checked, or a test that cannot support a broader claim.
 
 Private conversation transcripts, conversation identifiers, and sign-in information are not published. Existing public artifacts and their provenance are linked in the [evidence index](evidence/development-history/README.en.md).
+
+## Vision-model preparation and its connection to the dual-model system
+
+The author's vision work begins with **Python/PyTorch `.pt` model handling and export**, proceeds through **ONNX → TensorFlow SavedModel → per-channel INT8 TFLite**, and continues through **ST Edge AI/Neural-ART** to N6 network code, interfaces, weights, and execution commands. The vision-preparation stage and the later dual-model firmware integration are parts of this engineering workflow.
+
+| Stage | Retained implementation or execution record |
+| --- | --- |
+| Original-model export and format conversion | [Export log](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) records the Python/PyTorch export and ONNX/SavedModel conversion |
+| Per-channel INT8 quantization | [Quantization configuration](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml) and [quantization log](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log) preserve the configuration and conversion output |
+| Model checks and N6 deployment | [PC model checks](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh), [N6 interface checks](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py), and [deployment workflow](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh) preserve preparation and deployment tooling |
+| Dual-model firmware integration | [Vision generation and build](../tools/development-history/vision_03_generate_and_build_vision.sh), [artifact handoff](../tools/development-history/vision_05_copy_vision_artifacts.sh), and [complete vision workflow](../vision/deployment/README.en.md) connect the N6 artifacts to runtime matching, postprocessing, and the application |
+
+The preparation-stage model and a later dual-model generation input have separate version records. Those records identify specific artifacts; the completed engineering scope includes both the preceding export/quantization work and the subsequent dual-model integration.
 
 ## Stages from audio capture to the final revision
 

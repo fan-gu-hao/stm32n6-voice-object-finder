@@ -4,7 +4,7 @@
 
 > **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](toolchain-compatibility.md)。
 
-本索引對照從平台與收音工具、視覺模型產碼、語音資料與 KWS 訓練，到兩模型數值移植、系統整合、燒錄與定版的工作。各階段列出實際程式、配置與結果；部分工作交錯進行，章節依工程主題編排。完整流程見[工程流程](engineering-workflow.md)，版本演進、問題排查與執行結果見[原始開發歷程覆核](original-history-review.md)。
+本索引對照從平台與收音工具、視覺模型匯出、量化與 N6 產碼、語音資料與 KWS 訓練，到兩模型數值移植、系統整合、燒錄與定版的工作。各階段列出實際程式、配置與結果；部分工作交錯進行，章節依工程主題編排。完整流程見[工程流程](engineering-workflow.md)，版本演進、問題排查與執行結果見[原始開發歷程覆核](original-history-review.md)。
 
 ## 0. 系統目標、平台與模型介面
 
@@ -13,7 +13,7 @@
 | 系統行為 | 語音 cup／bottle／phone 選擇目標；視覺持續執行，LCD 顯示搜尋狀態、框與遮罩 | [app.c](../firmware/Src/app.c)、[架構](architecture.md) |
 | 工具與執行期 | GCC 14.3.1、ST Edge AI 4.0.1、Neural-ART 1.1.3-275、HAL 1.3.0、FreeRTOS 10.6.2；配置模型、MDF 與 CMSIS-DSP 建置相依 | [建置說明](build.md)、[ai.mk](../firmware/mks/ai.mk)、[kws.mk](../firmware/mks/kws.mk) |
 | 應用框架 | 接入 KWS／YOLO、目標狀態與顯示資料，整合於 ST 雙模型 FreeRTOS 與相機框架 | [來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
-| 視覺模型來源 | 選用來源與 SHA-256 已固定的 ST 量化實例分割模型，整合其 N6 產碼與執行期介面 | [sources.txt](../sources.txt)、[模型介面](engineering-workflow.md) |
+| 視覺模型匯出、量化與轉換 | 作者親自完成 Python／PyTorch 模型處理與匯出：`.pt` → ONNX → TensorFlow SavedModel → 每通道 INT8 TFLite，再經 ST Edge AI／Neural-ART 產生 N6 程式、權重與執行指令；工作涵蓋視覺準備與雙模型整合 | [匯出紀錄](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log)、[量化紀錄](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log)、[完整視覺流程](../vision/deployment/README.md) |
 | 視覺產碼與執行期對齊 | 在本專案執行 ST Edge AI 4.0.1 視覺產碼與參考建置；將六份產碼檔移入正式韌體，統一標頭、函式庫與 NPU 支援至 Runtime 1201 | [視覺部署流程](engineering-workflow.md)、[原始歷程](original-history-review.md) |
 | 視覺輸入與輸出 | 256×256 RGB UINT8 輸入、兩組 INT8 輸出；檢查形狀、型別、指標及大小，對接偵測與遮罩原型 | [app.c](../firmware/Src/app.c)、[ST 後處理轉接層](../firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c) |
 | 後處理與物件選擇 | 接入 ST 解碼、非極大值抑制（NMS）與遮罩生成，篩選三種目標類別，加入連續幀確認與畫面映射 | [app.c](../firmware/Src/app.c)、[app_cam.c](../firmware/Src/app_cam.c) |

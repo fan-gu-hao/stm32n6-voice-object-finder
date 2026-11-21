@@ -1,12 +1,26 @@
-# Vision code generation and configuration sources
+# Vision-model export, quantization, N6 generation, and deployment
 
 [繁體中文](README.md) | [English](README.en.md)
 
 > **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](../../docs/toolchain-compatibility.en.md).
 
-This project runs model conversion in `vision/Model/`, using ST Edge AI 4.0.1 to generate the N6 network code, model interface, weights, and execution commands, then matches the runtime and integrates the artifacts into the main firmware. Terminal records from October 4, 2026 retain successful generation, reference-application building, six-artifact handoff, and main-application building.
+The vision work starts with Python/PyTorch model processing and covers ONNX export, TensorFlow SavedModel conversion, per-channel INT8 quantization, interface validation, and ST Edge AI/Neural-ART generation. The author executes these stages and then integrates the network, interfaces, weights, and commands into the dual-model application, including runtime pairing, building, and image packaging.
 
 This page corresponds to [development step 3: vision model conversion](../../docs/development-steps.en.md#step-03), covering generation inputs, tool processing, artifact roles, and firmware handoff. See [toolchain compatibility](../../docs/toolchain-compatibility.en.md) for version differences and [dual-model memory layout](../../docs/memory-deployment.en.md) for addresses and deployment images.
+
+## The complete vision workflow from Python/PyTorch to N6
+
+**Python/PyTorch (`.pt`) → ONNX → TensorFlow SavedModel → per-channel INT8 quantization (TFLite) → ST Edge AI / Neural-ART → N6 network/interfaces (C/H), weights (BIN), and execution commands.** The author personally performed model export, format conversion, quantization calibration, interface checks, and N6 generation before integrating vision into the dual-model firmware. Model-preparation implementations and records are retained in the vision repository; final firmware integration is retained here.
+
+| Stage | Work performed by the author | Code, configuration, and successful execution records |
+| --- | --- | --- |
+| Python/PyTorch export | Load the local `yolov8n-seg.pt` with Python/Ultralytics tools, configure a 256×256 input, and export ONNX; the log records opset 19, graph simplification, and export success | [Model export log](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) |
+| ONNX to TensorFlow | Convert ONNX to TensorFlow SavedModel with `onnx2tf`, retain detection and mask-prototype outputs, and proceed to TFLite export | [ONNX/SavedModel success record](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) |
+| Execute INT8 quantization | Run ST's quantization tools on the local SavedModel and calibration images, configuring per-channel quantization, image rescaling, and INT8 inputs/outputs to produce quantized TFLite | [Quantization configuration](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml), [successful quantization log](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log) |
+| Check PC behavior and deployment interfaces | Compare original, floating-point, and INT8 models; check I/O shapes, tensor types, scales, zero points, and N6 postprocessing interfaces | [PC model comparison](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh), [N6 interface check](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py) |
+| Generate N6 artifacts and integrate firmware | Use ST Edge AI/Neural-ART to generate network code, STAI interfaces, weights, and vision execution commands; match the runtime library and adapt builds, memory, postprocessing, and display | [Vision deployment program](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh), [dual-model generation workflow](../../tools/development-history/vision_03_generate_and_build_vision.sh), [six-artifact handoff](../../tools/development-history/vision_05_copy_vision_artifacts.sh) |
+
+Export, quantization, and dual-model integration retain separate stage-specific versions. The source table below records the input to a particular N6 generation run. The code, configuration, and success logs above trace the complete development work; per-run hashes identify the exact model and weight bytes.
 
 ## Three official reference files
 
@@ -20,7 +34,7 @@ These files are byte-for-byte snapshots from the official instance-segmentation 
 
 These are **pinned official reference snapshots**. No byte-for-byte comparison against the historical local copies is available, so they are not presented as a complete reconstruction of the final local generation directory. Model weights, generated network code and prebuilt images are not included. These files belong to the upstream `Model` directory, listed under **SLA0044** in its component-license index; this directory does not relicense them. See [vision/LICENSE.md](../LICENSE.md) and [third-party notices](../../THIRD_PARTY_NOTICES.en.md).
 
-## Model conversion and artifact handoff in this project
+## N6 generation and artifact handoff in the dual-model application
 
 | Stage | Work performed in this project |
 | --- | --- |

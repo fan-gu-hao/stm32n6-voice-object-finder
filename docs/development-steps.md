@@ -32,16 +32,18 @@
 **原始主機流程：**[建立視覺工程原碼](../tools/development-history/vision_01_prepare_vision.sh)。
 
 <a id="step-03"></a>
-### 3. 在本專案內執行 YOLO 的 N6 轉換與產碼
+### 3. 完成 YOLO 模型匯出、量化與 N6 轉換
 
-- 固定 YOLOv8n-seg、256×256、量化模型的輸入檔及雜湊，保存模型來源與產物追溯資訊。
-- 在本案 `vision/` 工程執行 ST Edge AI 模型產碼，將模型轉成 N6 使用的網路程式、模型介面、權重資料及執行指令。
-- 完成視覺參考工程的編譯、連結與映像封裝，再將產物移入正式韌體；這包含實際的工具執行、產物核對與部署轉換工作。
-- 保存產碼腳本、Neural-ART 設定與記憶體池的固定版本參考，對照本案的產碼及建置歷程。
+- 使用 Python／PyTorch 工具載入原始 YOLOv8n-seg `.pt` 模型，配置 256×256 輸入，匯出 ONNX，再透過 `onnx2tf` 轉成 TensorFlow SavedModel。
+- 親自設定並執行逐通道 INT8 量化，配置校正影像、影像縮放及 INT8 輸入輸出，產生 TFLite。
+- 在電腦端比較原始、浮點及 INT8 模型，核對輸入輸出形狀、型別、量化尺度、零點及後處理介面。
+- 執行 ST Edge AI／Neural-ART 產碼，產生 N6 網路程式、模型介面、權重與執行指令，保存產碼設定及記憶體池配置。
+- 完成參考工程的編譯、連結與映像封裝，再將產物接入雙模型韌體，配對執行期與建置流程。
+- 保存完整「匯出 → 量化 → 產碼 → 整合」流程的程式、設定、成功日誌與各階段模型指紋。
 
-**實作與紀錄：**[視覺產碼入口與來源](../vision/deployment/README.md)、[產碼腳本參考](../vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh)、[Neural-ART 設定](../vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json)、[來源與模型指紋](../sources.txt)、[模型移植歷程](engineering-workflow.md)。
+**實作與紀錄：**[完整視覺轉換流程](../vision/deployment/README.md)、[產碼腳本參考](../vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh)、[Neural-ART 設定](../vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json)、[已保存的 N6 輸入指紋](../sources.txt)、[整合工程流程](engineering-workflow.md)。
 
-**原始主機流程：**[本案產碼與建置原碼](../tools/development-history/vision_03_generate_and_build_vision.sh)。
+**原始主機流程：**[N6 產碼與工程建置](../tools/development-history/vision_03_generate_and_build_vision.sh)；前段 Python 匯出、量化設定、成功日誌及驗證程式由上方完整視覺流程連入。
 
 <a id="step-04"></a>
 ### 4. 配對模型產碼與推論執行環境

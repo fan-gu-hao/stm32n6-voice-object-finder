@@ -4,13 +4,13 @@
 
 > **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](toolchain-compatibility.md)。
 
-本頁整理 2026-11-20 對原始開發對話及附件的覆核，重建從收音、訓練、移植、除錯到雙模型定版之間的實作與失敗經過。它與[工程流程](engineering-workflow.md)、[程式導覽](code-tour.md)及[結果](results.md)互補，呈現各階段的問題、診斷方法、修正及結果。
+本頁整理 2026-11-20 對原始開發對話及附件的覆核，重建從視覺模型準備、收音、訓練、移植、除錯到雙模型定版之間的實作與失敗經過。它與[工程流程](engineering-workflow.md)、[程式導覽](code-tour.md)及[結果](results.md)互補，呈現各階段的問題、診斷方法、修正及結果。
 
 ## 覆核材料與證據層級
 
 兩份原始對話各擷取 137 個輪次節點，共 274 個節點，其中 135 個共同繼承，去重後合併為 139 個不同輪次。每個輪次合併計入使用者與助手訊息。已覆核可取得的正文、程式碼、展開內容及八份使用者文字附件。
 
-兩份來源壓縮包也已安全開啟並核對關鍵實作：視覺 ZIP 包含 2,041 個檔案，屬於另一視覺工程的早期快照，其模型雜湊開頭為 312ea458，與本雙模型工程的 331673 不同；另一份 RAR 包含 8,249 個項目、其中 7,722 個一般檔案，是 Runtime1100 上游手部框架。這些資料用來追溯來源及版本，早期視覺實作與正式雙模型工程分別記錄。壓縮包覆核聚焦於版本及關鍵實作，未涵蓋全部第三方程式庫的逐行審閱。
+兩份來源壓縮包也已安全開啟並核對關鍵實作：視覺 ZIP 包含 2,041 個檔案，保存視覺準備階段的工程快照，模型雜湊開頭為 312ea458；雙模型工程另一次產碼輸入紀錄的雜湊開頭為 331673。另一份 RAR 包含 8,249 個項目、其中 7,722 個一般檔案，是 Runtime1100 上游手部框架。這些紀錄保存視覺準備與雙模型整合各階段採用的版本。壓縮包覆核聚焦於版本及關鍵實作，未涵蓋全部第三方程式庫的逐行審閱。
 
 歷史助手提供的 12 個不同名稱附件亦已取得並讀取，包含兩份整合 ZIP 與十份程式。九份獨立文字檔與對話內程式逐位元組相同；兩份 ZIP 及早期電腦收音程式補足原本未完整內嵌的內容。兩份 ZIP 自身均標示仍需編譯或上板核對，因此記錄為早期方案，其完成狀態與最後 KWS 找物版本分列。所有附件僅供閱讀，覆核過程沒有執行其中的程式。
 
@@ -24,6 +24,19 @@
 - **仍缺證據**：沒有輸出、附件內容尚未核對，或測試不足以支持更廣的結論。
 
 公開頁面不包含私人對話全文、對話識別碼或登入資訊。既有可公開的原始產物與來源對應見[證據索引](evidence/development-history/README.md)。
+
+## 視覺模型準備與雙模型工程的銜接
+
+作者的視覺工作從 **Python／PyTorch `.pt` 模型處理與匯出**開始，經過 **ONNX → TensorFlow SavedModel → 每通道 INT8 TFLite**，再交由 **ST Edge AI／Neural-ART** 產生 N6 網路程式、介面、權重與執行指令。視覺準備階段與後續雙模型韌體整合共同構成這條工程流程。
+
+| 階段 | 已保存的實作或執行紀錄 |
+| --- | --- |
+| 原模型匯出與格式轉換 | [匯出日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log)保存 Python／PyTorch 匯出及 ONNX／SavedModel 轉換輸出 |
+| 每通道 INT8 量化 | [量化配置](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml)與[量化日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log)保存設定與轉換結果 |
+| 模型檢查與 N6 部署 | [電腦端模型檢查](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh)、[N6 介面檢查](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py)及[部署流程](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh)保存準備及部署工具 |
+| 雙模型韌體整合 | [視覺產碼與建置](../tools/development-history/vision_03_generate_and_build_vision.sh)、[產物交接](../tools/development-history/vision_05_copy_vision_artifacts.sh)及[完整視覺流程](../vision/deployment/README.md)銜接 N6 產物、執行期配對、後處理與應用 |
+
+視覺準備階段的模型與後續某次雙模型產碼輸入各有版本紀錄；紀錄對應特定產物，完整實作範圍則涵蓋前段匯出、量化，以及後段雙模型整合。
 
 ## 從收音到定版的階段對照
 

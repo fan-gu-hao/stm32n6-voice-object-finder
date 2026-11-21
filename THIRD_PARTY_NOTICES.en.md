@@ -8,8 +8,10 @@ This project contains components under multiple licenses. It does not apply a si
 | --- | --- | --- |
 | [ST hand-recognition example](https://github.com/STMicroelectronics/x-cube-n6-ai-hand-landmarks) | Basis for the firmware framework and runtime | Base commit `6c31300`; full local provenance is recorded in `docs/source-provenance.json` |
 | [ST instance-segmentation example](https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation) | Reference for vision integration | `42f7d645f1ed61967a922defa4aa97b95d390b16` |
-| [YOLOv8 models for STM32](https://github.com/stm32-hotspot/ultralytics/tree/176ecaa749b79a3f53ce077d2b14412fa45e81a0/examples/YOLOv8-STEdgeAI) | Source of the quantized vision model used locally | `176ecaa749b79a3f53ce077d2b14412fa45e81a0` |
+| [YOLOv8 models for STM32](https://github.com/stm32-hotspot/ultralytics/tree/176ecaa749b79a3f53ce077d2b14412fa45e81a0/examples/YOLOv8-STEdgeAI) | Source recorded for a specific N6 generation input | `176ecaa749b79a3f53ce077d2b14412fa45e81a0` |
 | [STM32CubeN6 recording example](https://github.com/STMicroelectronics/STM32CubeN6/tree/1fc803683e03b0ce78e64523441d31acd0db2829/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder) | Base for the standalone recording firmware | Local Git base `1fc803683e03b0ce78e64523441d31acd0db2829`; [modified sources and diff](kws/recording_firmware/README.en.md) |
+
+The author also performs Python/PyTorch export, ONNX/SavedModel conversion, and per-channel INT8 quantization using the corresponding model and conversion tools. The [complete vision workflow](vision/deployment/README.en.md) identifies the work and its source records; the model-source entry above attributes one recorded generation input. Original model and tool licenses continue to apply.
 
 Component license indexes are in [`firmware/LICENSE.md`](firmware/LICENSE.md) and [`vision/LICENSE.md`](vision/LICENSE.md). The Google/Apache model entries in the original firmware index come from the upstream hand-recognition example and do not establish the license of the current YOLO model.
 

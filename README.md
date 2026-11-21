@@ -35,7 +35,7 @@
 
 | 重點步驟 | 實作流程與產物 |
 | --- | --- |
-| **1. 視覺模型轉換與產碼** | **YOLOv8n-seg 量化模型（TFLite）→ ST Edge AI／Neural-ART → 網路與模型介面（C／H）、權重（BIN）、視覺執行指令**。在本案執行產碼、配對推論函式庫，將產物移入正式韌體。 |
+| **1. 視覺模型匯出、量化與 N6 產碼** | **Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI／Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令**。親自完成模型匯出、校正、格式轉換與產碼，再配對推論函式庫，將產物接入雙模型韌體。 |
 | **2. 語音資料收集與整理** | **板上麥克風 → 五秒錄音（WAV）→ 按原始錄音分組 → 一秒切段 → MFCC 特徵**。建立杯子、瓶子、手機、其他詞語與底噪五類資料，透過 RAM 啟動工具、UART 與 CRC32 完成收音及傳輸。 |
 | **3. 語音模型訓練、量化與轉換** | **Python／Keras 訓練 → SavedModel → INT8 TFLite → ST 工具內部 ONNX → Neural-ART → N6 模型程式與權重**。自行設計深度可分離卷積 KWS，加入資料增強，匯出前處理係數、尺度與零點。 |
 | **4. 視覺尋物與顯示整合** | **攝影機中央裁切 → 256×256 RGB → YOLO 推論 → 框解碼／非極大值抑制（NMS）／遮罩 → LCD**。移植後處理、篩選指定物件，以連續兩幀確認結果，並用快照保護顯示資料。 |
@@ -52,7 +52,7 @@
 
 系統的開機交接也納入部署：晶片內建開機程式（Boot ROM）啟動第一階段開機載入程式（FSBL），再由 FSBL 將外部快閃記憶體（Flash）中的主應用載入內部 SRAM，交接至應用啟動流程。主應用啟動 FreeRTOS，完成初始化後，建立推論、顯示與影像訊號處理工作。
 
-**本案自行建立五分類語音資料集，設計、訓練並量化關鍵字辨識（KWS）模型，完成 YOLOv8 與 KWS 的 N6 產碼及整合部署。** 在模型與硬體之間，將 Python 語音特徵流程移植為 C，建立電腦與板端的逐項數值比對；配置兩模型的 RAM／Flash、權重與執行指令，實作共享神經網路加速器（NPU）的排程、CPU／DMA／NPU 快取交接，以及 FreeRTOS 工作間的影像、目標狀態與顯示資料協作。開發過程也包含現場誤判分析、補充資料與重新訓練，以及啟動、映像封裝和工具鏈相容性問題的定位與修正。
+**本案親自完成 YOLO 視覺模型從 Python／PyTorch、ONNX、SavedModel 到逐通道 INT8 量化的轉換流程；自行建立五分類語音資料集、設計與訓練 KWS，完成兩個模型的 N6 產碼及整合部署。** 在模型與硬體之間，將 Python 語音特徵流程移植為 C，建立電腦與板端的逐項數值比對；配置兩模型的 RAM／Flash、權重與執行指令，實作共享神經網路加速器（NPU）的排程、CPU／DMA／NPU 快取交接，以及 FreeRTOS 工作間的影像、目標狀態與顯示資料協作。開發過程也包含現場誤判分析、補充資料與重新訓練，以及啟動、映像封裝和工具鏈相容性問題的定位與修正。
 
 **技術關鍵字：嵌入式人工智慧（Embedded AI）・微控制器（MCU）・Cortex-M55・開機交接（Boot ROM／FSBL）・C／Python・FreeRTOS 多工作・神經網路加速器（NPU）・Neural-ART・關鍵字辨識（KWS）・YOLOv8 實例分割・INT8 量化・梅爾頻率倒譜係數（MFCC）・CMSIS-DSP・MDF／GPDMA・快取一致性・DCMIPP／LCD・UART／CRC32・GDB・連結腳本（Linker script）・模型記憶體池（Memory pool）・權重與指令分區・工具鏈版本對齊・韌體部署。**
 
@@ -165,10 +165,10 @@ KWS 區域在連結器顯示 **0 B**，是因為模型產碼以絕對位址使�
 
 | 項目 | 語音模型 | 視覺模型 |
 | --- | --- | --- |
-| 模型與產物建立方式 | 本專案設計、訓練並量化的小型深度可分離卷積模型 | 以來源版本固定的 YOLOv8n-seg TFLite 為輸入，在本案產生 N6 網路、介面、權重與執行指令；[輸入來源與實際轉換紀錄](vision/deployment/README.md) |
+| 模型與產物建立方式 | 本專案設計、訓練並量化的小型深度可分離卷積模型 | 親自完成 YOLOv8n-seg 的 Python／PyTorch 匯出、ONNX／SavedModel 轉換與逐通道 INT8 量化，再產生及整合 N6 網路、介面、權重與指令；[完整轉換流程與紀錄](vision/deployment/README.md) |
 | 輸入 | 一秒 PCM 經 MFCC，形成 `49×13×1 INT8` | `256×256 RGB UINT8` |
 | 輸出 | `cup`、`bottle`、`phone`、`unknown`、`silence` 五類 | `116×1344` 偵測資料與 `64×64×32` 遮罩原型，皆為 INT8 |
-| 部署流程 | Keras 訓練／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX／量化資訊 → Neural-ART 產碼 | 量化 TFLite → 本案執行 ST Edge AI 4.0.1／Neural-ART 產碼 → Runtime1201 配對 → 模型、後處理與建置移植 → 映像配置與部署 |
+| 部署流程 | Keras 訓練／SavedModel → INT8 TFLite → ST Edge AI 內部 ONNX／量化資訊 → Neural-ART 產碼 | Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI／Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令 → 執行期配對、韌體整合與映像部署 |
 | 應用整合 | C 特徵前處理、尺度／零點檢查、命令接受與切換目標 | 後處理介面移植、指定類別篩選、連續幀確認與座標映射 |
 
 視覺部署在本案 `vision/` 中執行 `generate-n6-model_STM32N6570-DK.sh`，完成 N6 產碼、參考工程編譯及映像封裝，再將模型程式、STAI 介面、權重與執行指令移入 `firmware/`。模型來源與工具版本固定保存，移植過程完成以下相容性與配置工作：
@@ -470,6 +470,6 @@ IDE 來源同步工具另處理連結核對、預覽、備份、雜湊競態檢�
 
 ## 模型與平台來源
 
-本案自行建立語音資料集，完成 KWS 網路設計、訓練、量化及板端部署；視覺部分完成 YOLOv8 的 N6 產碼、執行期配對、後處理移植、記憶體與映像配置，以及搜尋應用實作。2026-10-04 的視覺產碼輸入來源固定於 ST 模型版本，檔案雜湊與本案各階段產物交接見[視覺轉換紀錄](vision/deployment/README.md)。韌體以 ST 手部雙模型範例的啟動、FreeRTOS 工作及相機框架為基礎；HAL、BSP、CMSIS-DSP、ST 推論執行期，以及視覺解碼、非極大值抑制（NMS）與遮罩重建保留原來源與授權。各元件的來源版本及本案修改入口見[來源與實作範圍](docs/publication-review.md)。
+視覺部分由作者親自完成 Python／PyTorch 匯出、ONNX／SavedModel 轉換、逐通道 INT8 量化、介面核對與 N6 產碼，接續執行期、後處理、記憶體、映像與搜尋應用整合；語音部分自行建立資料集，完成 KWS 網路設計、訓練、量化及板端部署。[視覺轉換紀錄](vision/deployment/README.md)連到各階段實作及成功日誌，並分別保存產碼批次的輸入版本。韌體以 ST 手部雙模型範例的啟動、FreeRTOS 工作及相機框架為基礎；HAL、BSP、CMSIS-DSP、ST 推論執行期，以及視覺解碼、非極大值抑制（NMS）與遮罩重建保留原來源與授權。各元件的來源版本及本案修改入口見[來源與實作範圍](docs/publication-review.md)。
 
 公開儲存庫提供應用與訓練原始碼、配置、修補及工程證據。模型權重、模型產碼、原始錄音與預建映像未隨庫提供；完整建置須具備[對應依賴](docs/build.md)。

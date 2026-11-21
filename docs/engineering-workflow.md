@@ -19,7 +19,7 @@
 | 開發階段 | 實際完成的工作 | 與定版的關係 |
 | --- | --- | --- |
 | 前置收音依賴 | 在 course15 建立 N6 收音韌體與主機接收工具 | course17 的資料蒐集沿用這套錄音入口；本庫後來納入實際依賴的收音來源與工具 |
-| 視覺產碼 | 新建 course17，固定官方分割範例與 ST 量化 YOLO 來源；在本案 `vision/` 重新產碼、配對 Runtime1201、編譯及封裝 | 完成本案的視覺模型產碼與參考工程建置 |
+| 視覺匯出、量化與產碼 | 親自將 PyTorch 模型經 ONNX 轉為 SavedModel，執行逐通道 INT8 量化與介面核對，再產生 N6 產物並整合至雙模型工程 | 涵蓋視覺模型準備與後續韌體產碼／建置，各階段程式與紀錄列於下方 |
 | 正式主工程 | 以官方手部雙模型範例為 `firmware/` 底座，移入 YOLO 產碼，改接後處理、中央裁切、目標選擇、記憶體與工作間交接；完成視覺版建置與板端紀錄 | 完成正式主工程的視覺版；此階段尚未整合語音控制 |
 | 資料與初版 KWS | 完成五分類錄音、切段、來源分組、MFCC、模型訓練與 INT8 匯出 | 保留初版訓練程式；與後來分組定版分開 |
 | 語音核心與收音整合 | KWS 產碼、C 特徵與模型介面、專用記憶體、CMSIS-DSP 建置，接入連續 MDF／DMA 收音及語音接受狀態 | 從可建置核心進展到即時雙模型；編譯成功不等於辨識驗證完成 |
@@ -37,7 +37,7 @@
 | 平台與應用框架 | 固定 GCC、ST Edge AI、Neural-ART 與執行期版本，將 ST 雙模型 FreeRTOS 框架改接語音與視覺模型 | [建置環境](build.md)、[來源紀錄](source-provenance.json)、[app.c](../firmware/Src/app.c) |
 | 語音資料蒐集子系統 | MDF／DMA 五秒錄音、RAM 啟動、UART 交握及 CRC32、WAV 保存、分類收集與切段 | [錄音韌體](../kws/recording_firmware/README.md)、[主機工具](../kws/recording_tools/README.md)、[collect_n6.py](../kws/collect_n6.py) |
 | KWS 模型建立 | 自行蒐集五分類資料、MFCC、深度可分離卷積、資料增強與分組交叉驗證，匯出 INT8 模型 | [訓練快照](../kws/training_snapshot/README.md)、[訓練演進](../kws/training_history/README.md) |
-| 兩模型部署與整合 | 執行 YOLOv8 與 KWS 的 N6 產碼，配對共用執行期、移植模型與後處理介面；配置兩模型記憶體、共享 NPU 排程及搜尋狀態 | [視覺部署](../vision/deployment/README.md)、[KWS 部署](../kws/deployment/README.md)、[app.c](../firmware/Src/app.c)、[連結腳本](../firmware/Gcc/STM32N657xx.ld) |
+| 兩模型部署與整合 | 完成 YOLO 匯出、格式轉換及 INT8 量化，再執行 YOLOv8 與 KWS 的 N6 產碼，配對共用執行期、移植模型與後處理介面；配置兩模型記憶體、共享 NPU 排程及搜尋狀態 | [視覺部署](../vision/deployment/README.md)、[KWS 部署](../kws/deployment/README.md)、[app.c](../firmware/Src/app.c)、[連結腳本](../firmware/Gcc/STM32N657xx.ld) |
 
 ## 視覺產碼、韌體移植與搜尋顯示的逐步工作
 
@@ -45,7 +45,7 @@
 
 | 步驟 | 實際工作與工程重點 | 可閱讀的實作 |
 | --- | --- | --- |
-| 3. YOLO 模型轉換與 N6 產碼 | 固定 YOLOv8n-seg 的模型輸入、指紋、Neural-ART 設定及記憶體池；在本案 `vision/` 執行 ST Edge AI，產生網路程式、模型介面、權重與執行指令，完成參考工程的編譯、連結及封裝 | [本案產碼與建置流程](../tools/development-history/vision_03_generate_and_build_vision.sh)、[視覺產碼設定](../vision/deployment/README.md) |
+| 3. YOLO 匯出、量化與 N6 產碼 | **Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI／Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令**。設定校正影像、逐通道量化及 INT8 輸入輸出，核對模型介面，再完成 N6 參考工程的編譯、連結與封裝 | [完整模型轉換與量化](../vision/deployment/README.md)、[N6 產碼與建置流程](../tools/development-history/vision_03_generate_and_build_vision.sh) |
 | 4. 配對推論支援元件 | 將視覺參考工程的神經網路執行函式庫 **12.0.0**、正式底座的 **11.0.0** 統一配對至 **12.0.1**；同步標頭、函式庫與 NPU 支援來源，保留 FreeRTOS 抽象層及非同步等待／完成處理 | [參考工程配對](../tools/development-history/vision_02_match_vision_runtime.py)、[正式工程配對](../tools/development-history/vision_06_match_main_runtime.py)、[ai.mk](../firmware/mks/ai.mk) |
 | 5. 移入模型並替換建置項目 | 將六項視覺產物移入 `firmware/Model/`；移除原掌心／手部關鍵點模型的建置項目，更新模型初始化及輸入輸出指標，核對張量數量、形狀、型別與量化參數 | [六項產物移植](../tools/development-history/vision_05_copy_vision_artifacts.sh)、[建置清單修改](../tools/development-history/vision_07_update_model_build_list.py)、[模型資料適配](../tools/development-history/vision_11_adapt_model_data.py) |
 | 6. 配置攝影機與模型輸入 | 配置攝影機影像擷取與處理管線（DCMIPP）的顯示及推論路徑；取顯示視野中央正方形，縮放為 **256×256 RGB UINT8**，建立輸入區域與 LCD 顯示區域的幾何對應 | [app_cam.c](../firmware/Src/app_cam.c)、[攝影機與記憶體配置流程](../tools/development-history/vision_13_configure_camera_and_memory.py) |
@@ -54,6 +54,8 @@
 | 9. 顯示框、遮罩與狀態 | 將模型座標映射回 LCD 中央辨識區域；分開保存結果遮罩與繪圖遮罩，顯示工作在互斥鎖內複製快照、鎖外繪圖，避免下一輪後處理覆寫顯示資料 | [app.c 的結果與繪圖快照](../firmware/Src/app.c)、[資料交接架構](architecture.md) |
 | 10. 修正中斷與影像交接 | 以緩衝佇列及計數號誌交接影像；修正 `bqueue_get_free` 的中斷路徑，使用 `xSemaphoreTakeFromISR` 與 `portYIELD_FROM_ISR`；影像快取處理、複製及模型輸入快取維護完成後，才歸還相機緩衝 | [app.c 的佇列及推論工作](../firmware/Src/app.c)、[中斷與應用整合流程](../tools/development-history/vision_12_integrate_vision_application.py) |
 | 11. 配置視覺記憶體與分離映像 | 將應用 SRAM 從 **1,535 KiB 調整為 1,023 KiB**，止於 `0x34100000`；將視覺指令放在 `0x71380000` 的獨立區段、大型緩衝放在外部 PSRAM；分開抽取主應用與視覺指令，避免位址空洞膨脹映像 | [連結腳本](../firmware/Gcc/STM32N657xx.ld)、[Makefile](../firmware/Makefile)、[記憶體配置與映像邊界](memory-deployment.md) |
+
+**模型匯出與量化依據：**[視覺流程](../vision/deployment/README.md)直接連到作者的 PyTorch 匯出 ONNX／SavedModel 成功日誌、逐通道 INT8 設定、量化日誌、電腦端比較程式與 N6 介面檢查，涵蓋 TFLite 進入 N6 產碼之前的模型準備工作。
 
 **六項產物交接：**`network.c`、`network.h`、`network_ecblobs.h`、`stai_network.c`、`stai_network.h`、`network_data.xSPI2.bin`。它們分別涵蓋網路程式、模型介面、視覺執行指令及權重；交接流程先檢查來源完整，再移入正式工程。
 

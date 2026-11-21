@@ -2,11 +2,24 @@
 
 [繁體中文](code-tour.md) | [English](code-tour.en.md)
 
-The project's engineering work covers speech-data and KWS model development, N6 code generation and deployment for YOLOv8 and KWS, the C frontend port and numerical comparisons, and coordination of continuous audio capture, vision inference, target state, and LCD rendering. This tour points directly to implementation functions: how data is acquired, how numerical behavior is checked, and how two models share the NPU, allocate memory, and coordinate real-time tasks.
+The project's engineering work covers speech-data and KWS model development, vision-model export and per-channel INT8 quantization, N6 code generation and deployment for YOLOv8 and KWS, the C frontend port and numerical comparisons, and coordination of continuous audio capture, vision inference, target state, and LCD rendering. This tour points directly to implementation functions: how data is acquired, how numerical behavior is checked, and how two models share the NPU, allocate memory, and coordinate real-time tasks.
 
 See the [engineering workflow](engineering-workflow.en.md) for the overall sequence, [dual-model memory and deployment](memory-deployment.en.md) for the runtime/storage address map, and [toolchain compatibility](toolchain-compatibility.en.md) for version matching, actual build commands, and packaging changes.
 
-The [complete 32-step development route](development-steps.en.md) follows requirements, vision deployment, speech data and models, real-time integration, debugging iterations, and delivery. The [step-to-source map](development-source-map.json) provides code, configuration, and result entry points for every step. This page explains the key functions and data handoffs in more detail.
+The [complete 32-step development route](development-steps.en.md) follows requirements, vision export/quantization and deployment, speech data and models, real-time integration, debugging iterations, and delivery. The [step-to-source map](development-source-map.json) provides code, configuration, and result entry points for every step. This page explains the key functions and data handoffs in more detail.
+
+## Vision-model export, quantization, and deployment entry points
+
+The author completed **Python/PyTorch `.pt` → ONNX → TensorFlow SavedModel → per-channel INT8 TFLite → ST Edge AI/Neural-ART → N6 code, weights, and execution commands**. The linked vision-preparation sources preserve export, quantization, model checks, and deployment; the dual-model firmware then integrates the generated artifacts with KWS and the application.
+
+| Source or record | What to inspect |
+| --- | --- |
+| [Python/PyTorch export record](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) | Original-model export, ONNX, and TensorFlow SavedModel conversion output |
+| [Quantization configuration](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml) and [quantization record](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log) | Per-channel INT8 configuration and the recorded TFLite conversion |
+| [PC model checks](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh) and [N6 header checks](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py) | Model-format checks and inspection of N6-generated interfaces |
+| [Vision N6 deployment workflow](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh) and [dual-model artifact handoff](../tools/development-history/vision_05_copy_vision_artifacts.sh) | Generation/deployment operations, followed by transfer of code, interfaces, weights, and commands into the integrated application |
+
+See the [complete vision conversion workflow](../vision/deployment/README.en.md) for stage roles and artifact relationships.
 
 ## 1. From recording to training data
 
@@ -134,8 +147,8 @@ The function descriptions above document source-code implementations; measured n
 
 ## Engineering contributions and sources
 
-The project's implementation covers the speech-data workflow, a KWS model trained and quantized for this application, N6 code generation and memory allocation for both models, the C frontend and numerical comparisons, model-interface and build integration, continuous audio capture, cache coherence, cross-task data and state coordination, and deployment tools. The entries above link directly to the corresponding code.
+The project's implementation covers the speech-data workflow, a KWS model trained and quantized for this application, vision-model export and per-channel INT8 quantization, N6 code generation and memory allocation for both models, the C frontend and numerical comparisons, model-interface and build integration, continuous audio capture, cache coherence, cross-task data and state coordination, and deployment tools. The entries above link directly to the corresponding code.
 
-The platform uses ST examples, HAL/BSP, CMSIS-DSP, FreeRTOS, camera middleware, and STAI/ATON. Clock, NPU/AXISRAM, CPU cache, external-memory, GPU2D, access-attribute, UART, and operating-system initialization in `main.c`, together with the three static tasks and their priorities, come from the official framework; this project builds the model and application integration on that foundation. Vision code generation for N6, runtime pairing, model interfaces, target selection, and display integration were completed in this project. Input-source versions and artifact handoffs are documented in the [vision conversion records](../vision/deployment/README.en.md). NMS and mask reconstruction retain ST postprocessing attribution.
+The platform uses ST examples, HAL/BSP, CMSIS-DSP, FreeRTOS, camera middleware, and STAI/ATON. Clock, NPU/AXISRAM, CPU cache, external-memory, GPU2D, access-attribute, UART, and operating-system initialization in `main.c`, together with the three static tasks and their priorities, come from the official framework; this project builds the model and application integration on that foundation. The author completed vision-model export, quantization, N6 generation, runtime pairing, model interfaces, target selection, and display integration across the vision-preparation and dual-model stages. The [vision conversion records](../vision/deployment/README.en.md) connect those stages with their model revisions and artifact handoffs. NMS and mask reconstruction retain ST postprocessing attribution.
 
 Generated coefficients and generated model code are identified as artifacts; their configuration, export, and consistency checks belong to the deployment workflow. Source attribution is recorded in the [publication inventory](publication-review.en.md). Each component retains its original copyright and license; see [third-party sources and publication scope](../THIRD_PARTY_NOTICES.en.md).

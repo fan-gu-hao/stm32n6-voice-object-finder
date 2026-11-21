@@ -14,7 +14,7 @@
 | 連續音訊與 C 前處理 | MDF／循環 DMA、環形視窗、快取、MFCC、量化介面與分層比對 | [finder_mic.c](../firmware/Src/finder_mic.c)、[finder_kws.c](../firmware/Src/finder_kws.c) |
 | 資料蒐集工具 | 五秒錄音韌體、RAM 啟動、串列接收、長度及 CRC32 檢查 | [錄音來源](../kws/recording_firmware/README.md)、[主機工具](../kws/recording_tools/README.md) |
 | 資料與訓練 | 分類錄音、切段、來源分組、特徵、資料增強、五折驗證及量化 | [collect_n6.py](../kws/collect_n6.py)、[prepare_dataset.py](../kws/prepare_dataset.py)、[訓練歷程](../kws/training_history/README.md)、[定版快照](../kws/training_snapshot/README.md) |
-| 模型部署 | 視覺產碼、執行期版本對齊與後處理移植；KWS 網路名稱、記憶體池、產碼命令、工具內部 ONNX 與配置報告 | [視覺與語音流程](engineering-workflow.md)、[KWS 部署設定](../kws/deployment/README.md)、[產碼紀錄](evidence/development-history/README.md) |
+| 模型轉換與部署 | 視覺 Python／PyTorch 匯出、ONNX／SavedModel 轉換、每通道 INT8 量化、N6 產碼、執行期對齊與後處理移植；KWS 網路名稱、記憶體池、產碼命令、工具內部 ONNX 與配置報告 | [完整視覺流程](../vision/deployment/README.md)、[視覺與語音流程](engineering-workflow.md)、[KWS 部署設定](../kws/deployment/README.md)、[產碼紀錄](evidence/development-history/README.md) |
 | 系統建置 | 模型與 DSP 建置清單、記憶體分區、獨立指令映像及 IDE 入口 | [Makefile](../firmware/Makefile)、[kws.mk](../firmware/mks/kws.mk)、[連結腳本](../firmware/Gcc/STM32N657xx.ld)、[建置說明](build.md) |
 | 結果與版本 | 分組評估、保留音訊、即時比較、收集清單、語音／視覺日誌與寫入驗證 | [結果](results.md)、[證據索引](evidence/README.md) |
 | 開發工具 | IDE 來源同步、路徑檢查、預覽、備份、競態檢查與原子替換 | [IDE 工具](../tools/ide/README.md) |
@@ -22,7 +22,7 @@
 
 ## 32 步開發流程與程式對應
 
-[完整開發流程](development-steps.md)依 32 個步驟呈現功能定義、視覺產碼與後處理、語音資料與訓練量化、雙模型記憶體及即時系統、數值除錯、資料迭代、部署與展示。[步驟與原始碼清單](development-source-map.json)逐項對應現有程式、設定及結果；首頁亦列出全部 32 步與直接程式入口。
+[完整開發流程](development-steps.md)依 32 個步驟呈現功能定義、視覺匯出、量化、N6 產碼與後處理、語音資料與訓練量化、雙模型記憶體及即時系統、數值除錯、資料迭代、部署與展示。[步驟與原始碼清單](development-source-map.json)逐項對應現有程式、設定及結果；首頁呈現 8 個開發重點，詳細文件保留完整 32 步，原始碼索引提供實作入口。
 
 本次補入原先散落於開發對話程式區塊的[主機端流程](../tools/development-history/README.md)。公開檔案抽取自當時的完整程式，保留診斷模式切換、參考資料建立、資料收集、產物同步及部署處理。裝置識別改由環境變數提供，來源紀錄保存原程式區塊、抽出本文與公開版本的雜湊及差異。既有核心韌體、訓練程式、記憶體設定及實測紀錄繼續保留。
 
@@ -30,9 +30,9 @@
 
 ## 工程實作與來源分工
 
-本專案實作包括五分類語音資料與模型建立、現場資料迭代、Python／C 特徵移植、連續收音、量化介面檢查、CPU／DMA／NPU 快取處理、視覺模型產碼與執行期對齊、相機中斷佇列適配、兩模型共同建置、搜尋狀態與跨工作資料交接、記憶體配置及部署驗證。函式與檔案對應見[程式導讀](code-tour.md)。
+本專案實作包括五分類語音資料與模型建立、現場資料迭代、Python／C 特徵移植、連續收音、量化介面檢查、CPU／DMA／NPU 快取處理、視覺模型匯出、量化、N6 產碼與執行期對齊、相機中斷佇列適配、兩模型共同建置、搜尋狀態與跨工作資料交接、記憶體配置及部署驗證。函式與檔案對應見[程式導讀](code-tour.md)。
 
-KWS 模型由本專案建立、訓練與量化。視覺部分在本案執行 YOLOv8 的 N6 產碼，完成執行期配對、產物移植與應用整合；2026-10-04 的產碼輸入來源紀錄指向 ST 發布的量化 TFLite，其固定版本、檔案雜湊及轉換產物見[視覺部署紀錄](../vision/deployment/README.md)。ST 手部雙模型範例提供 FreeRTOS、相機、顯示與推論執行環境的底座；ST 實例分割範例提供模型介面與後處理。HAL、BSP、CMSIS-DSP、FreeRTOS 及 STAI／ATON 為上游元件，其版本、原始檔頭與授權索引均保留，詳見[第三方來源](../THIRD_PARTY_NOTICES.md)、[模型來源](../sources.txt)及[來源版本](source-provenance.json)。
+KWS 模型由本專案建立、訓練與量化。視覺部分也由作者親自完成 Python／PyTorch `.pt` 模型處理與匯出，經 ONNX、TensorFlow SavedModel 與每通道 INT8 TFLite，再進行 ST Edge AI／Neural-ART 產碼、執行期配對、產物移植及應用整合。[視覺完整流程](../vision/deployment/README.md)連結準備階段的匯出、量化紀錄與雙模型部署實作，各階段模型及產碼輸入版本另按來源紀錄保存。ST 手部雙模型範例提供 FreeRTOS、相機、顯示與推論執行環境的底座；ST 實例分割範例提供模型介面與後處理。HAL、BSP、CMSIS-DSP、FreeRTOS 及 STAI／ATON 保留版本、原始檔頭與授權索引，詳見[第三方來源](../THIRD_PARTY_NOTICES.md)、[產碼輸入紀錄](../sources.txt)及[來源版本](source-provenance.json)。
 
 分類收集程式使用的獨立錄音元件原先位於 `course15_n6_mic_test`。本庫保存它作為資料蒐集依賴，並保留原始版本及上游差異。訓練快照與錄音 IDE 快照也保留當時的路徑及環境假設，使用方式由各目錄說明。
 

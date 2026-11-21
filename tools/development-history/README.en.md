@@ -8,6 +8,8 @@ This directory supplies the host-side implementations for vision generation and 
 
 These are stage-specific workflow snapshots that read historical models, frontend coefficients, directories, and version pointers. Some modify firmware source, switch diagnostic modes, build, or directly program the board; the table identifies those actions and their historical context. The final application is in [`firmware/`](../../firmware/); see the [build guide](../../docs/build.en.md) for its current build entry.
 
+The vision scripts in this directory cover the dual-model application's N6 generation and integration stage. The author's earlier **Python/PyTorch → ONNX → SavedModel → per-channel INT8 TFLite** work is also part of the full vision workflow: [export log](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log), [quantization configuration](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml), and [quantization log](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log). See the [complete vision workflow](../../vision/deployment/README.en.md) for the preparation, validation, generation, and firmware handoff sequence.
+
 ## Development steps, actions, and recorded outcomes
 
 | Development steps | Source | Purpose and actions | Historical outcome / records |

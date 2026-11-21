@@ -32,16 +32,18 @@ Alongside firmware and training sources, the [development host workflows](../too
 **Original host workflow:** [Vision-project setup source](../tools/development-history/vision_01_prepare_vision.sh).
 
 <a id="step-03"></a>
-### 3. Run YOLO conversion and N6 code generation in this project
+### 3. Export, quantize, and generate the YOLO model for N6
 
-- Pin the input file and hash for the quantized 256×256 YOLOv8n-seg model, retaining source and artifact provenance.
-- Run ST Edge AI generation in the project's `vision/` tree to produce N6 network code, model interfaces, weight data, and execution commands.
-- Compile, link, and package the vision reference application, then migrate the artifacts into the main firmware. This stage includes the actual tool execution, artifact checks, and deployment conversion.
-- Preserve pinned references for the generation script, Neural-ART configuration, and memory pool, and connect them to this project's generation and build history.
+- Use Python/PyTorch tools to load the original YOLOv8n-seg `.pt` model, configure a 256×256 input, export ONNX, and convert it to TensorFlow SavedModel with `onnx2tf`.
+- Personally configure and execute per-channel INT8 quantization with calibration images, image rescaling, and INT8 input/output settings, producing TFLite.
+- Compare original, floating-point, and INT8 models on the PC; check I/O shapes, types, quantization scales, zero points, and postprocessing interfaces.
+- Run ST Edge AI/Neural-ART generation to produce N6 network code, model interfaces, weights, and execution commands; retain generation settings and memory-pool configuration.
+- Compile, link, and package the reference application, then move the generated artifacts into the dual-model firmware and adapt its runtime and build.
+- Retain code, configuration, successful logs, and per-stage model fingerprints for the complete export → quantization → generation → integration workflow.
 
-**Implementation and records:** [vision-generation entry and sources](../vision/deployment/README.en.md), [generation-script reference](../vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh), [Neural-ART configuration](../vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json), [source and model fingerprint](../sources.txt), and [model-migration history](engineering-workflow.en.md).
+**Implementation and records:** [Complete vision conversion workflow](../vision/deployment/README.en.md), [generation script reference](../vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh), [Neural-ART settings](../vision/deployment/upstream-reference/user_neuralart_STM32N6570-DK.json), [recorded N6 input fingerprint](../sources.txt), [integration workflow](engineering-workflow.en.md).
 
-**Original host workflow:** [Project generation/build source](../tools/development-history/vision_03_generate_and_build_vision.sh).
+**Original host workflow:** [N6 generation and application build](../tools/development-history/vision_03_generate_and_build_vision.sh). Python export and quantization settings, logs, and validation programs are linked in the complete vision workflow above.
 
 <a id="step-04"></a>
 ### 4. Match generated models to the inference runtime

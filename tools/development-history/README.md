@@ -8,6 +8,8 @@
 
 這些是各開發階段的流程快照，會讀取當時的模型、係數、目錄及版本指標。部分檔案會修改韌體來源、切換診斷模式、建置或直接燒錄；適用版本及動作列於下表。定版應用程式位於 [`firmware/`](../../firmware/)，目前建置入口見[建置說明](../../docs/build.md)。
 
+本目錄的視覺腳本保存雙模型工程的 N6 產碼與整合階段。作者更前面的 **Python／PyTorch → ONNX → SavedModel → 逐通道 INT8 TFLite** 工作同屬完整視覺流程，實作依據包括[匯出日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log)、[量化設定](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml)及[量化日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log)。模型準備、驗證、產碼與韌體交接順序見[完整視覺流程](../../vision/deployment/README.md)。
+
 ## 步驟、動作與當時結果
 
 | 對應開發步驟 | 原碼 | 用途與實際動作 | 當時結果／紀錄 |

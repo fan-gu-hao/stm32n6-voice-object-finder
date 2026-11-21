@@ -2,11 +2,24 @@
 
 [繁體中文](code-tour.md) | [English](code-tour.en.md)
 
-本專案的工程實作涵蓋語音資料與 KWS 模型建立、YOLOv8 與 KWS 的 N6 產碼部署、C 特徵移植與數值比對，以及持續收音、視覺推論、目標狀態與 LCD 顯示協作。這份導讀直接對應實作函式，說明資料如何取得、數值如何核對，以及兩個模型如何共享 NPU、配置記憶體並協調即時工作。
+本專案的工程實作涵蓋語音資料與 KWS 模型建立、視覺模型匯出與每通道 INT8 量化、YOLOv8 與 KWS 的 N6 產碼部署、C 特徵移植與數值比對，以及持續收音、視覺推論、目標狀態與 LCD 顯示協作。這份導讀直接對應實作函式，說明資料如何取得、數值如何核對，以及兩個模型如何共享 NPU、配置記憶體並協調即時工作。
 
 整體步驟見[工程流程](engineering-workflow.md)；記憶體配置與燒錄位置見[雙模型記憶體與部署](memory-deployment.md)；版本配對、實際建置指令及封裝修正見[工具鏈相容性](toolchain-compatibility.md)。
 
-[完整 32 步開發路線](development-steps.md)按功能定義、視覺部署、語音資料與模型、即時整合、除錯迭代及工程交付排列；[步驟與原始碼對照](development-source-map.json)提供每一步的程式、配置和結果入口。本頁進一步說明關鍵函式與資料交接。
+[完整 32 步開發路線](development-steps.md)按功能定義、視覺匯出／量化與部署、語音資料與模型、即時整合、除錯迭代及工程交付排列；[步驟與原始碼對照](development-source-map.json)提供每一步的程式、配置和結果入口。本頁進一步說明關鍵函式與資料交接。
+
+## 視覺模型匯出、量化與部署入口
+
+作者親自完成 **Python／PyTorch `.pt` → ONNX → TensorFlow SavedModel → 每通道 INT8 TFLite → ST Edge AI／Neural-ART → N6 程式、權重與執行指令**。視覺準備工程保存匯出、量化、模型檢查及部署來源；雙模型韌體再把產物與 KWS、搜尋應用整合。
+
+| 程式或紀錄 | 閱讀重點 |
+| --- | --- |
+| [Python／PyTorch 匯出紀錄](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) | 原模型匯出、ONNX 與 TensorFlow SavedModel 轉換的執行輸出 |
+| [量化配置](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml)與[量化紀錄](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log) | 每通道 INT8 設定及 TFLite 轉換結果 |
+| [電腦端模型檢查](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh)與[N6 標頭檢查](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py) | 模型格式檢查及 N6 產碼介面檢視 |
+| [視覺 N6 部署流程](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh)與[雙模型產物交接](../tools/development-history/vision_05_copy_vision_artifacts.sh) | 產碼與部署操作，以及將程式、介面、權重、指令移入整合應用的流程 |
+
+各階段用途與產物關係見[完整視覺轉換流程](../vision/deployment/README.md)。
 
 ## 1. 從錄音到可訓練資料
 
@@ -134,8 +147,8 @@ KWS 活化值以絕對位址配置，產碼報告記錄 17,440 位元組，因�
 
 ## 工程貢獻與來源
 
-本專案的實作涵蓋語音資料流程、自行訓練與量化的 KWS、兩模型的 N6 產碼與記憶體配置、C 前處理與數值比對、模型介面與建置整合、連續收音、快取一致性、跨工作資料與狀態協調，以及部署工具；上文各入口直接連到對應程式。
+本專案的實作涵蓋語音資料流程、自行訓練與量化的 KWS、視覺模型匯出與每通道 INT8 量化、兩模型的 N6 產碼與記憶體配置、C 前處理與數值比對、模型介面與建置整合、連續收音、快取一致性、跨工作資料與狀態協調，以及部署工具；上文各入口直接連到對應程式。
 
-平台基礎使用 ST 範例、HAL／BSP、CMSIS-DSP、FreeRTOS、攝影機中介軟體與 STAI／ATON。`main.c` 的時脈、NPU／AXISRAM、CPU 快取、外部記憶體、GPU2D、存取屬性、UART 與作業系統初始化，以及三個靜態工作與優先級，沿用官方框架；本案在此基礎上完成模型與應用整合。視覺的 N6 產碼、執行期配對、模型介面、目標選擇與顯示整合均在本案完成；產碼輸入的來源版本及產物交接見[視覺轉換紀錄](../vision/deployment/README.md)。NMS 與遮罩重建保留 ST 後處理來源。
+平台基礎使用 ST 範例、HAL／BSP、CMSIS-DSP、FreeRTOS、攝影機中介軟體與 STAI／ATON。`main.c` 的時脈、NPU／AXISRAM、CPU 快取、外部記憶體、GPU2D、存取屬性、UART 與作業系統初始化，以及三個靜態工作與優先級，沿用官方框架；本案在此基礎上完成模型與應用整合。作者在視覺準備與雙模型整合階段完成模型匯出、量化、N6 產碼、執行期配對、模型介面、目標選擇及顯示整合；[視覺轉換紀錄](../vision/deployment/README.md)串接各階段的模型版本與產物交接。NMS 與遮罩重建保留 ST 後處理來源。
 
 生成係數與模型產碼另標為產物，其配置、匯出與一致性檢查屬於部署流程。來源分工見[公開內容盤點](publication-review.md)；各元件原有版權與授權仍然適用，見[第三方來源與公開範圍](../THIRD_PARTY_NOTICES.md)。

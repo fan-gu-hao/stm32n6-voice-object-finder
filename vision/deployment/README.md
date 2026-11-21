@@ -1,12 +1,26 @@
-# 視覺模型產碼與設定來源
+# 視覺模型匯出、量化、N6 產碼與部署
 
 [繁體中文](README.md) | [English](README.en.md)
 
 > **版本編號說明：**`Runtime1100`、`Runtime1200`、`Runtime1201` 分別代表 ST 神經網路執行函式庫（Network Runtime）的 **11.0.0、12.0.0、12.0.1** 版本。這套函式庫在建置時連結進韌體，提供模型程式所需的執行支援；更新模型產碼工具時，也須配對函式庫、標頭檔與神經網路處理器（NPU）支援程式。這些編號與 ST Edge AI 工具本身的版本號分開記錄。 [版本配對詳解](../../docs/toolchain-compatibility.md)。
 
-本案在 `vision/Model/` 執行模型轉換，使用 ST Edge AI 4.0.1 產生 N6 網路程式、模型介面、權重與執行指令，再完成執行期配對及正式韌體移植。2026-10-04 的終端紀錄保存了產碼、參考工程建置、六項產物交接及正式主工程建置的實際成功輸出。
+本作品的視覺開發從 Python／PyTorch 模型處理開始，涵蓋 ONNX 匯出、TensorFlow SavedModel 轉換、逐通道 INT8 量化、介面核對及 ST Edge AI／Neural-ART 產碼。作者親自執行各階段，再將網路程式、介面、權重與執行指令接入雙模型主應用，完成執行期配對、建置與映像封裝。
 
 本頁對應[完整開發步驟第3步：視覺模型轉換](../../docs/development-steps.md#step-03)，說明產碼輸入、工具處理、產物用途及韌體交接；工具版本差異見[工具鏈相容性](../../docs/toolchain-compatibility.md)，位址與映像配置見[雙模型記憶體配置](../../docs/memory-deployment.md)。
+
+## 從 Python／PyTorch 到 N6 的完整視覺開發流程
+
+**Python／PyTorch（`.pt`）→ ONNX → TensorFlow SavedModel → 逐通道 INT8 量化（TFLite）→ ST Edge AI／Neural-ART → N6 網路與介面（C／H）、權重（BIN）及執行指令。** 作者親自完成模型匯出、格式轉換、量化校正、介面核對與 N6 產碼，再把模型接入雙模型韌體。模型前段的實作與紀錄保存於視覺工程，正式韌體整合則保存於本儲存庫。
+
+| 階段 | 作者實際完成的工作 | 程式、設定與成功紀錄 |
+| --- | --- | --- |
+| Python／PyTorch 模型匯出 | 以 Python／Ultralytics 工具載入本地 `yolov8n-seg.pt`，配置 256×256 輸入，匯出 ONNX；日誌記錄 opset 19、圖簡化及匯出成功 | [模型匯出日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) |
+| ONNX 轉 TensorFlow | 透過 `onnx2tf` 將 ONNX 轉成 TensorFlow SavedModel，保留偵測與遮罩原型兩組輸出，接續 TFLite 匯出 | [ONNX／SavedModel 成功紀錄](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log) |
+| 自行執行 INT8 量化 | 以本地 SavedModel 與校正影像執行 ST 量化工具，設定逐通道量化、影像縮放及 INT8 輸入輸出，產生量化 TFLite | [量化設定](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml)、[量化成功日誌](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log) |
+| 電腦端與部署介面核對 | 比較原始、浮點與 INT8 模型；核對輸入輸出形狀、張量型別、尺度、零點與 N6 後處理介面 | [電腦端模型比較](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh)、[N6 介面檢查](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py) |
+| N6 產碼與正式韌體接入 | 使用 ST Edge AI／Neural-ART 產生網路、STAI 介面、權重與視覺執行指令；配對執行函式庫，更新建置、記憶體、後處理及顯示 | [視覺模型部署程式](https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh)、[雙模型工程產碼流程](../../tools/development-history/vision_03_generate_and_build_vision.sh)、[六項產物移植](../../tools/development-history/vision_05_copy_vision_artifacts.sh) |
+
+模型匯出、量化與雙模型整合分階段保存版本；下方來源表對應特定 N6 產碼批次的輸入檔。完整開發工作由上述程式、設定與成功日誌共同追溯，模型及權重的位元組版本則依各批次雜湊辨識。
 
 ## 三項官方參考原檔
 
@@ -20,7 +34,7 @@
 
 這是**固定官方來源的參考快照**。目前沒有本機歷史腳本與這三檔的逐位元組比對紀錄，因此將其定位為上游參考，而非定版工作目錄的完整還原。它們也不包含模型權重、生成程式或預建映像。這三檔在官方來源中屬於 `Model`，元件授權索引列為 **SLA0044**；本目錄不改變其授權。參見 [vision/LICENSE.md](../LICENSE.md) 及[第三方來源聲明](../../THIRD_PARTY_NOTICES.md)。
 
-## 本案模型轉換與產物交接
+## 雙模型工程的 N6 產碼與產物交接
 
 | 階段 | 本案實際處理 |
 | --- | --- |

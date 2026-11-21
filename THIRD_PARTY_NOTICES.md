@@ -8,8 +8,10 @@
 | --- | --- | --- |
 | [ST 手部辨識範例](https://github.com/STMicroelectronics/x-cube-n6-ai-hand-landmarks) | 韌體框架與執行環境的基礎 | 基底提交 `6c31300`；完整本機來源記錄見 `docs/source-provenance.json` |
 | [ST 實例分割範例](https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation) | 視覺整合參考 | `42f7d645f1ed61967a922defa4aa97b95d390b16` |
-| [STM32 適用 YOLOv8 模型](https://github.com/stm32-hotspot/ultralytics/tree/176ecaa749b79a3f53ce077d2b14412fa45e81a0/examples/YOLOv8-STEdgeAI) | 本機使用的量化視覺模型來源 | `176ecaa749b79a3f53ce077d2b14412fa45e81a0` |
+| [STM32 適用 YOLOv8 模型](https://github.com/stm32-hotspot/ultralytics/tree/176ecaa749b79a3f53ce077d2b14412fa45e81a0/examples/YOLOv8-STEdgeAI) | 特定 N6 產碼批次所記錄的輸入來源 | `176ecaa749b79a3f53ce077d2b14412fa45e81a0` |
 | [STM32CubeN6 錄音範例](https://github.com/STMicroelectronics/STM32CubeN6/tree/1fc803683e03b0ce78e64523441d31acd0db2829/Projects/STM32N6570-DK/Examples/MDF/MDF_AudioRecorder) | 獨立錄音韌體的基底 | 本機 Git 基準 `1fc803683e03b0ce78e64523441d31acd0db2829`；[修改來源與差異](kws/recording_firmware/README.md) |
+
+作者另親自使用模型與轉換工具，完成 Python／PyTorch 匯出、ONNX／SavedModel 轉換及逐通道 INT8 量化。[完整視覺流程](vision/deployment/README.md)說明實作與來源紀錄；上表模型來源項目則對應已保存的特定產碼輸入。原模型與工具的授權仍依各自來源適用。
 
 元件授權索引見 [`firmware/LICENSE.md`](firmware/LICENSE.md) 與 [`vision/LICENSE.md`](vision/LICENSE.md)。原韌體索引中的 Google／Apache 模型項目來自上游手部辨識範例，不能用來判定目前 YOLO 模型的授權。
 

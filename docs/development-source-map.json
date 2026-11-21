@@ -80,7 +80,7 @@
     },
     {
       "step": 3,
-      "title": "YOLO 的 N6 產碼與部署轉換",
+      "title": "YOLO 匯出、量化與 N6 產碼部署",
       "paths": [
         {
           "path": "vision/deployment/upstream-reference/generate-n6-model_STM32N6570-DK.sh",
@@ -131,10 +131,79 @@
             "code_index": 0
           },
           "status": "archived_original_body"
+        },
+        {
+          "path": "vision/deployment/README.md",
+          "kind": "documentation",
+          "status": "published"
+        },
+        {
+          "path": "vision/deployment/README.en.md",
+          "kind": "documentation",
+          "status": "published"
         }
       ],
       "symbols": [],
-      "title_en": "Run YOLO conversion and N6 code generation in this project"
+      "title_en": "Export, quantize, and generate YOLO for N6 deployment",
+      "workflow": [
+        "Python/PyTorch .pt",
+        "ONNX",
+        "TensorFlow SavedModel",
+        "per-channel INT8 TFLite",
+        "ST Edge AI/Neural-ART",
+        "N6 C/H, weights, and execution commands",
+        "dual-model firmware integration"
+      ],
+      "external_sources": [
+        {
+          "url": "https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/03_export_seg.log",
+          "kind": "execution_log",
+          "purpose": "PyTorch/ONNX/SavedModel export success",
+          "purpose_zh": "PyTorch／ONNX／SavedModel 匯出成功紀錄",
+          "status": "published_in_vision_repository",
+          "revision": "259bd0b2a3f5cbe4260509b0786d39806ff80c50"
+        },
+        {
+          "url": "https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/configs/yolov8n_seg_int8_int8.yaml",
+          "kind": "configuration",
+          "purpose": "Per-channel INT8 quantization settings",
+          "purpose_zh": "逐通道 INT8 量化設定",
+          "status": "published_in_vision_repository",
+          "revision": "259bd0b2a3f5cbe4260509b0786d39806ff80c50"
+        },
+        {
+          "url": "https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/results/checkpoints/2026-09-09/logs/04_st_quantization_seg.log",
+          "kind": "execution_log",
+          "purpose": "Successful local SavedModel quantization",
+          "purpose_zh": "本地 SavedModel 量化成功紀錄",
+          "status": "published_in_vision_repository",
+          "revision": "259bd0b2a3f5cbe4260509b0786d39806ff80c50"
+        },
+        {
+          "url": "https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_seg_models_pc.sh",
+          "kind": "source",
+          "purpose": "PC model comparison",
+          "purpose_zh": "電腦端模型比較",
+          "status": "published_in_vision_repository",
+          "revision": "259bd0b2a3f5cbe4260509b0786d39806ff80c50"
+        },
+        {
+          "url": "https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/check_n6_seg_header.py",
+          "kind": "source",
+          "purpose": "N6 interface checks",
+          "purpose_zh": "N6 介面檢查",
+          "status": "published_in_vision_repository",
+          "revision": "259bd0b2a3f5cbe4260509b0786d39806ff80c50"
+        },
+        {
+          "url": "https://github.com/fan-gu-hao/stm32n6-instance-segmentation/blob/259bd0b2a3f5cbe4260509b0786d39806ff80c50/scripts/deploy_n6_seg.sh",
+          "kind": "source",
+          "purpose": "N6 deployment from the locally quantized model",
+          "purpose_zh": "由本地量化模型進行 N6 部署",
+          "status": "published_in_vision_repository",
+          "revision": "259bd0b2a3f5cbe4260509b0786d39806ff80c50"
+        }
+      ]
     },
     {
       "step": 4,
