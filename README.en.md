@@ -26,6 +26,28 @@ This is an **MCU-class edge-AI dual-model object finder** deployed on the **STM3
   <a href="https://youtu.be/m7wET9g5u6k"><strong>▶ Watch the full hardware demonstration</strong></a>
 </p>
 
+<a id="development-route"></a>
+<a id="route-foundation"></a>
+
+## From models to hardware: 8 development highlights
+
+Define the voice-driven interaction, establish the project, and pin sources and tool versions before following this workflow. Model conversion, data and training, firmware integration, debugging, and deployment together form the dual-model system.
+
+| Key step | Implementation flow and artifacts |
+| --- | --- |
+| **1. Vision-model conversion and generation** | **Quantized YOLOv8n-seg (TFLite) → ST Edge AI / Neural-ART → network and model interfaces (C/H), weights (BIN), and vision execution commands**. Run generation in this project, match the inference library, and migrate the artifacts into the main firmware. |
+| **2. Speech-data collection and preparation** | **On-board microphone → five-second WAV recordings → grouping by source recording → one-second clips → MFCC features**. Build cup, bottle, phone, unknown, and silence classes using RAM-launch tools, UART, and CRC32 for capture and transfer. |
+| **3. Speech-model training, quantization, and conversion** | **Python/Keras training → SavedModel → INT8 TFLite → ST's internal ONNX → Neural-ART → N6 model code and weights**. Design a depthwise-separable KWS model, apply augmentation, and export frontend coefficients, scales, and zero points. |
+| **4. Vision search and display integration** | **Central camera crop → 256×256 RGB → YOLO inference → box decoding / NMS / masks → LCD**. Port postprocessing, select the requested object, confirm it over two consecutive frames, and protect display data with snapshots. |
+| **5. Continuous audio and the C frontend** | **MDF/GPDMA → ring buffer → latest one-second audio → CMSIS-DSP/MFCC → 637 INT8 features**. Port the Python feature pipeline to C, handling warm-up, wraparound, overwrite, and model-input checks. |
+| **6. Dual-model scheduling and memory allocation** | **Two models share the NPU sequentially while inference, display, and ISP tasks cooperate**. Coordinate model pools and linker scripts, allocate RAM/Flash, weights, and command regions, check actual boundaries, and manage CPU/DMA/NPU caches and cross-task state. |
+| **7. Numerical comparison, live improvement, and finalization** | **Fixed features / fixed PCM / live audio → PC–board comparisons → additional live data → grouped five-fold and held-out evaluation → synchronized final model and coefficients**. Diagnose errors and missed commands, then use an acceptance state machine to turn classification scores into stable target changes. |
+| **8. Firmware build, boot deployment, and demonstration** | **Model code + application and libraries → ELF → application / vision-command BIN images; combine with two weight images and the FSBL for five deployment images**. Correct packaging alignment, check programming addresses and update contents, and complete board operation, IDE/Git preservation, and the demonstration video. |
+
+Vision generation directly outputs weights as `network_data.xSPI2.bin`; vision commands in `network_ecblobs.h` become `vision_commands.bin` after linking and section extraction. KWS control code is linked into the main application, with weights stored separately and no independent speech-command image. At boot, the FSBL loads the application from external Flash into internal SRAM before entering the dual-model firmware.
+
+**Further reading:** [Complete engineering workflow](docs/engineering-workflow.en.md) · [All 32 implementation steps](docs/development-steps.en.md) · [Dual-model memory and deployment](docs/memory-deployment.en.md)
+
 Say `cup`, `bottle`, or `phone` to select a search target. Camera capture and vision inference continue running, while the LCD overlays search status, bounding boxes, and segmentation masks. The Cortex-M55 handles peripherals, audio features, postprocessing, and task scheduling; the two models use the shared NPU sequentially.
 
 Boot handoff is part of the deployment: the chip's Boot ROM starts the first-stage bootloader (FSBL), which loads the main application from external Flash into internal SRAM and transfers control to its startup code. The application starts FreeRTOS, completes initialization, and creates the inference, display, and image-signal-processing tasks.
@@ -34,22 +56,11 @@ Boot handoff is part of the deployment: the chip's Boot ROM starts the first-sta
 
 **Technologies: Embedded AI · MCU · Cortex-M55 · Boot ROM / FSBL Handoff · C / Python · FreeRTOS tasks · NPU · Neural-ART · Keyword Spotting (KWS) · YOLOv8 Instance Segmentation · INT8 Quantization · MFCC · CMSIS-DSP · MDF / GPDMA · Cache Coherence · DCMIPP / LCD · UART / CRC32 · GDB · Linker Scripts · Model Memory Pools · Weight/Command Partitioning · Toolchain Version Alignment · Firmware Deployment.**
 
-**On this page:** [System responsibilities](#system-flow) · [Boot handoff](#boot-flow) · [Memory layout](#memory-layout) · [Model deployment](#model-deployment) · [Speech training](#kws-training) · [Numerical debugging](#numerical-debugging) · [Toolchain and packaging](#toolchain-packaging) · [Results](#results) · [All 32 steps](#development-route)
+**On this page:** [Development highlights](#development-route) · [System responsibilities](#system-flow) · [Boot handoff](#boot-flow) · [Memory layout](#memory-layout) · [Model deployment](#model-deployment) · [Speech training](#kws-training) · [Numerical debugging](#numerical-debugging) · [Toolchain and packaging](#toolchain-packaging) · [Results](#results)
 
 **Key documents:** [Engineering workflow](docs/engineering-workflow.en.md) · [32-step guide](docs/development-steps.en.md) · [System architecture](docs/architecture.en.md) · [Memory layout](docs/memory-deployment.en.md) · [Code tour](docs/code-tour.en.md) · [Complete documentation](#documentation)
 
 > **Version notation:** `Runtime1100`, `Runtime1200`, and `Runtime1201` mean versions **11.0.0, 12.0.0, and 12.0.1** of ST's **Network Runtime library**. This library is linked into the firmware to provide execution support required by generated model code. Updating the code-generation tools also requires matching library, header, and NPU support versions. These identifiers are separate from the ST Edge AI tool's own version number. [Version alignment details](docs/toolchain-compatibility.en.md).
-
-## Engineering work implemented in this project
-
-| Area | Concrete implementation |
-| --- | --- |
-| Speech data and model development | Build a five-class dataset with segmentation and source grouping; design a depthwise-separable convolutional model with augmentation, leakage checks, grouped five-fold validation, and INT8 quantization |
-| On-board audio and numerical porting | Build RAM-launch and UART/CRC32 recording tools; integrate continuous MDF/DMA capture, a ring buffer, and overwrite-aware snapshots; port the speech frontend to C and compare all 637 features |
-| Vision conversion and deployment | Run N6 code generation for YOLOv8, pair Runtime1201, port the postprocessing interface and build lists, and implement center cropping, target filtering, coordinate mapping, and mask display |
-| Dual-model memory layout | Adjust application SRAM boundaries, reserve KWS RAM/Flash, allocate vision-command and postprocessing sections, check weight boundaries, and split images |
-| Real-time system and application state | Schedule both models sequentially on one NPU; correct camera interrupt semaphore handling and maintain cache coherence; coordinate inference/display through target generations, mask snapshots, and a voice-acceptance state machine |
-| Fault localization and delivery | Compare fixed features, fixed audio, and live windows in layers; iterate data and models from live results; align code generation/runtime versions, correct packaging offsets, and complete builds and board deployment |
 
 **Recorded results:** **224/227 (98.68%)** across five INT8 development-validation folds; **15/16 (93.75%)** for both float and INT8 evaluation of the final model on 16 held-out clips; and **6/6 voice commands correctly accepted** in the final board session. Earlier fixed samples covering all five classes and four live windows also underwent board/PC numerical comparisons. These comparisons and command-acceptance records each have a specific version and test scope. [Results and version scope](docs/results.en.md)
 
@@ -147,6 +158,7 @@ The recorded vision weights start at `0x70380000` and occupy **3,474,865 B**, en
 
 The linker reports **0 B** for KWS RAM because generated code uses absolute addresses there; the model report still records **17,440 B** of activation allocation. Reserved capacity, linked sections, compiler allocation, and runtime peaks are distinct measurements. PSRAM `NOLOAD` work buffers are not embedded as initialized data in the programmed image. Vision commands are extracted separately so address gaps do not inflate the application BIN.
 
+<a id="route-vision"></a>
 <a id="model-deployment"></a>
 
 ## Deploying two models on N6
@@ -202,6 +214,8 @@ For the dual-model system, capture runs continuously:
 - **DMA and caches:** align circular-list descriptors and sample buffers to 64 and 32 bytes respectively. Callbacks maintain cache coherence and publish ring-buffer positions with a memory barrier.
 - **Sliding-window consistency:** nominal 16 kHz sampling and a 32,768-sample ring buffer. Each 16,000-sample window becomes eligible after at least 3,200 new samples (nominally about 200 ms); the actual interval depends on DMA block delivery and task scheduling. Handle ring wraparound and discard a snapshot if copying is delayed long enough for data to be overwritten.
 
+<a id="route-kws"></a>
+<a id="route-finalization"></a>
 <a id="kws-training"></a>
 
 ## Dataset engineering and KWS training evolution
@@ -217,6 +231,7 @@ The initial collection contained 47 five-second recordings, segmented into 142 t
 
 The final development pool contains **227 clips**: 142 original training + 49 original validation + 4 early live + 32 newly collected live-training clips. Once the original 49 validation clips joined development, the separate **16 live holdout clips** served final evaluation. Each fold uses only its training partition for normalization, background noise, and INT8 calibration. The best epoch counts were **82, 28, 66, 9, and 79**; their median, **66 epochs**, was used to train the final model on all 227 development clips.
 
+<a id="route-debugging"></a>
 <a id="numerical-debugging"></a>
 
 ## Python/C numerical comparisons and fault localization
@@ -248,6 +263,7 @@ One silent window was classified as `phone` on all three paths: the board, PC in
 
 Early offline validation already reached 48/49, but after retraining with four live recordings, a labeled six-command session still accepted only two commands. Per-window scores, score margins, hit counts, and clipping statistics were added, followed by expanded live data and grouped five-fold epoch selection. This led to the final holdout evaluation and the 6/6 board command-acceptance record reported above.
 
+<a id="route-runtime"></a>
 <a id="runtime-coordination"></a>
 
 ## FreeRTOS tasks and shared-resource integration
@@ -285,6 +301,7 @@ Runtime pairing is a cross-version integration task; packaging has a specific RE
 
 The earlier vision build already used `0x400` alignment. During later live-audio integration, a packaging command omitted the alignment option, resulting in successful Flash verification without normal application startup output. Byte-by-byte comparison confirmed that the program contents were unchanged; restoring aligned no-key packaging moved the payload from `0x240` to `0x400`. KWS output resumed and dual-model testing continued. The investigation addressed both the upstream entry-point inconsistency and this project's integration-time configuration regression.
 
+<a id="route-delivery"></a>
 <a id="build-delivery"></a>
 
 ## Build and engineering delivery
@@ -330,103 +347,6 @@ The checked tool combination is **GCC 14.3.1, ST Edge AI 4.0.1, Neural-ART 1.1.3
 | Earlier vision integration in this project | CUP and PHONE produced `found=1` | [Vision log](docs/evidence/development-history/finder_vision_20261004.log); a different version from the final voice session |
 
 The [hardware demonstration video](https://youtu.be/m7wET9g5u6k) is available. Standalone power and cold boot of this dual-model version have not been listed as experimentally verified. [Full results and version mapping](docs/results.en.md)
-
-<a id="development-route"></a>
-
-## Complete development route: 32 steps
-
-All 32 steps are retained below in development order. System design, decision thresholds, memory, model deployment, and debugging results are explained in the preceding sections. Corresponding code and records are grouped in the source index at the end of this page.
-
-| Phase | Steps | Outcome |
-| --- | --- | --- |
-| [Requirements and project versions](#route-foundation) | 01–02 | Define operation and establish the project with version provenance |
-| [Vision model and object finding](#route-vision) | 03–11 | YOLO N6 generation, runtime pairing, camera/postprocessing, display, and memory integration |
-| [Speech data and KWS development](#route-kws) | 12–17 | Recording, grouping, features, model training, INT8 quantization, and second-model generation |
-| [Continuous audio and dual-model coordination](#route-runtime) | 18–21 | Circular DMA, C frontend, caches, shared NPU, and cross-task state |
-| [Deployment debugging and live improvements](#route-debugging) | 22–25 | Image alignment, layered comparisons, misclassification diagnosis, and command acceptance |
-| [Final training and board deployment](#route-finalization) | 26–30 | Expanded live data, grouped validation, holdout evaluation, artifact synchronization, and voice operation |
-| [Engineering delivery and demonstration](#route-delivery) | 31–32 | IDE synchronization, Git/publication preparation, and demonstration video |
-
-<a id="route-foundation"></a>
-
-### 01–02 | Requirements and project versions
-
-| Step | Work completed |
-| --- | --- |
-| **01 Define functions and operation** | Voice selects cup, bottle, or phone; vision searches continuously and the LCD displays status and masks. |
-| **02 Establish the project and pin versions** | Organize application firmware, the vision reference, and KWS development; pin model, source commits, and tool versions with provenance records. |
-
-<a id="route-vision"></a>
-
-### 03–11 | Vision model and object finding
-
-| Step | Work completed |
-| --- | --- |
-| **03 Run YOLO conversion and N6 generation** | Run ST Edge AI 4.0.1 generation in this project, producing the N6 network, STAI interface, weights, and execution commands, then build the reference application. |
-| **04 Pair model runtimes** | Align Runtime1200 in the vision reference and Runtime1100 in the application base to Runtime1201, updating headers, libraries, and NPU support together. |
-| **05 Replace the hand models with YOLO** | Replace generated model sources and build lists, and connect the YOLO network context, inputs/outputs, and startup interface. |
-| **06 Configure DCMIPP crop and input** | Take a central square from the LCD field of view, scale it to a 256×256 RGB model input, and retain the display pipeline. |
-| **07 Port the postprocessing core and adapter** | Connect detection decoding and mask generation; configure 80 classes, 1,344 candidate boxes, and 32 mask prototypes of 64×64. |
-| **08 Implement target filtering and frame confirmation** | Select the highest-confidence detection of the target class and require two consecutive frames with box intersection over union (IoU) of at least 0.30 before reporting FOUND. |
-| **09 Integrate LCD boxes, masks, and snapshots** | Map boxes and masks into display coordinates; separate result and drawing snapshots and render outside the lock to prevent postprocessing from overwriting display data. |
-| **10 Correct camera interrupts and buffer handoffs** | Use interrupt-specific semaphore operations and required task switching; copy model input and complete cache maintenance before returning camera buffers. |
-| **11 Allocate vision memory and image sections** | Adjust the application SRAM boundary, allocate Flash commands and PSRAM postprocessing buffers, and extract the application and vision commands separately from the ELF. |
-
-<a id="route-kws"></a>
-
-### 12–17 | Speech data and KWS development
-
-| Step | Work completed |
-| --- | --- |
-| **12 Build the five-class recording dataset** | Collect 47 five-second recordings: 12 for each command, 8 unknown, and 3 silence; use GDB RAM startup, UART, and CRC32 for board recording. |
-| **13 Segment and group original recordings** | Use short-time energy and neighboring-utterance boundaries to create one-second clips: 142 training and 49 validation, keeping clips from each original recording in one group. |
-| **14 Build the Python MFCC frontend** | Implement mean removal, Hann windowing, FFT, Mel filtering, logarithms, DCT, and normalization to produce 49×13 features and export coefficients. |
-| **15 Design and train five-class KWS** | Build a depthwise-separable convolutional network with class weights, gain/noise/time-shift augmentation, model selection, and training records. |
-| **16 Export INT8 from SavedModel** | Calibrate with representative training data, export INT8 TFLite, retain scales, zero points, and frontend coefficients, and compare float/quantized results. |
-| **17 Generate and link the second model** | Give KWS its own name, context, and RAM/Flash; complete ST's internal ONNX and Neural-ART generation, with 11 NPU hardware stages and 1 CPU Softmax stage in the final version. |
-
-<a id="route-runtime"></a>
-
-### 18–21 | Continuous audio and dual-model coordination
-
-| Step | Work completed |
-| --- | --- |
-| **18 Integrate continuous MDF/GPDMA recording** | Configure circular DMA, clocks, and access attributes; use a 32,768-sample ring buffer for the latest one-second window, handling warm-up, wraparound, and snapshot overwrite. |
-| **19 Port the frontend to C** | Implement the Python-equivalent feature path with CMSIS-DSP, handle real-FFT DC/Nyquist storage, and produce 637 INT8 features. |
-| **20 Manage CPU/DMA/NPU caches** | Maintain CPU cache after DMA capture; handle old NPU/CPU cache contents before model-input updates and clean after writes, with alignment and memory barriers. |
-| **21 Coordinate models and cross-task state** | Run both models sequentially on the NPU in one inference task, with display/ISP tasks; reject stale results using target generations and preserve consistency through mask snapshots. |
-
-<a id="route-debugging"></a>
-
-### 22–25 | Deployment debugging and live improvements
-
-| Step | Work completed |
-| --- | --- |
-| **22 Diagnose builds, startup, and packaging** | Check build, packaging, programming, and startup separately; correct the payload offset from 0x240 to 0x400 and verify identical program content. |
-| **23 Build three-layer numerical comparisons** | Test inference with fixed features, the C frontend with fixed PCM, and live windows with PC recomputation. Both paths classify the earlier five fixed cases correctly, with all 637 features per PCM sample matching. |
-| **24 Diagnose live errors and add samples** | Use board/PC three-path comparisons to investigate silence classified as phone, retrain with live speech/noise, and add per-window scores and capture statistics to investigate missed commands. |
-| **25 Design voice-acceptance rules** | Combine amplitude, score, margin, two consecutive windows, a minimum interval, and quiet re-arming to turn classifications into stable target-selection events. |
-
-<a id="route-finalization"></a>
-
-### 26–30 | Final training and board deployment
-
-| Step | Work completed |
-| --- | --- |
-| **26 Expand live data and the development pool** | Collect 48 live clips, assigning 32 to training and 16 to holdout; combine the earlier 142+49 clips and 4 live clips with the new training clips for a 227-clip development pool. |
-| **27 Run leakage-controlled grouped validation and final training** | Merge source groups by PCM hash, isolate holdout data, and normalize/calibrate within each fold's training set. Five-fold INT8 scores 224/227; retrain for the median best duration of 66 epochs. |
-| **28 Evaluate holdout and synchronize final artifacts** | Float and INT8 both score 15/16 on 16 held-out clips; synchronize the model, coefficients, quantization scales/zero points, and diagnostic switches, and freeze their versions. |
-| **29 Configure five images and program the final update** | Assign FSBL, application, vision weights, KWS weights, and vision commands, checking addresses/hashes; final records retain verified writes for the application and KWS weights. |
-| **30 Test final-version voice operation** | Accept cup, bottle, and phone twice each: 6/6 voice commands correctly accepted with matching targets. Voice acceptance and visual object-finding results are recorded separately. |
-
-<a id="route-delivery"></a>
-
-### 31–32 | Engineering delivery and demonstration
-
-| Step | Work completed |
-| --- | --- |
-| **31 Prepare IDE, Git, and the public project** | Synchronize IDE sources/build entry points, retain source versions, commits, and hashes, and organize public sources, dependencies, and licenses. |
-| **32 Complete the hardware demonstration video** | The completed video is featured at the top of the homepage. Standalone power and cold boot have no verified record and remain separate from the video and existing board tests. |
 
 <a id="documentation"></a>
 
