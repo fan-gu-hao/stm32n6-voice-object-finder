@@ -4,7 +4,7 @@
 
 This project builds a Keyword Spotting (KWS) and YOLOv8 instance-segmentation system on STM32N6570-DK. Its workflow covers data collection, MFCC preprocessing, custom-model training and INT8 quantization, N6 code generation, PC/board numerical comparisons, and audio, vision, and display integration under FreeRTOS.
 
-The [complete 32-step development workflow](development-steps.en.md) follows implementation from requirements through the hardware demonstration. The [step-to-source inventory](development-source-map.json) maps each step to code, configuration, and records. This page retains chronological context and model, interface, and deployment details; host-side comparison, data-collection, and deployment programs are preserved as [historical workflow sources](../tools/development-history/README.en.md).
+The [complete 32-step development workflow](development-steps.en.md) follows implementation from requirements through the hardware demonstration. The [step-to-source inventory](development-source-map.json) maps each step to code, configuration, and records. This page retains development stages, model integration, and deployment details; host-side comparison, data-collection, and deployment programs are preserved as [historical workflow sources](../tools/development-history/README.en.md).
 
 Vision continuously processes the camera image; the voice commands cup, bottle, and phone change the search target. Both models use the NPU sequentially in one inference task, with separate display and ISP tasks. The [implementation and evidence index](development-coverage.en.md) maps each step to code, configuration, and results.
 
@@ -14,15 +14,15 @@ See [dual-model memory and deployment](memory-deployment.en.md) for the full run
 
 The project first established the vision application, then added a KWS model trained on collected data, and finally addressed real-time recognition and deployment issues. Earlier vision/recording projects and attempts that were not adopted are covered in the [original-history review](original-history-review.en.md); results remain attributed to the project and model version that produced them.
 
-| Order/date | Work completed | Relationship to the final system |
+| Development stage | Work completed | Relationship to the final system |
 | --- | --- | --- |
 | Preceding recording dependency | course15 established N6 recording firmware and host reception tools | course17 reused this recording entry point for data collection; the recorder sources and tools it depends on were subsequently included in this repository |
-| 2026-10-04: vision generation | Create course17, pin the official segmentation example and ST quantized YOLO source, generate code in its own `vision/` tree, match Runtime1201, build, and package | `vision_20261004_181810` records this project's own vision generation/reference-application build |
-| 2026-10-04: main application | Base `firmware/` on the official dual-model hand example, bring in generated YOLO code, adapt postprocessing, center cropping, target selection, memory, and task handoffs; build the vision application and record board operation | `finder_vision_20261004_193031_265404` is the main application's vision build; voice control had not yet been integrated at this stage |
-| 2026-10-05: data and initial KWS | Record five classes, segment/group source recordings, compute MFCCs, train, and export INT8 | The initial training source is retained separately from the later final grouped version |
-| 2026-10-06: KWS core and capture integration | KWS generation, C features/model interface, dedicated memory, CMSIS-DSP build integration, continuous MDF/DMA capture, and voice acceptance state | Progress from a buildable core to the live dual-model system; compilation alone does not establish recognition performance |
-| 2026-10-06 to 10-07: deployment/numerical debugging | Investigate the black screen and core fault, inspect payload offsets and restore `0x400` alignment; compare fixed features, identical PCM, and live windows between PC and board | Retain the packaging failure, feature/output comparisons, and silence-to-phone misclassification as distinct outcomes |
-| 2026-10-07 to 10-08: data iteration and freeze | Add live data, prevent leakage, run grouped five-fold/held-out evaluation, deploy final KWS, and retain two accepted instances of each command | Corresponds to the validation table below; that run's vision messages have found=0, while earlier vision FOUND records are separate |
+| Vision generation | Create course17, pin the official segmentation example and ST quantized YOLO source, generate code in its own `vision/` tree, match Runtime1201, build, and package | Completes this project's vision generation and reference-application build |
+| Main application | Base `firmware/` on the official dual-model hand example, bring in generated YOLO code, adapt postprocessing, center cropping, target selection, memory, and task handoffs; build the vision application and record board operation | Completes the main application's vision build; voice control had not yet been integrated at this stage |
+| Data and initial KWS | Record five classes, segment/group source recordings, compute MFCCs, train, and export INT8 | The initial training source is retained separately from the later final grouped version |
+| KWS core and capture integration | KWS generation, C features/model interface, dedicated memory, CMSIS-DSP build integration, continuous MDF/DMA capture, and voice acceptance state | Progress from a buildable core to the live dual-model system; compilation alone does not establish recognition performance |
+| Deployment and numerical debugging | Investigate the black screen and core fault, inspect payload offsets and restore `0x400` alignment; compare fixed features, identical PCM, and live windows between PC and board | Retain the packaging failure, feature/output comparisons, and silence-to-phone misclassification as distinct outcomes |
+| Data iteration and freeze | Add live data, prevent leakage, run grouped five-fold/held-out evaluation, deploy final KWS, and retain two accepted instances of each command | Corresponds to the validation table below; that run's vision messages have found=0, while earlier vision FOUND records are separate |
 | After freezing: engineering delivery | Prepare IDE source access, build paths, provenance, code guides, training/deployment evidence, and readable public sources | Demonstration video and untested items keep explicit status |
 
 ## System setup and model responsibilities
@@ -33,35 +33,6 @@ The project first established the vision application, then added a KWS model tra
 | Speech-data collection subsystem | Five-second MDF/DMA recording, RAM startup, UART handshake and CRC32, WAV storage, labeled collection, and segmentation | [Recording firmware](../kws/recording_firmware/README.en.md), [host tools](../kws/recording_tools/README.en.md), [collect_n6.py](../kws/collect_n6.py) |
 | KWS model development | Collect five-class data, implement MFCC and depthwise-separable convolutions, apply augmentation and grouped cross-validation, and export INT8 | [Training snapshot](../kws/training_snapshot/README.en.md), [training evolution](../kws/training_history/README.en.md) |
 | Dual-model deployment/integration | Generate N6 code for YOLOv8 and KWS, pair the shared runtime, and port model/postprocessing interfaces; allocate model memory and implement shared-NPU scheduling and search state | [Vision deployment](../vision/deployment/README.en.md), [KWS deployment](../kws/deployment/README.en.md), [app.c](../firmware/Src/app.c), [linker script](../firmware/Gcc/STM32N657xx.ld) |
-
-## Vision-model interface and postprocessing in this system
-
-On 2026-10-04, this project ran N6 code generation in its newly created `vision/` tree, built and packaged the reference application, and then integrated the generated model artifacts, runtime, and postprocessing into `firmware/`. The generation input is ST's prequantized `yolov8n_256_quant_pc_ii_seg_coco-st.tflite`, with source and hash pinned in [sources.txt](../sources.txt). Its SHA-256 is `3316733125a5fb85d66ed33993627b5d293b3baceb348b137132071ca365ebd6`.
-
-| Porting step | Changes and evidence |
-| --- | --- |
-| Pin reference sources | Segmentation example at `42f7d645f1ed61967a922defa4aa97b95d390b16`; model source at `176ecaa749b79a3f53ce077d2b14412fa45e81a0`. The main application separately uses hand-example commit `6c313001f69d3ddb1ffa7bd700aba74f9c11037b` (v2.2.0) |
-| Generate vision code in this project | Run `generate-n6-model_STM32N6570-DK.sh` in `vision/Model/`; the tool reported ST Edge AI Core `4.0.1-20581` and STM32CubeAI `12.0.1-RC2`. User terminal output confirms generation, ELF linking, and image packaging |
-| Match the GCC runtime | Change the reference application from Runtime1200 to Runtime1201, and the main application from Runtime1100 to `NetworkRuntime1201_CM55_GCC.a`; update `Inc`, `Lib`, and `Npu` together, retaining the FreeRTOS OS abstraction and asynchronous execution mode |
-| Import artifacts and update the build | Bring `network.c/.h`, `network_ecblobs.h`, `stai_network.c/.h`, and weights into the main application; its [Makefile](../firmware/Makefile) compiles YOLO and removes the palm/landmark models and `Src/ld.c` from the build |
-| Connect ST postprocessing | [ai.mk](../firmware/mks/ai.mk) includes the vision postprocessing core and `app_postprocess_iseg_yolo_v8_ui.c`; adapt model I/O, postprocessing configuration, and display data while retaining ST algorithm attribution |
-| Repartition memory/images | Reduce application SRAM from 1535 KiB to 1023 KiB (`0x34000400–0x34100000`) to avoid model activations; collect vision commands as `.flash_blob` in `.flash_section` at `0x71380000` (2 MiB); place postprocessing buffers in the existing PSRAM `NOLOAD` section through `.psram_bss` |
-| Extract and package separately | Use `objcopy` to exclude/extract only `.flash_section`, producing application and vision-command binaries without a large address-gap-filled image. The vision stage has four images: FSBL, application at `0x70100000`, vision weights at `0x70380000`, and commands at `0x71380000`; KWS weights later make five |
-| Fix buffer acquisition in interrupts | Camera callbacks call `bqueue_get_free`. This project uses `xSemaphoreTakeFromISR` and `portYIELD_FROM_ISR` in interrupt context, retaining `xSemaphoreTake` in task context. Upstream already handled interrupt-side release of the ready semaphore; the added correction concerns acquisition of the free semaphore |
-
-The main vision application's build recorded 351,240 bytes of SRAM, 230,528 bytes in the vision-command region, and 8,949,920 bytes of PSRAM. These belong to the **2026-10-04 version before KWS integration**, not the final dual-model memory footprint. Original execution outputs, version distinctions, and evidence limits are covered in the [original-history review](original-history-review.en.md); current build entry points are in the [build notes](build.en.md).
-
-The resulting vision interface and search application are:
-
-| Interface/processing | Integration |
-| --- | --- |
-| Camera input | Take a central square from the display field of view and resize it to `256×256 RGB UINT8`; check input size and type |
-| Model outputs | Two INT8 tensors carry `1×116×1344` detection data and `1×64×64×32` mask prototypes; use the ST adapter to identify outputs and obtain quantization parameters |
-| Postprocessing | Connect ST decoding, non-maximum suppression (NMS), and mask generation; confidence threshold 0.50, NMS IoU 0.40, and at most 10 results |
-| Search target | Filter the 80-class result for cup=41, bottle=39, and cell phone=67; select the highest-confidence box and publish FOUND after two consecutive frames with box IoU at least 0.30 |
-| Display adaptation | Map boxes/masks back to the central square on the LCD; retain mask snapshots so subsequent postprocessing cannot overwrite display data |
-
-Integration entries are in [app.c](../firmware/Src/app.c), [app_cam.c](../firmware/Src/app_cam.c), the [postprocessing adapter](../firmware/Lib/ai-postprocessing-wrapper/app_postprocess_iseg_yolo_v8_ui.c), and the [build list](../firmware/mks/ai.mk). NMS and mask reconstruction retain ST attribution; this project implements model connection, target/state management, coordinate adaptation, and cross-task data handoffs.
 
 ## Step-by-step audio, training, and board deployment
 
@@ -90,7 +61,7 @@ Initial collection used the [standalone recorder main.c](../kws/recording_firmwa
 
 The complete KWS route is Keras/SavedModel → INT8 TFLite → ST Edge AI internal ONNX and quantization metadata → Neural-ART → N6. The [original generation log](evidence/development-history/codegen_20261008/codegen.log) preserves the internal ONNX filename and actual compiler invocation; this ONNX is an internal intermediate representation produced by the ST toolchain. Validation groups samples by original recording and PCM content, and its scope is those source groups; cross-speaker testing has not been performed.
 
-The [training history](../kws/training_history/README.en.md) additionally includes the original 2026-10-05 script, showing the progression from early augmentation through live samples and utterance-boundary constraints to the final grouped version. The [48-clip live manifest](evidence/development-history/live_dataset_manifest_20261008.json) retains the 32 training/16 held-out split and per-clip PCM hashes.
+The [training history](../kws/training_history/README.en.md) additionally includes the original baseline training script, showing the progression from early augmentation through live samples and utterance-boundary constraints to the final grouped version. The [48-clip live manifest](evidence/development-history/live_dataset_manifest_20261008.json) retains the 32 training/16 held-out split and per-clip PCM hashes.
 
 ## Real-time system, memory, and delivery
 
@@ -118,7 +89,7 @@ The local delivery package divides the dual-model system into five images: FSBL,
 | Frontend/deployment comparison | Four live examples have identical PC/board INT8 features, with maximum integer output differences of 0, 0, 3, and 1 | [Original report for the earlier comparison model](evidence/development-history/live_comparison_20261007.json); fixed INPUT/PCM comparison code is also retained in the firmware |
 | Model/data diagnosis | The same silence sample is classified as phone on the board, with PC feature input, and with the complete PC PCM frontend | The same comparison report retains the failure, separately from subsequent live-data improvements |
 | Final grouped model | Five-fold development validation: 224/227 (98.68%); held-out INT8 audio: 15/16 (93.75%) | [Evaluation reports](evidence/README.en.md); folds serve development/epoch selection, while the holdout is 16 single-window offline examples |
-| Final on-board operation | cup, bottle, and phone accepted twice each; all retained vision messages in that run have found=0 | [2026-10-08 log](evidence/development-history/voice_groupcv_20261008.log); counts voice acceptance, separately from earlier vision FOUND records |
+| Final on-board operation | cup, bottle, and phone accepted twice each; all retained vision messages in that run have found=0 | [Final board-operation log](evidence/development-history/voice_groupcv_20261008.log); counts voice acceptance, separately from earlier vision FOUND records |
 | Deployment | Successful writing and verification of the application and KWS weights | [Deployment manifests/logs](evidence/development-history/deployment_20261008/); other images retain their existing configured contents |
 
 The [results page](results.en.md) distinguishes versions by model hashes and logs. The [hardware demonstration video](https://youtu.be/m7wET9g5u6k) is available; standalone power and cold boot of the dual-model system are not listed as tested passes.
